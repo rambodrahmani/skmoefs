@@ -27,34 +27,34 @@ pip install numpy, scipy, numba, matplotlib, scikit-learn, platypus-opt
 ### Source code
 You can check the latest sources with the command::
 ```console
-    git clone https://github.com/GionatanG/skmoefs.git
+git clone https://github.com/GionatanG/skmoefs.git
 ```
 
 ### Testing
 You can run some tests by executing::
 ```console
-	python example.py
+python example.py
 ```
 
 ### Examples
 The simplest example is shown below::
 ```python
-	from platypus.algorithms import *
+from platypus.algorithms import *
 
-	from skmoefs.toolbox import MPAES_RCS, load_dataset, normalize
-	from skmoefs.rcs import RCSInitializer, RCSVariator
-	from skmoefs.discretization.discretizer_base import fuzzyDiscretization
-	from sklearn.model_selection import train_test_split
+from skmoefs.toolbox import MPAES_RCS, load_dataset, normalize
+from skmoefs.rcs import RCSInitializer, RCSVariator
+from skmoefs.discretization.discretizer_base import fuzzyDiscretization
+from sklearn.model_selection import train_test_split
 
-	X, y, attributes, inputs, outputs = load_dataset('iris')
-	X_n, y_n = normalize(X, y, attributes)
-	Xtr, Xte, ytr, yte = train_test_split(X_n, y_n, test_size=0.3)
-	my_moefs = MPAES_RCS(variator=RCSVariator(), initializer=RCSInitializer())
-	my_moefs.fit(Xtr, ytr, max_evals=10000)
+X, y, attributes, inputs, outputs = load_dataset('iris')
+X_n, y_n = normalize(X, y, attributes)
+Xtr, Xte, ytr, yte = train_test_split(X_n, y_n, test_size=0.3)
+my_moefs = MPAES_RCS(variator=RCSVariator(), initializer=RCSInitializer())
+my_moefs.fit(Xtr, ytr, max_evals=10000)
 
-	my_moefs.show_pareto()
-	my_moefs.show_pareto(Xte, yte)
-	my_moefs.show_model('median', inputs=inputs, outputs=outputs)
+my_moefs.show_pareto()
+my_moefs.show_pareto(Xte, yte)
+my_moefs.show_model('median', inputs=inputs, outputs=outputs)
 ```
 
 The program load the IRIS dataset from the built-in datasets and normalize the
