@@ -46,12 +46,12 @@ def load_object(name):
 
 def set_default_plot_style():
     mpl.style.use('classic')
-    plt.rc('font', size=10)  # controls default text sizes
-    plt.rc('axes', titlesize=14)  # fontsize of the axes title
-    plt.rc('axes', labelsize=16)  # fontsize of the x and y labels
-    plt.rc('xtick', labelsize=14)  # fontsize of the tick labels
-    plt.rc('ytick', labelsize=14)  # fontsize of the tick labels
-    plt.rc('legend', fontsize=14)  # legend fontsize
+    plt.rc('font', size=10)         # controls default text sizes
+    plt.rc('axes', titlesize=14)    # fontsize of the axes title
+    plt.rc('axes', labelsize=16)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=14)   # fontsize of the tick labels
+    plt.rc('ytick', labelsize=14)   # fontsize of the tick labels
+    plt.rc('legend', fontsize=14)   # legend fontsize
     plt.rc('figure', titlesize=14)  # fontsize of the figure title
 
 
@@ -120,12 +120,15 @@ def normalize(X, y, attributes):
 
 
 class MPAES_RCS(MOEL_FRBC):
+    """
+    In charge of handling the rule and condition selection multi-objective
+    learning scheme, by means of (2 + 2)M-PAES algorithm.
+    """
 
     def __init__(self, M=100, Amin=1, capacity=64, divisions=8, variator=RCSVariator(),
                  initializer=RCSInitializer(), objectives=('accuracy', 'trl'),
                  moea_type='mpaes22'):
         """
-
         :param M: Number of maximum rules that a solution (Fuzzy classifier) can have
         :param Amin: minimum number of antecedents for each rule
         :param capacity: maximum capacity of the archive
@@ -183,10 +186,7 @@ class MPAES_RCS(MOEL_FRBC):
             self.algorithm = MPAES2_2(self.problem, self.variator, self.capacity, self.divisions)
 
     def fit(self, X, y, max_evals=10000):
-
         self._initialize(X, y)
-
-
         self._choose_algorithm()
         self.algorithm.run(condition=max_evals)
 

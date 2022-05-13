@@ -8,7 +8,8 @@ import numpy as np
 
 
 class FuzzyImpurity(object):
-    """Fuzzy impurity class.
+    """
+    Fuzzy impurity class.
     """
 
     @staticmethod
