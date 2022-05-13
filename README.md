@@ -24,7 +24,7 @@ This fork focuses on porting the original implementation to
 
 In order to use the library, it is necessary to have the above dependencies installed::
 ```console
-pip install numpy, scipy, numba, matplotlib, scikit-learn, platypus-opt
+pip install numpy scipy numba matplotlib scikit-learn platypus-opt
 ```
 
 ### Source code
