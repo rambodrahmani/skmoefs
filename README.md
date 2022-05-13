@@ -1,21 +1,15 @@
-.. -*- mode: rst -*-
-
-SKMoefs
-============
-
+# SKMoefs
 SKMoefs is a Python module for machine learning specifically built for
-Multi-Objective Evolutionary Fuzzy Systems. It takes inspiration by the Scikit-Learn principles and their classes 
-are all ScikitLearn's estimators. In addition, it builds upon Platypus, a library that deals with multi-objective algorithms.
+Multi-Objective Evolutionary Fuzzy Systems. It takes inspiration by the
+Scikit-Learn principles and their classes are all ScikitLearn's estimators. In
+addition, it builds upon Platypus, a library that deals with multi-objective
+algorithms.
 
+## Installation
 
-Installation
-------------
-
-Dependencies
-~~~~~~~~~~~~
-
-skmoefs requires:
-
+### Dependencies
+`skmoefs` requires:
+```console
 - Python (>= 3.6)
 - NumPy
 - SciPy
@@ -23,30 +17,28 @@ skmoefs requires:
 - Matplotlib
 - Scikit-Learn
 - Platypus
+```
 
 In order to use the library, it is necessary to have the above dependencies installed::
+```console
+pip install numpy, scipy, numba, matplotlib, scikit-learn, platypus-opt
+```
 
-    pip install numpy, scipy, numba, matplotlib, scikit-learn, platypus-opt
-
-Source code
-~~~~~~~~~~~
-
+### Source code
 You can check the latest sources with the command::
-
+```console
     git clone https://github.com/GionatanG/skmoefs.git
+```
 
-Testing
-~~~~~~~
-
+### Testing
 You can run some tests by executing::
-
+```console
 	python example.py
+```
 
-Examples
-~~~~~~~~
-
+### Examples
 The simplest example is shown below::
-
+```python
 	from platypus.algorithms import *
 
 	from skmoefs.toolbox import MPAES_RCS, load_dataset, normalize
@@ -63,21 +55,21 @@ The simplest example is shown below::
 	my_moefs.show_pareto()
 	my_moefs.show_pareto(Xte, yte)
 	my_moefs.show_model('median', inputs=inputs, outputs=outputs)
+```
 
-The program load the IRIS dataset from the built-in datasets and normalize the matrix X. Indeed, 
-the input data should be in the form 
+The program load the IRIS dataset from the built-in datasets and normalize the
+matrix X. Indeed, the input data should be in the form 
 
 - X : real NumPy matrix NxM (number of samples x number of features), with 0 <= X[i,j] <= 1 for every i,j
 - y : integer Numpy vector Nx1. In particular, if number of classes is C then y[i] belongs to {1, 2, 3, ...., C} for every i
 
-After the normalization, the script splits the dataset into training and testing. 
-It defines and train an MPAES_RCS object with default parameters, variator and initializer. Finally, it shows the results by
-plotting the pareto for the training set, another pareto evaluated for the testing set, and RB/DB for the classifier with
-an accuracy that is the median among the values within the archive.
+After the normalization, the script splits the dataset into training and testing.
+It defines and train an MPAES_RCS object with default parameters, variator and
+initializer. Finally, it shows the results by plotting the pareto for the
+training set, another pareto evaluated for the testing set, and RB/DB for the
+classifier with an accuracy that is the median among the values within the archive.
 
-Citation
-~~~~~~~~
-
+### Citation
 If you use SK-MOEFS in a scientific publication,
 we would appreciate citations to the following papers:
 
@@ -85,10 +77,5 @@ we would appreciate citations to the following papers:
 
 2) Antonelli, M., Ducange, P., Marcelloni, F.: A fast and efficient multi-objective evolutionary learning scheme for fuzzy rule-based classifiers. Inf. Sci. 283, 36\-54 (2014)
 
-License
-~~~~~~~
-
+### License
 SK-MOEFS is released under the GNU General Public License GPLv3 (See https://www.gnu.org/licenses/)
-
-
-
