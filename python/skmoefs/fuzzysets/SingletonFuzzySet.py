@@ -38,4 +38,3 @@ class SingletonFuzzySet(FuzzySet):
     @staticmethod
     def createFuzzySets(points, isStrongPartition = False):
         return list(map(lambda point: SingletonFuzzySet.createFuzzySet(point[1],point[0]), enumerate(points)))
-

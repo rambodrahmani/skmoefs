@@ -189,4 +189,3 @@ class TrapezoidalFuzzySet(FuzzySet):
 
         fuzzySets.append(TrapezoidalFuzzySet(points[-2], points[-1], float('inf'),trpzPrm=trpzPrm))
         return fuzzySets
-

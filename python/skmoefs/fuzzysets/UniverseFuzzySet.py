@@ -23,4 +23,3 @@ class UniverseFuzzySet(FuzzySet):
     @staticmethod
     def createFuzzySet():
         return UniverseFuzzySet()
-

@@ -80,4 +80,3 @@ class TriangularFuzzySet(FuzzySet):
 
         fuzzySets.append(TriangularFuzzySet(points[-2], points[-1], float('inf')))
         return fuzzySets
-
