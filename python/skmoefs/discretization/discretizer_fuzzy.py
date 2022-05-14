@@ -112,8 +112,8 @@ class FuzzyMDLFilter(object):
         
         
     def findBestSplits(self, data):
-        """Find best splits among the data.
-        
+        """
+        Find best splits among the data.
         """
         
         # Define histogram vectors

@@ -1,3 +1,7 @@
+"""
+Fuzzy Set
+"""
+
 mutable struct FuzzySet
 end
 
