@@ -36,6 +36,7 @@ git clone https://github.com/GionatanG/skmoefs.git
 ### Testing
 You can run some tests by executing::
 ```console
+cd python
 python example.py
 ```
 
