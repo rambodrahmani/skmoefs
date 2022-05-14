@@ -3,6 +3,12 @@ Fuzzy Singleton
 Fuzzy set whose support is a single point in universe of discourse.
 """
 
+import Base.show
+using Base.Broadcast
+
+isscalar(x::T) where T = isscalar(T)
+isscalar(::Type{T}) where T = BroadcastStyle(T) isa Broadcast.DefaultArrayStyle{0}
+
 mutable struct SingletonFuzzySet
     value::Float64
     left::Float64
@@ -47,5 +53,17 @@ function membershipDegree(self::SingletonFuzzySet, x::Float64)
     end
 end
 
-mim = __init__(SingletonFuzzySet(), 43.2, 3)
-print(mim)
+function createSingletonFuzzySet(value::Float64, index::Int64=nothing)
+    @assert isscalar(value) "Invalid parameter for Singleton Fuzzy Set!"
+    return __init__(SingletonFuzzySet(), value, index)
+end
+
+function createSingletonFuzzySets(points::Array{Float64}, isStrongPartition::Bool=false)
+    return [createSingletonFuzzySet(point[1], point[0]) for point in enumerate(points)]
+end
+
+fuzzy_singleton_example = createSingletonFuzzySet(43.2, 3)
+println(fuzzy_singleton_example)
+
+fuzzy_singletons_example = createSingletonFuzzySets([43.2, 24.3])
+println(fuzzy_singleton_example)
