@@ -7,15 +7,20 @@ mutable struct SingletonFuzzySet
     value::Float64
     left::Float64
     right::Float64
+    index::Int64
 end
 
-function __init__(self::SingletonFuzzySet, value::Float64, index::Int64=None)
+SingletonFuzzySet() = SingletonFuzzySet(0.0, 0.0, 0.0, 0)
+
+function __init__(self::SingletonFuzzySet, value::Float64, index::Int64=nothing)
     self.value = value
     self.left = self.value
     self.right = self.value
-    if isnothing(index)
+    if !isnothing(index)
         self.index = index
     end
+
+    return self
 end
 
 show(io::IO, self::SingletonFuzzySet) = print(io,
@@ -41,3 +46,6 @@ function membershipDegree(self::SingletonFuzzySet, x::Float64)
         return 0.0
     end
 end
+
+mim = __init__(SingletonFuzzySet(), 43.2, 3)
+print(mim)
