@@ -1,6 +1,7 @@
 """
 Universe Fuzzy Set
 """
+import Base.show
 
 mutable struct UniverseFuzzySet
 end
@@ -8,9 +9,9 @@ end
 function __init__(self::UniverseFuzzySet)
 end
 
-function __str__(self::UniverseFuzzySet)
-    return "Universe Fuzzy Set"
-end
+show(io::IO, self::UniverseFuzzySet) = print(io,
+    "Universe Fuzzy Set"
+)
 
 function isInSupport(self::UniverseFuzzySet,x)
     return 1.0
