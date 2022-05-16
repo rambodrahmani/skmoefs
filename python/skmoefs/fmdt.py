@@ -290,7 +290,6 @@ class FMDT(object):
         self.fSets = []
         
         for k, points in enumerate(self.cPoints):
-            print(points)
             if not continous[k] == True:
                 if self.cPoints[k]:
                     points = self.cPoints[k]

@@ -62,5 +62,5 @@ end
 fuzzy_singleton_example = createSingletonFuzzySet(43.2, 3)
 println(fuzzy_singleton_example)
 
-fuzzy_singletons_example = createSingletonFuzzySets([43.2, 24.3])
+fuzzy_singletons_example = createSingletonFuzzySets([43.2, 24.3, 11.4, 23.1])
 println(fuzzy_singleton_example)
