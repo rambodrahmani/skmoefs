@@ -3,11 +3,8 @@ Fuzzy Singleton
 Fuzzy set whose support is a single point in universe of discourse.
 """
 
+include("../utils.jl")
 import Base.show
-using Base.Broadcast
-
-isscalar(x::T) where T = isscalar(T)
-isscalar(::Type{T}) where T = BroadcastStyle(T) isa Broadcast.DefaultArrayStyle{0}
 
 mutable struct SingletonFuzzySet
     value::Float64
