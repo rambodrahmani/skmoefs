@@ -1,6 +1,7 @@
 """
 Universe Fuzzy Set
 """
+
 import Base.show
 
 mutable struct UniverseFuzzySet
