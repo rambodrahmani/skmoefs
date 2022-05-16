@@ -302,7 +302,10 @@ class FMDT(object):
                 self.fSets.append([])
             else:
                 if ftype == 'triangular':
-                    self.fSets.append(TriangularFuzzySet.createFuzzySets(points, isStrongPartition=True))
+                    fuzzySets = TriangularFuzzySet.createFuzzySets(points, isStrongPartition=True)
+                    for fuzzyset in fuzzySets:
+                        print(fuzzyset)
+                    self.fSets.append(fuzzySets)
                 elif ftype == 'trapezoidal':
                     self.fSets.append(TrapezoidalFuzzySet.createFuzzySets(points, isStrongPartition=True, trpzPrm=trpzPrm))
                     pass

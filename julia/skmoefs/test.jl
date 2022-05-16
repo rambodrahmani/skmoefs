@@ -3,12 +3,20 @@ Developer Harness Test
 """
 
 include("fuzzysets/SingletonFuzzySet.jl")
+include("fuzzysets/TriangularFuzzySet.jl")
 
 # Fuzzy Singleton
-fuzzy_singleton_example = createSingletonFuzzySet(43.2, 3)
-println(fuzzy_singleton_example)
+fuzzy_singleton = createSingletonFuzzySet(43.2, 3)
+println(fuzzy_singleton)
 
-fuzzy_singletons_example = createSingletonFuzzySets([17.5, 24.3, 11.4, 23.1])
-for fuzzy_singleton in fuzzy_singletons_example
+fuzzy_singletons = createSingletonFuzzySets([17.5, 24.3, 11.4, 23.1])
+for fuzzy_singleton in fuzzy_singletons
     println(fuzzy_singleton)
+end
+
+# Fuzzy Triangular Set
+triangular_fuzzy_params = [0.02777778, 0.27083333, 0.51388889, 0.75694444, 1.]
+fuzzy_triangulars = createTriangularFuzzySets(triangular_fuzzy_params, true)
+for fuzzy_triangular in fuzzy_triangulars
+    println(fuzzy_triangular)
 end

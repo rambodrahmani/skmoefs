@@ -78,9 +78,9 @@ function createTriangularFuzzySets(params::Array{Float64}, isStrongPartition::Bo
                                "but $(length(params)) values have been provided."
     sortedPoints = sort(params)
     if isStrongPartition
-        return createFuzzySetsFromStrongPartition(sortedPoints)
+        return createTriangularFuzzySetsFromStrongPartition(sortedPoints)
     else
-        return createFuzzySetsFromNoStrongPartition(sortedPoints)
+        return createTriangularFuzzySetsFromNoStrongPartition(sortedPoints)
     end
 end
 
@@ -112,13 +112,4 @@ function createTriangularFuzzySetsFromNoStrongPartition(points::Array{Float64})
     push!(fuzzySets, __init__(TriangularFuzzySet(), points[end - 1], points[end], Inf))
 
     return fuzzySets
-end
-
-test1 = [0.02777778, 0.27083333, 0.51388889, 0.75694444, 1.        ]
-test2 = [0.08333333 0.29166667 0.5        0.70833333 0.91666667]
-test3 = [0.   0.25 0.5  0.75 1.  ]
-test4 = [0.   0.25 0.5  0.75 1.  ]
-fuzzySets = createTriangularFuzzySets(test1, true)
-for fuzzySet in fuzzySets
-    println(fuzzySet)
 end
