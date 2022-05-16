@@ -109,5 +109,3 @@ function createFuzzySetsFromNoStrongPartition(points::Array{Float64})
     end
     return fuzzySets
 end
-
-
