@@ -5,6 +5,69 @@ Trapezoidal Fuzzy Set
 include("../utils.jl")
 import Base.show
 
+mutable struct __TrapezoidalFuzzySet
+    a::Float64
+    b::Float64
+    c::Float64
+    d::Float64
+    __leftSupportWidth::Float64
+    __rightSupportWidth::Float64
+    index::Int64
+end
+
+__TrapezoidalFuzzySet() = __TrapezoidalFuzzySet(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0)
+
+function __init__(self::__TrapezoidalFuzzySet, a::Float64, b::Float64, c::Float64, d::Float64, index::Int64=nothing)
+    self.a = a
+    self.b = b
+    self.c = c
+    self.d = d
+    self.__leftSupportWidth = b - a
+    self.__rightSupportWidth = d - c
+    self.left = self.a
+    self.right = self.b
+    if !isnothing(index)
+        self.index = index
+    end
+
+    return self
+end
+
+show(io::IO, self::__TrapezoidalFuzzySet) = print(io,
+    "a=$(self.a), b=$(self.b), c=$(self.c), d=$(self.d)"
+)
+
+function isInSupport(self::__TrapezoidalFuzzySet, x::Float64)
+    return x > self.a && x < self.d
+end
+
+function membershipDegree(self::__TrapezoidalFuzzySet, x::Float64)
+    if self.isInSupport(x)
+        if (x <= self.b && self.a == -Inf) || (x >= self.b && self.c == Inf)
+            return 1.0
+        else
+            if (x <= self.b)
+                uAi = (x - self.a) / self.__leftSupportWidth
+            elseif (x >= self.c)
+                uAi = 1.0 - ((x - self.c) / self.__rightSupportWidth)
+            else
+                uAi = 1.0
+            return uAi
+            end
+        end
+    else
+        return 0.0
+    end
+end
+
+function isFirstofPartition(self::__TrapezoidalFuzzySet)
+    return self.a == -Inf
+end
+
+function isLastOfPartition(self::__TrapezoidalFuzzySet)
+    return self.c == Inf
+end
+
 mutable struct TrapezoidalFuzzySet
     a::Float64
     b::Float64
@@ -44,9 +107,11 @@ show(io::IO, self::TrapezoidalFuzzySet) = print(io,
 function isInSupport(self::TrapezoidalFuzzySet, x::Float64)
     if self.a == -Inf
         return x < self.c - self.__rightPlateau
-    
+    end
+
     if self.c == Inf
         return x > self.a + self.__leftPlateau
+    end
     
     return (x > self.a + self.__leftPlateau && x < self.c - self.__rightPlateau)
 end
