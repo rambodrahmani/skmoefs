@@ -116,10 +116,8 @@ class TrapezoidalFuzzySet(FuzzySet):
             return xi> self.a+self.__leftPlateau
         
         return (xi> self.a+self.__leftPlateau and xi < self.c-self.__rightPlateau)
-            
 
     def membershipDegree(self, xi):
-        
         if self.isInSupport(xi): 
             if ( xi <= self.b and self.a == -float('inf')) or (xi >= self.b and self.c == float('inf')):
                 return 1.0
