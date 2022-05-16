@@ -42,19 +42,18 @@ function isInSupport(self::TriangularFuzzySet, x::Float64)
 end
 
 function membershipDegree(self::TriangularFuzzySet, x::Float64)
-    if !isInSupport(self, x)
+    if isInSupport(self, x)
+        if (x <= self.b && self.a == -Inf) || (x >= self.b && self.c == Inf)
+            return 1.0
+         elseif x  <= self.b
+             uAi = (x - self.a) / self__leftSupportWidth
+         else 
+            uAi = 1.0 - ((x - self.b) / self.__rightSupportWidth)
+        end
+        return uAi
+    else
         return 0.0
     end
-    
-    isInLowerRange = x <= self.b && self.a == -Inf
-    isInUpperRange = x >= self.b && self.c == Inf
-    if isInLowerRange || isInUpperRange
-        return 1.0
-    end
-
-    valForLeftSupportWidth = (x - self.a) / self.__leftSupportWidth
-    valForRightSupportWidth = 1.0 - ((x - self.b) / self.__rightSupportWidth)
-    return uAi = xi <= self.b ? valForLeftSupportWidth : valForRightSupportWidth
 end
 
 function isFirstOfPartition(self::TriangularFuzzySet)
@@ -91,8 +90,10 @@ function createFuzzySetsFromStrongPartition(points::Array{Float64})
 
     for index in range(1, length(points)-2)
         push!(fuzzySets, __init__(TriangularFuzzySet(), points[index], points[index + 1], points[index + 2], index))
-        push!(fuzzySets, __init__(TriangularFuzzySet(), points[end - 1], points[end], Inf, length(points) - 1))
     end
+
+    push!(fuzzySets, __init__(TriangularFuzzySet(), points[end - 1], points[end], Inf, length(points) - 1))
+
     return fuzzySets
 end
 
@@ -106,8 +107,10 @@ function createFuzzySetsFromNoStrongPartition(points::Array{Float64})
     for index in range(1, length(points)-2)
         indexPoints = index*3
         push!(fuzzySets, __init__(TriangularFuzzySet(), points[indexPoints], points[indexPoints + 1], points[indexPoints + 2]))
-        push!(fuzzySets, __init__(TriangularFuzzySet(), points[end - 1], points[end], Inf))
     end
+
+    push!(fuzzySets, __init__(TriangularFuzzySet(), points[end - 1], points[end], Inf))
+
     return fuzzySets
 end
 
