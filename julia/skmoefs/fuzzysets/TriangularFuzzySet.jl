@@ -64,7 +64,7 @@ function isLastOfPartition(self::TriangularFuzzySet)
     return self.c == Inf
 end
 
-function createFuzzySet(params::Array{Float64})
+function createTriangularFuzzySet(params::Array{Float64})
     @assert length(params) == 3 "Fuzzy Set Builder requires three parameters " *
                             "(left, peak and rigth), but $(length(params)) values " *
                             "have been provided."
@@ -73,7 +73,7 @@ function createFuzzySet(params::Array{Float64})
                     sortedParameters[2])
 end
 
-function createFuzzySets(params::Array{Float64}, isStrongPartition::Bool=false)
+function createTriangularFuzzySets(params::Array{Float64}, isStrongPartition::Bool=false)
     @assert length(params) > 1 "Fuzzy Set Builder requires at least two points, " *
                                "but $(length(params)) values have been provided."
     sortedPoints = sort(params)
@@ -84,7 +84,7 @@ function createFuzzySets(params::Array{Float64}, isStrongPartition::Bool=false)
     end
 end
 
-function createFuzzySetsFromStrongPartition(points::Array{Float64})
+function createTriangularFuzzySetsFromStrongPartition(points::Array{Float64})
     fuzzySets = []
     push!(fuzzySets, __init__(TriangularFuzzySet(), -Inf, points[1], points[2], 0))
 
@@ -97,7 +97,7 @@ function createFuzzySetsFromStrongPartition(points::Array{Float64})
     return fuzzySets
 end
 
-function createFuzzySetsFromNoStrongPartition(points::Array{Float64})
+function createTriangularFuzzySetsFromNoStrongPartition(points::Array{Float64})
     @assert (length(points)-4)%3 == 0, "Triangular Fuzzy Set Builder requires a multiple of three plus 4 " \
                                       "as valid number of points, but %d points have been provided."% len(points)
                 
@@ -118,7 +118,7 @@ test1 = [0.02777778, 0.27083333, 0.51388889, 0.75694444, 1.        ]
 test2 = [0.08333333 0.29166667 0.5        0.70833333 0.91666667]
 test3 = [0.   0.25 0.5  0.75 1.  ]
 test4 = [0.   0.25 0.5  0.75 1.  ]
-fuzzySets = createFuzzySets(test1, true)
+fuzzySets = createTriangularFuzzySets(test1, true)
 for fuzzySet in fuzzySets
     println(fuzzySet)
 end
