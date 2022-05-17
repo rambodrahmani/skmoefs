@@ -70,17 +70,17 @@ function isLastOfPartition(self::__TrapezoidalFuzzySet)
 end
 
 function create_TrapezoidalFuzzySet(params::Array{Float64})
-    @assert length(params) == 4 "Trapezoidal Fuzzy Set Builder requires four parameters (left, peak_b, " \
-                            "peak_c and right)," \
-                            " but %d values have been provided." % len(params)
+    @assert length(params) == 4 "Trapezoidal Fuzzy Set Builder requires four parameters (left, peak_b, "*
+                            "peak_c and right),"*
+                            "but $(length(params)) values have been provided."
     sortedParameters = sort(params)
 return __init__(__TrapezoidalFuzzySet(), sortedParameters[0], sortedParameters[1],
                 sortedParameters[2], sortedParameters[4] )
 end
 
 function create_TrapezoidalFuzzySets(params::Array{Float64}, isStrongPartition::Bool=false)
-        @assert length(params) > 3 "Triangular Fuzzy Set Builder requires at least four points," \
-                           " but %d values have been provided." % len(params)
+        @assert length(params) > 3 "Triangular Fuzzy Set Builder requires at least four points,"*
+                                "but $(length(params)) values have been provided."
         sortedPoints = sort(params)
     
     if isStrongPartition
@@ -106,8 +106,8 @@ function create_TrapezoidalFuzzySetsFromStrongPartition(points::Array{Float64})
 end
 
 function create_TrapezoidalFuzzySetsFromNoStrongPartition(points::Array{Float64})
-        @assert  (len(points)-6) % 4 == 0, "Triangular Fuzzy Set Builder requires a multiple of four plus 6 " \
-                                           "as valid number of points, but %d points have been provided." %len(points)
+        @assert  (len(points)-6) % 4 == 0, "Triangular Fuzzy Set Builder requires a multiple of four plus 6 "*
+                                           "as valid number of points, but $(length(params)) values have been provided."
             
     fuzzySets = []
     push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), -Inf, points[1], points[2], points[3]))
@@ -199,18 +199,17 @@ function isLastOfPartition(self::TrapezoidalFuzzySet)
 end
 
 function createTrapezoidalFuzzySet(params::Array{Float64}, trpzPrm::Float64)
-    @assert length(params) == 3 "Trapezoidal Fuzzy Set Builder requires four parameters (left, peak_b, " \
-                            "peak_c and right)," \
-                            " but %d values have been provided." % len(params)
+    @assert length(params) == 3 "Trapezoidal Fuzzy Set Builder requires four parameters (left, peak_b, "*
+                                "peak_c and right),"*
+                                "but $(length(params)) values have been provided."
     sortedParameters = sort(params)
     return __init__(TrapezoidalFuzzySet(), sortedParameters[0], sortedParameters[1],
                 sortedParameters[2], trpzPrm)
 end
 
 function createTrapezoidalFuzzySets(params::Array{Float64}, trpzPrm::Float64, isStrongPartition::Bool=false)
-        @assert length(params) > 1,  " Fuzzy Set Builder requires at least two points," \
-                                       " but %d values have been provided." % len(params)
-        sortedPoints = sort(params)
+        @assert length(params) > 1,  " Fuzzy Set Builder requires at least two points,"*
+                                     "but $(length(params)) values have been provided."
         if isStrongPartition
              return createTrapezoidalFuzzySetsFromStrongPartition(sortedPoints, trpzPrm = trpzPrm)
         else
@@ -226,14 +225,14 @@ function create_TrapezoidalFuzzySetsFromStrongPartition(points::Array{Float64}, 
         push!(fuzzySets, __init__(TrapezoidalFuzzySet(), points[index], points[index + 1], points[index + 2], trpzPrm, index ÷ 2))
     end
 
-    push!(fuzzySets, __init__(TrapezoidalFuzzySet(), points[end - 1], [end], Inf, trpzPrm, index))
+    push!(fuzzySets, __init__(TrapezoidalFuzzySet(), points[end - 1], points[end], Inf, trpzPrm, index))
 
     return fuzzySets
 end
 
 function create_TrapezoidalFuzzySetsFromNoStrongPartition(points::Array{Float64}, trpzPrm::Float64)
-        @assert  (len(points)-4) % 3 == 0, "Triangular Fuzzy Set Builder requires a multiple of four plus 6 " \
-                                           "as valid number of points, but %d points have been provided." %len(points)
+        @assert  (len(points)-4) % 3 == 0, "Triangular Fuzzy Set Builder requires a multiple of four plus 6 "*
+                                           "as valid number of points, but $(length(params)) values have been provided."
 
     fuzzySets = []
     push!(fuzzySets, __init__(TrapezoidalFuzzySet(), -Inf, points[1], points[2], trpzPrm))
