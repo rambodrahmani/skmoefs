@@ -13,7 +13,6 @@ class fuzzyDiscretization():
     def run(self, data, continous):
         self.continous = continous
         self.N, self.M = data.shape
-        print(type(data))
         
         splits = []
         for k in range(self.M):
