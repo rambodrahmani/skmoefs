@@ -1,5 +1,7 @@
 """
-Utility methods.
+    Utility methods.
+    This file contains the implementation of Python methods for which a
+    corresponding Julia method is not available.
 """
 
 using Base.Broadcast

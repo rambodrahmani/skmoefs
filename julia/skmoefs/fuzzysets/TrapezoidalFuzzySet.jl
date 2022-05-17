@@ -4,6 +4,7 @@ Trapezoidal Fuzzy Set
 
 include("../utils.jl")
 import Base.show
+using Ranges
 
 mutable struct __TrapezoidalFuzzySet
     a::Float64
@@ -95,11 +96,11 @@ function create_TrapezoidalFuzzySetsFromStrongPartition(points::Array{Float64})
     fCount = 1
 
     for index in range(2, length(points)-3, 2)
-    push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), points[index], points[index + 1], points[index + 2], points[index + 3], index ÷ 2))
-    fCount += 1
+        push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), points[index], points[index + 1], points[index + 2], points[index + 3], index ÷ 2))
+        fCount += 1
     end
 
-    push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), points[end - 2], points[end - 1], [end], Inf, fCount))
+    push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), points[end - 2], points[end - 1], points[end], Inf, fCount))
 
     return fuzzySets
 end
@@ -207,7 +208,7 @@ function createTrapezoidalFuzzySet(params::Array{Float64}, trpzPrm::Float64)
 end
 
 function createTrapezoidalFuzzySets(params::Array{Float64}, trpzPrm::Float64, isStrongPartition::Bool=false)
-        @assert length(params) > > 1,  " Fuzzy Set Builder requires at least two points," \
+        @assert length(params) > 1,  " Fuzzy Set Builder requires at least two points," \
                                        " but %d values have been provided." % len(params)
         sortedPoints = sort(params)
         if isStrongPartition
