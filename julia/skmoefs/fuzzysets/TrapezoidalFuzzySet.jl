@@ -74,8 +74,8 @@ function create_TrapezoidalFuzzySet(params::Array{Float64})
                             "peak_c and right),"*
                             "but $(length(params)) values have been provided."
     sortedParameters = sort(params)
-return __init__(__TrapezoidalFuzzySet(), sortedParameters[0], sortedParameters[1],
-                sortedParameters[2], sortedParameters[4] )
+    return __init__(__TrapezoidalFuzzySet(), sortedParameters[1], sortedParameters[2],
+                sortedParameters[3], sortedParameters[4])
 end
 
 function create_TrapezoidalFuzzySets(params::Array{Float64}, isStrongPartition::Bool=false)
@@ -245,4 +245,10 @@ function create_TrapezoidalFuzzySetsFromNoStrongPartition(points::Array{Float64}
     push!(fuzzySets, __init__(TrapezoidalFuzzySet(), points[end - 1], points[end], Inf, trpzPrm))
 
     return fuzzySets
+end
+
+trapezoidal_fuzzy_params = [0.27083333, 0.51388889, 0.75694444, 0.76944444]
+fuzzy_trapezoidals = create_TrapezoidalFuzzySet(trapezoidal_fuzzy_params)
+for fuzzy_trapezoidal in fuzzy_trapezoidals 
+    println(fuzzy_trapezoidal)
 end
