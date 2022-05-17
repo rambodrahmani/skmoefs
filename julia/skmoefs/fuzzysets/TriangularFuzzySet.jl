@@ -69,8 +69,8 @@ function createTriangularFuzzySet(params::Array{Float64})
                             "(left, peak and rigth), but $(length(params)) values " *
                             "have been provided."
     sortedParameters = sort(params)
-    return __init__(TriangularFuzzySet(), sortedParameters[0], sortedParameters[1],
-                    sortedParameters[2])
+    return __init__(TriangularFuzzySet(), sortedParameters[1], sortedParameters[2],
+                    sortedParameters[3])
 end
 
 function createTriangularFuzzySets(params::Array{Float64}, isStrongPartition::Bool=false)

@@ -6,6 +6,10 @@ include("fuzzysets/SingletonFuzzySet.jl")
 include("fuzzysets/TriangularFuzzySet.jl")
 include("fuzzysets/TrapezoidalFuzzySet.jl")
 
+###########
+# FUZZYSETS
+###########
+
 # Fuzzy Singleton
 fuzzy_singleton = createSingletonFuzzySet(43.2, 3)
 println(fuzzy_singleton)
@@ -23,8 +27,17 @@ for fuzzy_triangular in fuzzy_triangulars
 end
 
 # Fuzzy Trapezoidal Set
-Trapezoidal_fuzzy_params = [0.02777778, 0.27083333, 0.51388889, 0.75694444, 0.76944444, 1.]
-fuzzy_trapezoidals = create_TrapezoidalFuzzySet(Trapezoidal_fuzzy_params)
-for fuzzy_trapezoidal in fuzzy_trapezoidals 
-    println(fuzzy_trapezoidal)    
-end
+
+#############
+# DISCRETIZER
+#############
+
+#########
+# TOOLBOX
+#########
+X, y, attributes, inputs, outputs = load_dataset("iris")
+println(typeof(X))
+println(typeof(y))
+println(typeof(attributes))
+println(typeof(inputs))
+println(typeof(outputs))

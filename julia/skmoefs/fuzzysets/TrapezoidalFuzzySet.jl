@@ -69,7 +69,7 @@ function isLastOfPartition(self::__TrapezoidalFuzzySet)
     return self.c == Inf
 end
 
-function create_TrapezoidalFuzzySet(params::Array{Float64})
+function createTrapezoidalFuzzySet(params::Array{Float64})
     @assert length(params) == 4 "Trapezoidal Fuzzy Set Builder requires four parameters (left, peak_b, "*
                             "peak_c and right),"*
                             "but $(length(params)) values have been provided."
@@ -78,7 +78,7 @@ function create_TrapezoidalFuzzySet(params::Array{Float64})
                 sortedParameters[3], sortedParameters[4])
 end
 
-function create_TrapezoidalFuzzySets(params::Array{Float64}, isStrongPartition::Bool=false)
+function createTrapezoidalFuzzySets(params::Array{Float64}, isStrongPartition::Bool=false)
         @assert length(params) > 3 "Triangular Fuzzy Set Builder requires at least four points,"*
                                 "but $(length(params)) values have been provided."
         sortedPoints = sort(params)
@@ -90,7 +90,7 @@ function create_TrapezoidalFuzzySets(params::Array{Float64}, isStrongPartition::
     end
 end
 
-function create_TrapezoidalFuzzySetsFromStrongPartition(points::Array{Float64})
+function createTrapezoidalFuzzySetsFromStrongPartition(points::Array{Float64})
     fuzzySets = []
     push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), -Inf, points[1], points[2], points[3], 0))
     fCount = 1
@@ -105,7 +105,7 @@ function create_TrapezoidalFuzzySetsFromStrongPartition(points::Array{Float64})
     return fuzzySets
 end
 
-function create_TrapezoidalFuzzySetsFromNoStrongPartition(points::Array{Float64})
+function createTrapezoidalFuzzySetsFromNoStrongPartition(points::Array{Float64})
         @assert  (len(points)-6) % 4 == 0, "Triangular Fuzzy Set Builder requires a multiple of four plus 6 "*
                                            "as valid number of points, but $(length(params)) values have been provided."
             
@@ -211,13 +211,13 @@ function createTrapezoidalFuzzySets(params::Array{Float64}, trpzPrm::Float64, is
         @assert length(params) > 1,  " Fuzzy Set Builder requires at least two points,"*
                                      "but $(length(params)) values have been provided."
         if isStrongPartition
-             return createTrapezoidalFuzzySetsFromStrongPartition(sortedPoints, trpzPrm = trpzPrm)
+             return createTrapezoidalFuzzySetsFromStrongPartition(sortedPoints, trpzPrm)
         else
-             return createTrapezoidalFuzzySetsFromNoStrongPartition(sortedPoints, trpzPrm = trpzPrm)
+             return createTrapezoidalFuzzySetsFromNoStrongPartition(sortedPoints, trpzPrm)
         end
 end
 
-function create_TrapezoidalFuzzySetsFromStrongPartition(points::Array{Float64}, trpzPrm::Float64)
+function createTrapezoidalFuzzySetsFromStrongPartition(points::Array{Float64}, trpzPrm::Float64)
     fuzzySets = []
     push!(fuzzySets, __init__(TrapezoidalFuzzySet(), -Inf, points[1], points[2], 0, trpzPrm))
 
@@ -230,9 +230,9 @@ function create_TrapezoidalFuzzySetsFromStrongPartition(points::Array{Float64}, 
     return fuzzySets
 end
 
-function create_TrapezoidalFuzzySetsFromNoStrongPartition(points::Array{Float64}, trpzPrm::Float64)
-        @assert  (len(points)-4) % 3 == 0, "Triangular Fuzzy Set Builder requires a multiple of four plus 6 "*
-                                           "as valid number of points, but $(length(params)) values have been provided."
+function createTrapezoidalFuzzySetsFromNoStrongPartition(points::Array{Float64}, trpzPrm::Float64)
+    @assert  (len(points)-4) % 3 == 0, "Triangular Fuzzy Set Builder requires a multiple of four plus 6 "*
+                                        "as valid number of points, but $(length(params)) values have been provided."
 
     fuzzySets = []
     push!(fuzzySets, __init__(TrapezoidalFuzzySet(), -Inf, points[1], points[2], trpzPrm))
@@ -245,10 +245,4 @@ function create_TrapezoidalFuzzySetsFromNoStrongPartition(points::Array{Float64}
     push!(fuzzySets, __init__(TrapezoidalFuzzySet(), points[end - 1], points[end], Inf, trpzPrm))
 
     return fuzzySets
-end
-
-trapezoidal_fuzzy_params = [0.27083333, 0.51388889, 0.75694444, 0.76944444]
-fuzzy_trapezoidals = create_TrapezoidalFuzzySet(trapezoidal_fuzzy_params)
-for fuzzy_trapezoidal in fuzzy_trapezoidals 
-    println(fuzzy_trapezoidal)
 end
