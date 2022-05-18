@@ -78,5 +78,5 @@ X_n, y_n = normalize(X, y, attributes);
 #############
 # DISCRETIZER
 #############
-#fuzzy_discretizer = createFuzzyDiscretizer("uniform", 7)
-#runFuzzyDiscretizer(fuzzy_discretizer, X, [true, true, true, true])
+fuzzy_discretizer = createFuzzyDiscretizer("uniform", 7)
+runFuzzyDiscretizer(fuzzy_discretizer, X, [true, true, true, true])

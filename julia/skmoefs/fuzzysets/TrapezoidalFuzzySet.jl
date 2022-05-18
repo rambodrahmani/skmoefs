@@ -94,7 +94,7 @@ function __createTrapezoidalFuzzySetsFromStrongPartition(points::Array{Float64})
                                 points[3], 0))
 
     fCount = 1
-    for index in range(3, length(points)-2)
+    for index in range(2, length(points)-2)
         push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), points[index - 1], points[index],
                                     points[index + 1], points[index + 2], index÷2))
         fCount += 1
