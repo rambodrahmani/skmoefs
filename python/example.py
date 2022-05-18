@@ -45,7 +45,6 @@ def test3(dataset, alg, seed, nEvals=50000, store=False):
     make_directory(path)
     set_rng(seed)
     X, y, attributes, inputs, outputs = load_dataset(dataset)
-    print(normalize(X, y, attributes))
     X_n, y_n = normalize(X, y, attributes)
 
     Xtr, Xte, ytr, yte = train_test_split(X_n, y_n, test_size=0.3, random_state=seed)

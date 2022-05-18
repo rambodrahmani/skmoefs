@@ -73,8 +73,10 @@ println(typeof(inputs))
 println(typeof(outputs))
 
 # normalize dataset
-X_n, y_n = normalize(X, y, attributes)
+X_n, y_n = normalize(X, y, attributes);
 
 #############
 # DISCRETIZER
 #############
+#fuzzy_discretizer = createFuzzyDiscretizer("uniform", 7)
+#runFuzzyDiscretizer(fuzzy_discretizer, X, [true, true, true, true])

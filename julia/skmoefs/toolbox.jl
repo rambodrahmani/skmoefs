@@ -62,7 +62,7 @@ function load_dataset(name::String)
                 end
             end
         end
-        X = convert(Array{Array{Float64}, 1}, X)
+        X = hcat(X...)'
         y = convert(Array{Int64, 1}, y)
         attributes = convert(Array{Array{Float64}, 1}, attributes)
         inputs = convert(Array{String, 1}, inputs)
@@ -86,14 +86,14 @@ function normalize(X, y, attributes)
     - `y` normalized such that 0 <= y[i] <= 1 for every i
     """
 
-    n_features = length(X[1])
+    n_features = size(X)[2]
     min_values = zeros(n_features)
     max_values = zeros(n_features)
     for j in range(1, n_features)
         min_values[j] = attributes[j][1]
         max_values[j] = attributes[j][2]
-        for i in range(1, length(X))
-            X[i][j] = (X[i][j] - min_values[j]) / (max_values[j] - min_values[j])
+        for i in range(1, size(X)[1])
+            X[i,j] = (X[i,j] - min_values[j]) / (max_values[j] - min_values[j])
         end
     end
 

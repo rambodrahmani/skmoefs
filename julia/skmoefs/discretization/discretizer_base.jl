@@ -2,8 +2,6 @@
     Fuzzy Discretization
 """
 
-using Ranges
-
 mutable struct FuzzyDiscretization
     method::String
     numSet::Int64
@@ -28,7 +26,7 @@ function run(self::FuzzyDiscretization, data::Matrix{Float64}, continous::Vector
     self.N, self.M = size(data)
     
     splits = []
-    for k in range(self.M)
+    for k in range(1, self.M)
         if self.continous[k]
             if self.method == "equifreq"
                 cutPoints = sort(data[:,k])[range(0, self.N-1, self.numSet)]
@@ -48,4 +46,12 @@ function run(self::FuzzyDiscretization, data::Matrix{Float64}, continous::Vector
     end
 
     return splits
+end
+
+function createFuzzyDiscretizer(method::String="uniform", numSet::Int64=7)
+    return __init__(FuzzyDiscretization(), method, numSet)
+end
+
+function runFuzzyDiscretizer(self::FuzzyDiscretization, data::Matrix{Float64}, continous::Vector{Bool})
+    return run(self, data, continous)
 end
