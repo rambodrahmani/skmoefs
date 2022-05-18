@@ -31,14 +31,14 @@ function run(self::FuzzyDiscretization, data::Matrix{Float64}, continous::Vector
             if self.method == "equifreq"
                 cutPoints = sort(data[:,k])[range(0, self.N-1, self.numSet)]
             elseif self.method == "uniform"
-                cutPoints = range(minimum(data[:,k]), maximum(data[:,k]), self.numSet)
+                cutPoints = collect(LinRange(minimum(data[:,k]), maximum(data[:,k]), self.numSet))
             end
             if length(unique!(cutPoints)) < 3
                 append!(splits, hcat(zeros(1,1), ones(1,self.numSet-1)))
             else
                 uPoints = unique!(cutPoints)
-                append!(uPoints, ones(1, self.numSet - len(uPoints)))
-                append!(splits, uPoints)
+                append!(uPoints, ones(1, self.numSet - length(uPoints)))
+                append!(splits, [uPoints])
             end
         else
             append!(splits, [])

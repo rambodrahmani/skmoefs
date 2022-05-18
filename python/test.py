@@ -74,6 +74,7 @@ def test_fit(dataset, alg, seed, nEvals=50000, store=True):
 
     mpaes_rcs_fdt.show_pareto(Xte, yte)
 
+
 def test_crossval(dataset, alg, seed, nEvals=50000):
     path = 'results/' + dataset + '/' + alg + '/'
     make_directory(path)
@@ -159,8 +160,14 @@ def parse_results():
 
 
 if __name__ == "__main__":
-    freeze_support()
+    #freeze_support()
     #test_multiple()
     #parse_results()
     #test_crossval('appendicitis', 'moead', 1, nEvals=1000)
-    test_fit('iris', 'mpaes22', 2, nEvals=2000, store=False)
+    #test_fit('iris', 'mpaes22', 2, nEvals=2000, store=False)
+
+    X, y, attributes, inputs, outputs = load_dataset('iris')
+    X_n, y_n = normalize(X, y, attributes)
+    discretizer = fuzzyDiscretization(numSet=5, method='uniform')
+    fuzzy_splits = discretizer.run(X_n, [True, True, True, True])
+    print(fuzzy_splits)

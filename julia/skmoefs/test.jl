@@ -80,5 +80,6 @@ println(y_n)
 #############
 # DISCRETIZER
 #############
-#fuzzy_discretizer = createFuzzyDiscretizer("uniform", 7)
-#runFuzzyDiscretizer(fuzzy_discretizer, X, [true, true, true, true])
+fuzzy_discretizer = createFuzzyDiscretizer("uniform", 5)
+fuzzy_splits = runFuzzyDiscretizer(fuzzy_discretizer, X_n, [true, true, true, true])
+print(fuzzy_splits)

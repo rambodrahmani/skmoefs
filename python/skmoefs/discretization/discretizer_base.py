@@ -1,10 +1,7 @@
 import numpy as np
 
-
 class fuzzyDiscretization():
-    
-    def __init__(self, numSet = 7, method='uniform'):
-        
+    def __init__(self, numSet=7, method='uniform'):
         assert method in ['equifreq', 'uniform']
         self.method = method
         assert numSet >=3
@@ -13,7 +10,7 @@ class fuzzyDiscretization():
     def run(self, data, continous):
         self.continous = continous
         self.N, self.M = data.shape
-        
+
         splits = []
         for k in range(self.M):
             if self.continous[k]:
@@ -26,8 +23,7 @@ class fuzzyDiscretization():
                 else:
                     uPoints = np.unique(cutPoints)
                     splits.append(np.array(np.append(uPoints, [1.0]*(self.numSet - len(uPoints)))))
-
             else:
                 splits.append([])
-        
+
         return splits
