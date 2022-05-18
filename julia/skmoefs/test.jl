@@ -31,6 +31,18 @@ for fuzzy_triangular in fuzzy_triangulars
 end
 
 # Fuzzy Trapezoidal Set
+trapezoidal_fuzzy_params = [0.02777778, 0.27083333, 0.51388889, 0.982374]
+trpzPrm = 0.56
+fuzzy_trapezoidal = __createTrapezoidalFuzzySet(trapezoidal_fuzzy_params)
+println(fuzzy_trapezoidal)
+
+trapezoidal_fuzzy_params = [0.02777778, 0.27083333, 0.51388889, 0.12345678]
+trpzPrm = 0.56
+fuzzy_trapezoidals = __createTrapezoidalFuzzySets(trapezoidal_fuzzy_params, true)
+for fuzzy_trapezoidal in fuzzy_trapezoidals
+    println(fuzzy_trapezoidal)
+end
+
 trapezoidal_fuzzy_params = [0.02777778, 0.27083333, 0.51388889]
 trpzPrm = 0.56
 fuzzy_trapezoidal = createTrapezoidalFuzzySet(trapezoidal_fuzzy_params, trpzPrm)

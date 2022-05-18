@@ -4,6 +4,124 @@
 
 import Base.show
 
+mutable struct __TrapezoidalFuzzySet
+    a::Float64
+    b::Float64
+    c::Float64
+    d::Float64
+    __leftSupportWidth::Float64
+    __rightSupportWidth::Float64
+    left::Float64
+    right::Float64
+    index::Int64
+end
+
+__TrapezoidalFuzzySet() = __TrapezoidalFuzzySet(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0)
+
+function __init__(self::__TrapezoidalFuzzySet, a::Float64, b::Float64, c::Float64, d::Float64, index::Int64=nothing)
+    self.a = a
+    self.b = b
+    self.c = c
+    self.d = d
+    self.__leftSupportWidth = b - a
+    self.__rightSupportWidth = d - c
+    self.left = self.a
+    self.right = self.b
+    if !isnothing(index)
+        self.index = index
+    end
+
+    return self
+end
+
+show(io::IO, self::__TrapezoidalFuzzySet) = print(io,
+    "a=$(self.a), b=$(self.b), c=$(self.c), d=$(self.d)"
+)
+
+function isInSupport(self::__TrapezoidalFuzzySet, x::Float64)
+    return x > self.a && x < self.d
+end
+
+function membershipDegree(self::__TrapezoidalFuzzySet, x::Float64)
+    if isInSupport(self, x)
+        if (x <= self.b && self.a == -Inf) || (x >= self.b && self.c == Inf)
+            return 1.0
+        else
+            if (x <= self.b)
+                uAi = (x - self.a) / self.__leftSupportWidth
+            elseif (x >= self.c)
+                uAi = 1.0 - ((x - self.c) / self.__rightSupportWidth)
+            else
+                uAi = 1.0
+            end
+            return uAi
+        end
+    else
+        return 0.0
+    end
+end
+
+function isFirstofPartition(self::__TrapezoidalFuzzySet, x::Float64)
+    return self.a == -Inf
+end
+
+function isLastOfPartition(self::__TrapezoidalFuzzySet, x::Float64)
+    return self.c == Inf
+end
+
+function __createTrapezoidalFuzzySet(params::Array{Float64})
+    @assert length(params) == 4  "Trapezoidal Fuzzy Set Builder requires four parameters " *
+                            "(left, peak_b, peak_c and right), but " *
+                            "$(length(params)) values have been provided."
+    sortedParameters = sort(params)
+    return __init__(__TrapezoidalFuzzySet(), sortedParameters[1], sortedParameters[2], sortedParameters[3], sortedParameters[4], 0)
+end
+
+function __createTrapezoidalFuzzySets(params::Array{Float64}, isStrongPartition::Bool=false)
+    @assert length(params) > 3 "Fuzzy Set Builder requires at least four points, " *
+                               "but $(length(params)) values have been provided."
+    sortedPoints = sort(params)
+    if isStrongPartition
+        return __createTrapezoidalFuzzySetsFromStrongPartition(sortedPoints)
+    else
+        return __createTrapezoidalFuzzySetsFromNoStrongPartition(sortedPoints)
+    end
+end
+
+function __createTrapezoidalFuzzySetsFromStrongPartition(points::Array{Float64})
+    fuzzySets = []
+    push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), -Inf, points[1], points[2],
+                                points[3], 0))
+
+    fCount = 1
+    for index in range(3, length(points)-2)
+        push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), points[index - 1], points[index],
+                                    points[index + 1], points[index + 2], index÷2))
+        fCount += 1
+    end
+
+    push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), points[end - 2], points[end - 1],
+                                points[end], Inf, fCount))
+    return fuzzySets
+end
+
+function __createTrapezoidalFuzzySetsFromNoStrongPartition(points::Array{Float64})
+    @assert (len(points)-6) % 4 == 0 "Triangular Fuzzy Set Builder requires a multiple of " *
+                                     "four plus 6 as valid number of points, but $(length(points)) points " *
+                                     "have been provided."
+
+    fuzzySets = []
+    push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), -Inf, points[1], points[2], points[3], 0))
+
+    for index in range(3, len(points)-2)
+        indexPoints = index*4
+        push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), points[indexPoints - 1], points[indexPoints], points[indexPoints + 1], points[indexPoints+2], 0))
+    end
+
+    push!(fuzzySets, __init__(__TrapezoidalFuzzySet(), points[end-2], points[end-1], points[end], Inf, 0))
+    return fuzzySets
+end
+
 mutable struct TrapezoidalFuzzySet
     a::Float64
     b::Float64
