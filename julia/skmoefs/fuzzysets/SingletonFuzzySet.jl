@@ -1,6 +1,6 @@
 """
-Fuzzy Singleton
-Fuzzy set whose support is a single point in universe of discourse.
+    Fuzzy Singleton
+    Fuzzy set which support is a single point in universe of discourse.
 """
 
 include("../utils.jl")

@@ -1,5 +1,5 @@
 """
-Triangular Fuzzy Set
+    Triangular Fuzzy Set
 """
 
 include("../utils.jl")

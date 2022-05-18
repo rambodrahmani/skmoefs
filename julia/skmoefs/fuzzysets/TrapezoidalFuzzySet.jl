@@ -1,5 +1,5 @@
 """
-Trapezoidal Fuzzy Set
+    Trapezoidal Fuzzy Set
 """
 
 import Base.show

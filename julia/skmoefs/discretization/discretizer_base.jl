@@ -1,9 +1,10 @@
 """
+    Fuzzy Discretization
 """
 
 using Ranges
 
-mutable struct fuzzyDiscretization
+mutable struct FuzzyDiscretization
     method::String
     numSet::Int64
     continous::Array{Bool}
@@ -11,9 +12,9 @@ mutable struct fuzzyDiscretization
     M::Int64
 end
 
-fuzzyDiscretization() = fuzzyDiscretization("uniform", 7, [true], 0, 0)
+FuzzyDiscretization() = FuzzyDiscretization("uniform", 7, [true], 0, 0)
 
-function __init__(self::fuzzyDiscretization, method::String="uniform", numSet::Int64=7)
+function __init__(self::FuzzyDiscretization, method::String="uniform", numSet::Int64=7)
     @assert method in ["uniform", "equifreq"] "Invalid discretization method."
     self.method = method
     @assert numSet >= 3 "Invalid number of sets."
@@ -22,7 +23,7 @@ function __init__(self::fuzzyDiscretization, method::String="uniform", numSet::I
     return self
 end
 
-function run(self::fuzzyDiscretization, data::Matrix{Float64}, continous::Vector{Bool})
+function run(self::FuzzyDiscretization, data::Matrix{Float64}, continous::Vector{Bool})
     self.continous = continous
     self.N, self.M = size(data)
     

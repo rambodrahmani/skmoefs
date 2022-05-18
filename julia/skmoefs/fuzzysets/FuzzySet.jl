@@ -1,5 +1,5 @@
 """
-Fuzzy Set
+    Abstract Fuzzy Set implementation.
 """
 
 mutable struct FuzzySet
