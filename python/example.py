@@ -84,4 +84,4 @@ def test3(dataset, alg, seed, nEvals=50000, store=False):
 if __name__=="__main__":
     #test1()
     #test2()
-    test3('iris', 'mpaes22', 2, nEvals=2000, store=False)
+    test3('iris', 'mpaes22', 2, nEvals=2000, store=True)

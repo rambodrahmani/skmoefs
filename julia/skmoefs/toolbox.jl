@@ -24,7 +24,7 @@ function load_dataset(name::String)
     outputs = []
     X = []
     y = []
-    open("skmoefs/dataset/" * name * ".dat") do io
+    open("dataset/" * name * ".dat") do io
         while !eof(io)
             line = readline(io)
             if startswith(line, "@")
