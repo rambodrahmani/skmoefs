@@ -57,8 +57,6 @@ function load_dataset(name::String)
             else
                 if length(line) != 0
                     words = parse.(Float64, split(line, ','))
-                    words = convert(Array{Float64, 1}, words)
-                    println(words)
                     push!(X, words[begin:end-1])
                     push!(y, floor(Int, words[end]))
                 end
@@ -88,14 +86,14 @@ function normalize(X, y, attributes)
     - `y` normalized such that 0 <= y[i] <= 1 for every i
     """
 
-    n_features = size(X)[1]
+    n_features = length(X[1])
     min_values = zeros(n_features)
     max_values = zeros(n_features)
     for j in range(1, n_features)
-        min_values[j] = attributes[j][0]
-        max_values[j] = attributes[j][1]
-        for i in range(1, len(X[:, j]))
-            X[i, j] = (X[i, j] - min_values[j]) / (max_values[j] - min_values[j])
+        min_values[j] = attributes[j][1]
+        max_values[j] = attributes[j][2]
+        for i in range(1, length(X))
+            X[i][j] = (X[i][j] - min_values[j]) / (max_values[j] - min_values[j])
         end
     end
 
