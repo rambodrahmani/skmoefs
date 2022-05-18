@@ -47,6 +47,11 @@ end
 # TOOLBOX
 #########
 X, y, attributes, inputs, outputs = load_dataset("iris");
+println(X)
+println(y)
+println(attributes)
+println(inputs)
+println(outputs)
 println(typeof(X));
 println(typeof(y));
 println(typeof(attributes));

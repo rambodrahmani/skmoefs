@@ -84,4 +84,15 @@ def test3(dataset, alg, seed, nEvals=50000, store=False):
 if __name__=="__main__":
     #test1()
     #test2()
-    test3('iris', 'mpaes22', 2, nEvals=2000, store=True)
+    #test3('iris', 'mpaes22', 2, nEvals=2000, store=True)
+    X, y, attributes, inputs, outputs = load_dataset("iris");
+    print(X)
+    print(y)
+    print(attributes)
+    print(inputs)
+    print(outputs)
+    print(type(X));
+    print(type(y));
+    print(type(attributes));
+    print(type(inputs));
+    print(type(outputs));
