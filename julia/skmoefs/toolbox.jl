@@ -86,16 +86,18 @@ function normalize(X::Matrix{Float64}, y::Vector{Int64}, attributes::Vector{Arra
     - `y` normalized such that 0 <= y[i] <= 1 for every i
     """
 
+    n_samples = size(X)[1]
     n_features = size(X)[2]
+    X_n = Array{Float64, 2}(undef, n_samples, n_features)
     min_values = zeros(n_features)
     max_values = zeros(n_features)
     for j in range(1, n_features)
         min_values[j] = attributes[j][1]
         max_values[j] = attributes[j][2]
-        for i in range(1, size(X)[1])
-            X[i,j] = (X[i,j] - min_values[j]) / (max_values[j] - min_values[j])
+        for i in range(1, n_samples)
+            X_n[i,j] = (X[i,j] - min_values[j]) / (max_values[j] - min_values[j])
         end
     end
 
-    return X, y
+    return X_n, y
 end
