@@ -8,7 +8,7 @@ logger.setLevel(logging.INFO)
 
 
 class CrispMDLFilter(object):
-    def __init__(self, numClasses, data, label, continous, minNumExamples=2,
+    def __init__(self, numClasses, data, label, continuous, minNumExamples=2,
                  minGain=0.01):
 
         """Class for performing crisp discretization of the dataset.
@@ -21,8 +21,8 @@ class CrispMDLFilter(object):
             N samples, M features
         label: np.array, shape (numSamples)
             Class label for each sample.
-        continous: list, shape(numFeatures)
-            True for each continous feature, False for each categorical feature.
+        continuous: list, shape(numFeatures)
+            True for each continuous feature, False for each categorical feature.
         minNumExamples: int
             Minimum number of examples per node.
         minGain: float
@@ -30,7 +30,7 @@ class CrispMDLFilter(object):
 
         """
         self.numClasses = numClasses
-        self.continous = continous
+        self.continuous = continuous
         self.minNumExamples = minNumExamples
         self.data = data
         self.label = label
@@ -77,11 +77,11 @@ class CrispMDLFilter(object):
         # Iterate among features
         for k in range(self.M):
             # Iterate among features
-            if self.continous[k]:
+            if self.continuous[k]:
                 for ind in range(self.N):
                     x = self.__simpleHist(data[ind][k], k)
                     self.histograms[k][int(x * self.numClasses + self.label[ind])] += 1
-
+        print(self.histograms)
         # Histograms built
 
         splits = []

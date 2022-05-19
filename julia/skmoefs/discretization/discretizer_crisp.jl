@@ -12,6 +12,8 @@
     - `minGain::Float64`: minimum entropy gain per spit.
 """
 
+using BisectPy
+
 mutable struct CrispMDLFilter
     numClasses::Int64
     data::Matrix{Float64}
@@ -79,6 +81,19 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
         push!(self.histograms, zeros(((length(self.candidateSplits[k]) + 1) * self.numClasses)))
     end
 
+    # Iterate among features
+    for k in range(1, self.M)
+        # Iterate among features
+        if self.continuous[k]
+            for ind in range(1, self.N)
+                x = self.__simpleHist(data[ind][k], k)
+                self.histograms[k][int(x * self.numClasses + self.label[ind])] += 1
+            end
+        end
+    end
+
+    println(self.histograms)
+
     return splits
 end
 
@@ -94,7 +109,7 @@ function __simpleHist(self::CrispMDLFilter, e::Float64, fIndex::Int64)
     - Index of e in the histogram of feature fIndex.
     """
 
-    ind = bisect.bisect_left(self.candidateSplits[fIndex], e)
+    ind = BisectPy.bisect_left(self.candidateSplits[fIndex], e)
     if ind < 0
         return -ind - 1
     end
