@@ -16,6 +16,7 @@ from skmoefs.fuzzysets.SingletonFuzzySet import SingletonFuzzySet
 from skmoefs.fuzzysets.UniverseFuzzySet import UniverseFuzzySet
 from skmoefs.fuzzysets.TrapezoidalFuzzySet import TrapezoidalFuzzySet
 from skmoefs.discretization.discretizer_base import fuzzyDiscretization
+from skmoefs.discretization.discretizer_crisp import CrispMDLFilter
 from skmoefs.toolbox import MPAES_RCS, load_dataset, normalize, is_object_present, store_object, load_object, milestones
 
 
@@ -223,9 +224,13 @@ if __name__ == "__main__":
     print(X_n)
     print(y_n)
 
-    #############
-    # DISCRETIZER
-    #############
+    ##############
+    # DISCRETIZERS
+    ##############
     discretizer = fuzzyDiscretization(numSet=5, method='uniform')
     fuzzy_splits = discretizer.run(X_n, [True, True, True, True])
     print(fuzzy_splits)
+
+    discretizer = CrispMDLFilter(3, X_n, y_n, [True, True, True, True])
+    fuzzy_splits = discretizer.run()
+    #print(fuzzy_splits)

@@ -45,7 +45,7 @@ function run(self::FuzzyDiscretization, data::Matrix{Float64}, continous::Vector
         end
     end
 
-    return splits
+    return convert(Array{Array{Float64}, 1}, splits)
 end
 
 function createFuzzyDiscretizer(method::String="uniform", numSet::Int64=7)

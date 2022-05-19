@@ -49,9 +49,7 @@ class CrispMDLFilter(object):
         """
 
         self.candidateSplits = self.__findCandidateSplits(self.data)
-
         self.cutPoints = self.__findBestSplits(self.data)
-
         return self.cutPoints
 
     def __findCandidateSplits(self, data):
@@ -61,8 +59,8 @@ class CrispMDLFilter(object):
             In the simplest case, the candidate splits are the unique elements
             in the sorted feature array.
         """
-        self.N, self.M = data.shape
 
+        self.N, self.M = data.shape
         return [np.unique(np.sort(data[:, k])) for k in range(self.M)]
 
     def __findBestSplits(self, data):

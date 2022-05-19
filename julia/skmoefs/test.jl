@@ -7,6 +7,7 @@ include("fuzzysets/SingletonFuzzySet.jl")
 include("fuzzysets/TriangularFuzzySet.jl")
 include("fuzzysets/TrapezoidalFuzzySet.jl")
 include("discretization/discretizer_base.jl")
+include("discretization/discretizer_crisp.jl")
 
 ###########
 # FUZZYSETS
@@ -55,6 +56,7 @@ for fuzzy_trapezoidal in fuzzy_trapezoidals
     println(fuzzy_trapezoidal)
 end
 
+
 #########
 # TOOLBOX
 #########
@@ -76,10 +78,17 @@ println(typeof(outputs))
 X_n, y_n = normalize(X, y, attributes)
 println(X_n)
 println(y_n)
+println(typeof(X_n))
+println(typeof(y_n))
 
-#############
-# DISCRETIZER
-#############
+
+##############
+# DISCRETIZERS
+##############
 fuzzy_discretizer = createFuzzyDiscretizer("uniform", 5)
 fuzzy_splits = runFuzzyDiscretizer(fuzzy_discretizer, X_n, [true, true, true, true])
-print(fuzzy_splits)
+println(fuzzy_splits)
+
+crisp_discretizer = createCrispDiscretizer(3, X_n, y, [true, true, true, true])
+crisp_splits = runCrispDiscretizer(crisp_discretizer)
+#print(crisp_splits)
