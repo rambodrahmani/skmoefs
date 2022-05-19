@@ -1,7 +1,7 @@
 from __future__ import print_function
 
-import os.path
 import time
+import os.path
 from itertools import product
 from multiprocessing import Pool, freeze_support
 
@@ -10,8 +10,12 @@ import pandas as pd
 from platypus.algorithms import *
 from sklearn.model_selection import train_test_split
 
-from skmoefs.discretization.discretizer_base import fuzzyDiscretization
 from skmoefs.rcs import RCSInitializer, RCSVariator
+from skmoefs.fuzzysets.TriangularFuzzySet import TriangularFuzzySet
+from skmoefs.fuzzysets.SingletonFuzzySet import SingletonFuzzySet
+from skmoefs.fuzzysets.UniverseFuzzySet import UniverseFuzzySet
+from skmoefs.fuzzysets.TrapezoidalFuzzySet import TrapezoidalFuzzySet
+from skmoefs.discretization.discretizer_base import fuzzyDiscretization
 from skmoefs.toolbox import MPAES_RCS, load_dataset, normalize, is_object_present, store_object, load_object, milestones
 
 
@@ -70,7 +74,6 @@ def test_fit(dataset, alg, seed, nEvals=50000, store=True):
                                   initializer=initializer, moea_type=alg,
                                   objectives=['accuracy', 'trl'])
         mpaes_rcs_fdt.fit(Xtr, ytr, max_evals=nEvals)
-
 
     mpaes_rcs_fdt.show_pareto(Xte, yte)
 
@@ -166,8 +169,63 @@ if __name__ == "__main__":
     #test_crossval('appendicitis', 'moead', 1, nEvals=1000)
     #test_fit('iris', 'mpaes22', 2, nEvals=2000, store=False)
 
-    X, y, attributes, inputs, outputs = load_dataset('iris')
+    ###########
+    # FUZZYSETS
+    ###########
+
+    # Fuzzy Universe
+
+    # Fuzzy Singleton
+    fuzzy_singleton = SingletonFuzzySet.createFuzzySet(43.2, 3)
+    print(fuzzy_singleton)
+
+    fuzzy_singletons = SingletonFuzzySet.createFuzzySets([17.5, 24.3, 11.4, 23.1])
+    for fuzzy_singleton in fuzzy_singletons:
+        print(fuzzy_singleton)
+
+    # Fuzzy Triangular Set
+    triangular_fuzzy_params = [0.02777778, 0.27083333, 0.51388889, 0.75694444, 1.]
+    fuzzy_triangulars = TriangularFuzzySet.createFuzzySets(triangular_fuzzy_params, True)
+    for fuzzy_triangular in fuzzy_triangulars:
+        print(fuzzy_triangular)
+
+    # Fuzzy Trapezoidal Set
+    trapezoidal_fuzzy_params = [0.02777778, 0.27083333, 0.51388889]
+    trpzPrm = 0.56
+    fuzzy_trapezoidal = TrapezoidalFuzzySet.createFuzzySet(trapezoidal_fuzzy_params, trpzPrm)
+    print(fuzzy_trapezoidal)
+
+    trapezoidal_fuzzy_params = [0.02777778, 0.27083333, 0.51388889, 0.12345678]
+    trpzPrm = 0.56
+    fuzzy_trapezoidals = TrapezoidalFuzzySet.createFuzzySets(trapezoidal_fuzzy_params, trpzPrm, True)
+    for fuzzy_trapezoidal in fuzzy_trapezoidals:
+        print(fuzzy_trapezoidal)
+
+    #########
+    # TOOLBOX
+    #########
+
+    # load dataset
+    X, y, attributes, inputs, outputs = load_dataset("iris")
+    print(X)
+    print(y)
+    print(attributes)
+    print(inputs)
+    print(outputs)
+    print(type(X))
+    print(type(y))
+    print(type(attributes))
+    print(type(inputs))
+    print(type(outputs))
+
+    # normalize dataset
     X_n, y_n = normalize(X, y, attributes)
+    print(X_n)
+    print(y_n)
+
+    #############
+    # DISCRETIZER
+    #############
     discretizer = fuzzyDiscretization(numSet=5, method='uniform')
     fuzzy_splits = discretizer.run(X_n, [True, True, True, True])
     print(fuzzy_splits)

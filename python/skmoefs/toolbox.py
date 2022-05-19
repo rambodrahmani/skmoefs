@@ -73,7 +73,7 @@ def load_dataset(name):
     outputs = []
     X = []
     y = []
-    with open('../dataset/' + name + '.dat', 'r') as f:
+    with open('dataset/' + name + '.dat', 'r') as f:
         line = f.readline()
         while line:
             if line.startswith("@"):

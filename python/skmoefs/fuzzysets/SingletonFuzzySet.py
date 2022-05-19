@@ -4,7 +4,6 @@ import numpy as np
 
 
 class SingletonFuzzySet(FuzzySet):
-
     def __init__(self, value,index=None):
         self.value = value
         self.left = self.value

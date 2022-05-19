@@ -73,7 +73,7 @@ println(typeof(inputs))
 println(typeof(outputs))
 
 # normalize dataset
-X_n, y_n = normalize(X, y, attributes);
+X_n, y_n = normalize(X, y, attributes)
 println(X_n)
 println(y_n)
 

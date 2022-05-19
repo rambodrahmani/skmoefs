@@ -105,7 +105,7 @@ class TrapezoidalFuzzySet(FuzzySet):
         if index is not None:
             self.index = index
 
-    def toDebugString(self):
+    def __str__(self):
         return "a=%f, b=%f, c=%f" %(self.a, self.b, self.c)
 
     def isInSupport(self, xi):
