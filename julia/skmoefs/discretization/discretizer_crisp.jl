@@ -6,7 +6,7 @@
     - `numClasses::Int64`: number of classes in the dataset;
     - `data::Matrix{Float64}`: samples, shape (numSamples N, numFeatures M)
     - `labels::Array{Int64}`: class labels for each sample, shape (numSamples);
-    - `continous::Array{Bool}`: True for each continous feature, False for each
+    - `continuous::Array{Bool}`: True for each continuous feature, False for each
             categorical feature, shape (numFeatures);
     - `minNumExamples::Int64`: minimum number of examples per node;
     - `minGain::Float64`: minimum entropy gain per spit.
@@ -75,6 +75,8 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
     """
     Finds best splits among the data
     """
+
+    @info "Building histograms."
 
     # Define histogram vectors
     for k in range(1, self.M)
@@ -247,11 +249,11 @@ function entropy(counts::Array{Float64}, totalCount)
     return impurity
 end
 
-function createCrispDiscretizer(numClasses::Int64, data::Matrix{Float64}, labels::Array{Int64},
+function createCrispMDLFDiscretizer(numClasses::Int64, data::Matrix{Float64}, labels::Array{Int64},
     continuous::Array{Bool}, minNumExamples::Int64=2, minGain::Float64=0.01)
     return __init__(CrispMDLFilter(), numClasses, data, labels, continuous, minNumExamples, minGain)
 end
 
-function runCrispDiscretizer(self::CrispMDLFilter)
+function runCrispMDLFDiscretizer(self::CrispMDLFilter)
     return run(self)
 end

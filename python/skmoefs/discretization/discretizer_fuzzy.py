@@ -24,12 +24,10 @@ logger = logging.getLogger('FuzzyMDLFilter')
 logger.setLevel(logging.INFO)
 
 class FuzzyMDLFilter(object):
-
-    
-    def __init__(self, numClasses, data, label, continous, minImpurity=0.02,
-                 minGain=0.000001, threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1):
-
-        """Class for performing fuzzy discretization of the dataset.
+    def __init__(self, numClasses, data, label, continous, minImpurity=0.02, minGain=0.000001,
+        threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1):
+        """
+        Class for performing fuzzy discretization of the dataset.
         
         Attributes
         ----------
