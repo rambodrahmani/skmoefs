@@ -59,7 +59,6 @@ class FuzzyMDLFilter(object):
         self.trpzPrm = trpzPrm
         self.ftype=ftype
 
-        
     def run(self):
         """
         Parameters
@@ -84,8 +83,7 @@ class FuzzyMDLFilter(object):
             logger.warning('Empty cut points for all the features!')
         
         return self.cutPoints
-    
-        
+
     def findCandidateSplits(self, data):
         """Find candidate splits on the dataset.
         
@@ -105,10 +103,7 @@ class FuzzyMDLFilter(object):
             else:
                 vector.append(uniques)
         return vector
- 
-        
-        
-        
+
     def findBestSplits(self, data):
         """
         Find best splits among the data.
@@ -129,7 +124,7 @@ class FuzzyMDLFilter(object):
                     self.histograms[k][int(x*self.numClasses +self.label[ind])] +=1
         
         # Histograms built
-        
+
         splits = []
         for k in range(self.M):
             if self.continous[k]:
@@ -163,7 +158,7 @@ class FuzzyMDLFilter(object):
             else:
                 splits.append([])
         return splits
-        
+
     @staticmethod
     def traceback(splitList):
         """ Trace a list of splits back to its original order.
@@ -196,9 +191,7 @@ class FuzzyMDLFilter(object):
             listValues.append(available.pop(available.index(chosen)))
         
         return listValues
-        
-        
-        
+
     def simpleHist(self, e, fIndex):
         """ Simple binary histogram function.
         
@@ -217,9 +210,7 @@ class FuzzyMDLFilter(object):
         if (ind < 0):
             return -ind-1
         return ind
-        
-        
-        
+
     def calculateCutPoints(self, fIndex, first, lastPlusOne, depth=0):
         """ Main iterator
         """
@@ -297,7 +288,7 @@ class FuzzyMDLFilter(object):
             indexCutPoints[len(left)+1+k] = right[k]
             
         return indexCutPoints
-                    
+
     def calculateCutPointsIndex(self, fIndex, first, lastPlusOne, depth=0, baseIndex='T'):
         """ Main iterator
         """
@@ -325,7 +316,6 @@ class FuzzyMDLFilter(object):
         currSplitIndex = first
         currClassIndex = 0
 
-        
         while(currSplitIndex < lastPlusOne):
             
             if (leftNumInstances > self.minNumExamples and (s-leftNumInstances) > self.minNumExamples):
@@ -334,23 +324,19 @@ class FuzzyMDLFilter(object):
                                                             currSplitIndex/self.numClasses,
                                                             self.numClasses, first, lastPlusOne)
                 currentEntropy = calculateWeightedFuzzyImpurity(s0s1s2, s, entropy)
-                
 
                 if currentEntropy < bestEntropy:
                     bestEntropy = currentEntropy
                     bestIndex = currSplitIndex
                     bestS0S1S2 = s0s1s2.copy()
 
-                    
             for currClassIndex in range(0,self.numClasses):
                 leftNumInstances += self.histograms[fIndex][currSplitIndex+currClassIndex]
             
             currSplitIndex += self.numClasses
-            
 
         gain = wPriorFuzzyEntropy - bestEntropy
 
-        
         if depth<5 and self.ignore:
             if (gain < self.minGain):
                 logger.debug("Feature %d index %d, gain %f REJECTED" %(fIndex, bestIndex, gain))
@@ -365,10 +351,9 @@ class FuzzyMDLFilter(object):
         
         left = self.calculateCutPointsIndex(fIndex, first, bestIndex,depth=depth+1,baseIndex = baseIndex+'.l')
         right = self.calculateCutPointsIndex(fIndex, bestIndex, lastPlusOne,depth=depth+1,baseIndex = baseIndex+'.r')
-        
-        
+
         return left +[(gain*s/self.data.shape[0],bestIndex,baseIndex)] + right
-        
+
     def mdlStopCondition(self, gain, priorEntropy, bestCounts, impurity, bestPartition):
         """mdlStopCondition evaluation.
         
@@ -405,8 +390,8 @@ class FuzzyMDLFilter(object):
         #delta = np.log2(np.power(3,totalClassCounts)-2) - totalClassCounts * priorEntropy + \
         #                bestPartition[0]*bestPartition[1]+bestPartition[2]*bestPartition[3]
         return gain > ((np.log2(totalCounts-1) + delta) / (totalCounts))
-        
-        
+
+
 @jit        
 def entropy(counts, totalCount):
     """Evaluate entropy.
@@ -427,6 +412,7 @@ def entropy(counts, totalCount):
         classIndex += 1
     
     return impurity
+
 
 @jit    
 def calculateNewTriangularCardinality(hist, candidateSplits, indexOfCandidateSplit, numClasses, 
@@ -478,7 +464,8 @@ def calculateNewTriangularCardinality(hist, candidateSplits, indexOfCandidateSpl
             s0s1s2[2][j] += hist[i*numClasses+j] * uSi
     
     return s0s1s2
-    
+
+
 @jit    
 def calculateWeightedFuzzyImpurity(partition, partitionCardinality, impurity):
     """Perform weighted fuzzy impurity evaluation on a fuzzy partition.
@@ -503,7 +490,8 @@ def calculateWeightedFuzzyImpurity(partition, partitionCardinality, impurity):
     
     return summedImp
 
-@jit        
+
+@jit
 def evalCounts(hist, numClasses, first, lastPlusOne):
     """ Number of counts.
     
@@ -538,10 +526,12 @@ def calculatePriorTriangularCardinality(hist, candidateSplits, numClasses, first
 
     return s0s1
 
+
 #--------CORRADO--------------------------------------------------------------
 def calculateNewTrapezoidalCardinality(hist, candidateSplits, indexOfCandidateSplit, numClasses, 
                                       first, lastPlusOne, trpzPrm=0.2):
-    """Partition cardinality for a 3 Trapezoidal fuzzy set partition.
+    """
+    Partition cardinality for a 3 Trapezoidal fuzzy set partition.
     
     Parameters
     ----------
@@ -606,11 +596,11 @@ def calculateNewTrapezoidalCardinality(hist, candidateSplits, indexOfCandidateSp
     return s0s1s2
 #------------------------------------------------
 
-def calculatePriorTrapezoidalCardinality(hist, candidateSplits, numClasses, first, lastPlusOne, trpzPrm=0.2):
-    """Prior trapezoidal cardinality.
-    """
 
-    
+def calculatePriorTrapezoidalCardinality(hist, candidateSplits, numClasses, first, lastPlusOne, trpzPrm=0.2):
+    """
+    Prior trapezoidal cardinality.
+    """
     s0s1 = np.zeros((2, numClasses))
     minimum = candidateSplits[first // numClasses]
     diff = candidateSplits[lastPlusOne // numClasses - 1] - minimum
@@ -635,7 +625,7 @@ def calculatePriorTrapezoidalCardinality(hist, candidateSplits, numClasses, firs
 
 # MULTIPROCESSING STUFF
 def parallel_FuzzyMDLFilter(numClasses, data, label, continous, minImpurity=0.02,
-                 minGain=0.000001, threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1):
+        minGain=0.000001, threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1):
     try:
         num_cores = os.cpu_count()
     except:
@@ -665,9 +655,9 @@ def parallel_FuzzyMDLFilter(numClasses, data, label, continous, minImpurity=0.02
             ordered_results += results[key]
         return ordered_results
 
+
 def FuzzyMDLFilter_run(index,numClasses, data, label, continous, minImpurity=0.02,
-                 minGain=0.000001, threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1):
+        minGain=0.000001, threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1):
 
     return index,FuzzyMDLFilter(numClasses, data, label, continous, minImpurity=0.02,
-                 minGain=0.000001, threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1).run()
-
+            minGain=0.000001, threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1).run()
