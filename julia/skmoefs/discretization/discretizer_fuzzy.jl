@@ -10,7 +10,7 @@
             categorical feature, shape (numFeatures);
     - `minNumExamples::Int64`: minimum number of examples per node;
     - `minGain::Float64`: minimum entropy gain per spit;
-    - `num_bins::Int64`: number of bins for the discretization step, default=500.
+    - `numBins::Int64`: number of bins for the discretization step, default=500.
 """
 
 mutable struct FuzzyMDLFilter
@@ -21,20 +21,25 @@ mutable struct FuzzyMDLFilter
     minNumExamples::Int64
     minGain::Float64
     threshold::Int64
-    num_bins::Int64
+    numBins::Int64
     ignore::Bool
     ftype::String
     trpzPrm::Float64
+    candidateSplits::Array{Array{Float64}, 1}
+    cutPoints::Array{Array{Float64}, 1}
+    N::Int64
+    M::Int64
 end
 
 FuzzyMDLFilter() = FuzzyMDLFilter(0, Array{Float64, 2}(undef, 1, 1),
                                 Array{Int64, 1}(undef, 1),
                                 Array{Bool, 1}(undef, 1),
-                                0, 0.0, 0, 0, true, "", 0.0)
+                                0, 0.0, 0, 0, true, "", 0.0,
+                                [], [], 0, 0)
 
 function __init__(self::FuzzyMDLFilter, numClasses::Int64, data::Matrix{Float64},
     labels::Array{Int64}, continuous::Array{Bool}, minImpurity::Float64=0.02,
-    minGain::Float64=0.000001, threshold::Int64=0, num_bins::Int64=500,
+    minGain::Float64=0.000001, threshold::Int64=0, numBins::Int64=500,
     ignore::Bool=true, ftype::String="triangular", trpzPrm::Float64=0.1)
     
     self.numClasses = numClasses
@@ -44,7 +49,7 @@ function __init__(self::FuzzyMDLFilter, numClasses::Int64, data::Matrix{Float64}
     self.minNumExamples = Int64(minImpurity*size(data)[1])
     self.minGain = minGain
     self.threshold = threshold
-    self.num_bins = num_bins
+    self.numBins = numBins
     self.ignore = ignore
     self.trpzPrm = trpzPrm
     self.ftype = ftype
@@ -76,6 +81,29 @@ function run(self::FuzzyMDLFilter)
     #end
 
     return self.cutPoints
+end
+
+function findCandidateSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
+    """
+    Finds candidate splits on the dataset.
+
+    In the simplest case, the candidate splits are the unique elements in the
+    sorted feature array.
+    """
+    self.N, self.M = size(data)
+    numBins = self.numBins
+
+    vector= []
+    for k in range(1, self.M)
+        uniques = np.unique(np.sort(data[:,k]))
+        if len(uniques) > numBins
+            vector.append(uniques[np.linspace(0,len(uniques)-1,num_bins, dtype=int)])
+        else
+            vector.append(uniques)
+        end
+    end
+
+    return vector
 end
 
 function createFuzzyMDLDiscretizer(numClasses::Int64, data::Matrix{Float64},
