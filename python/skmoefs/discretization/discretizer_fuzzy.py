@@ -267,18 +267,17 @@ class FuzzyMDLFilter(object):
                 leftNumInstances += self.histograms[fIndex][currSplitIndex+currClassIndex]
             
             currSplitIndex += self.numClasses
-            
-        
+
         gain = wPriorFuzzyEntropy - bestEntropy
         
         if (gain < self.minGain or not self.mdlStopCondition(gain, wPriorFuzzyEntropy, bestS0S1S2, entropy,None)):# (bestwEntroA, besttCountA, bestwEntroB, besttCountB))):
             logger.debug("Feature %d index %d, gain %f REJECTED" %(fIndex, bestIndex, gain))
             return np.array([])
         logger.debug("Feature %d index %d, gain %f ACCEPTED" %(fIndex, bestIndex, gain))
-    
+
         left = self.calculateCutPoints(fIndex, first, bestIndex,depth=depth+1)
         right = self.calculateCutPoints(fIndex, bestIndex, lastPlusOne,depth=depth+1)
-        
+
         indexCutPoints = np.zeros((len(left)+ 1 + len(right)))
 
         for k in range(len(left)):
