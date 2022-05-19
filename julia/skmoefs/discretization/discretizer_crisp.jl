@@ -25,7 +25,7 @@ mutable struct CrispMDLFilter
     cutPoints::Array{Array{Float64}, 1}
     N::Int64
     M::Int64
-    histograms::Array{Array{Float64}, 1}
+    histograms::Array{Array{Int64}, 1}
 end
 
 CrispMDLFilter() = CrispMDLFilter(0, Array{Float64, 2}(undef, 1, 1),
@@ -86,15 +86,33 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
         # Iterate among features
         if self.continuous[k]
             for ind in range(1, self.N)
-                x = self.__simpleHist(data[ind][k], k)
-                self.histograms[k][int(x * self.numClasses + self.label[ind])] += 1
+                x = __simpleHist(self, data[ind,k], k)
+                self.histograms[k][Int64(x * self.numClasses + self.labels[ind])-2] += 1
             end
         end
     end
+    # Histograms built
 
-    println(self.histograms)
+    splits = []
+    for k in range(1, self.M)
+        indexCutPoints = __calculateCutPoints(self, k, 0, length(self.histograms[k]) - self.numClasses)
+        if length(indexCutPoints != 0)
+            cutPoints = zeros(length(indexCutPoints))
 
-    return splits
+            for i in range(1, length(indexCutPoints))
+                cSplitIdx = Int64(indexCutPoints[i] / self.numClasses)
+                if (cSplitIdx > 0 && cSplitIdx < length(self.candidateSplits[k]))
+                    cutPoints[i] = self.candidateSplits[k][cSplitIdx]
+                end
+            end
+
+            append!(splits, cutPoints)
+        else
+            append!(splits, [])
+        end
+    end
+
+    return convert(Array{Array{Float64}, 1}, splits)
 end
 
 function __simpleHist(self::CrispMDLFilter, e::Float64, fIndex::Int64)
@@ -115,6 +133,118 @@ function __simpleHist(self::CrispMDLFilter, e::Float64, fIndex::Int64)
     end
 
     return ind
+end
+
+function __calculateCutPoints(self::CrispMDLFilter, fIndex::Int64, first::Int64, lastPlusOne::Int64)
+    """
+    Main iterator.
+    """
+
+    counts = zeros(2, self.numClasses)
+    counts[1, :] = evalCounts(self.histograms[fIndex], self.numClasses, first, lastPlusOne)
+    totalCounts = sum(counts[1, :])
+
+    if totalCounts < self.minNumExamples
+        return []
+    end
+
+    priorCounts = copy(counts[1, :])
+    priorEntropy = entropy(priorCounts, totalCounts)
+
+    bestEntropy = priorEntropy
+
+    bestCounts = zeros(2, self.numClasses)
+    bestIndex = -1
+    leftNumInstances = 0
+    currSplitIndex = first
+
+    while (currSplitIndex < lastPlusOne)
+        if (leftNumInstances > self.minNumExamples && (totalCounts - leftNumInstances) > self.minNumExamples)
+            leftImpurity = entropy(counts[1, :], leftNumInstances)
+            rightImpurity = entropy(counts[2, :], totalCounts - leftNumInstances)
+            leftWeight = float(leftNumInstances) / totalCounts
+            rightWeight = float(totalCounts - leftNumInstances) / totalCounts
+            currentEntropy = leftWeight * leftImpurity + rightWeight * rightImpurity
+
+            if currentEntropy < bestEntropy
+                bestEntropy = currentEntropy
+                bestIndex = currSplitIndex
+                bestCounts = copy(counts)
+            end
+        end
+
+        for currClassIndex in range(1, self.numClasses)
+            leftNumInstances += self.histograms[fIndex][currSplitIndex + currClassIndex]
+            counts[1, currClassIndex] += self.histograms[fIndex][currSplitIndex + currClassIndex]
+            counts[2, currClassIndex] -= self.histograms[fIndex][currSplitIndex + currClassIndex]
+        end
+
+        currSplitIndex += self.numClasses
+    end
+
+    gain = priorEntropy - bestEntropy
+    if (gain < self.minGain || !self.__mdlStopCondition(gain, priorEntropy, bestCounts, entropy))
+        logger.debug("Feature %d index %d, gain %f REJECTED" % (fIndex, bestIndex, gain))
+        return np.array([])
+    end
+    logger.debug("Feature %d index %d, gain %f ACCEPTED" % (fIndex, bestIndex, gain))
+
+    left = self.__calculateCutPoints(fIndex, first, bestIndex)
+    right = self.__calculateCutPoints(fIndex, bestIndex, lastPlusOne)
+
+    indexCutPoints = np.zeros((length(left) + 1 + length(right)))
+
+    for k in range(length(left))
+        indexCutPoints[k] = left[k]
+    end
+    indexCutPoints[length(left)] = bestIndex
+    for k in range(length(right))
+        indexCutPoints[length(left) + 1 + k] = right[k]
+    end
+
+    return indexCutPoints
+end
+
+function evalCounts(hist::Array{Int64}, numClasses::Int64, first::Int64, lastPlusOne::Int64)
+    """
+    Number of counts.
+    """
+
+    counts = zeros(numClasses)
+    index = first
+    while (index < lastPlusOne)
+        for k in range(1, length(counts))
+            counts[k] += hist[index + k]
+        end
+        index += numClasses
+    end
+    return counts
+end
+
+function entropy(counts::Array{Float64}, totalCount)
+    """
+    Evaluate entropy.
+    """
+
+    if totalCount == 0
+        return 0
+    end
+
+    numClasses = length(counts)
+    impurity = 0.0
+    classIndex = 1
+    while (classIndex <= numClasses)
+        classCount = counts[classIndex]
+        if classCount != 0
+            freq = classCount / totalCount
+            if freq != 0
+                impurity -= freq * log2(freq)
+            end
+        end
+        classIndex += 1
+    end
+
+    return impurity
 end
 
 function createCrispDiscretizer(numClasses::Int64, data::Matrix{Float64}, labels::Array{Int64},

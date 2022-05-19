@@ -81,7 +81,6 @@ class CrispMDLFilter(object):
                 for ind in range(self.N):
                     x = self.__simpleHist(data[ind][k], k)
                     self.histograms[k][int(x * self.numClasses + self.label[ind])] += 1
-        print(self.histograms)
         # Histograms built
 
         splits = []
@@ -98,6 +97,7 @@ class CrispMDLFilter(object):
                 splits.append(cutPoints)
             else:
                 splits.append([])
+
         return splits
 
     def __simpleHist(self, e, fIndex):
