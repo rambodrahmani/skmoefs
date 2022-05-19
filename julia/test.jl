@@ -2,12 +2,12 @@
     Developer Harness Test
 """
 
-include("toolbox.jl")
-include("fuzzysets/SingletonFuzzySet.jl")
-include("fuzzysets/TriangularFuzzySet.jl")
-include("fuzzysets/TrapezoidalFuzzySet.jl")
-include("discretization/discretizer_base.jl")
-include("discretization/discretizer_crisp.jl")
+include("skmoefs/toolbox.jl")
+include("skmoefs/fuzzysets/SingletonFuzzySet.jl")
+include("skmoefs/fuzzysets/TriangularFuzzySet.jl")
+include("skmoefs/fuzzysets/TrapezoidalFuzzySet.jl")
+include("skmoefs/discretization/discretizer_base.jl")
+include("skmoefs/discretization/discretizer_crisp.jl")
 
 ###########
 # FUZZYSETS

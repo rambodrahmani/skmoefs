@@ -2,7 +2,7 @@
     Examples of Usage of SK-MOEFS.
 """
 
-include("toolbox.jl")
+include("skmoefs/toolbox.jl")
 using Random
 using ScikitLearn.CrossValidation: train_test_split
 
