@@ -30,13 +30,14 @@ mutable struct FuzzyMDLFilter
     N::Int64
     M::Int64
     initEntr::Array{Float64}
+    histograms::Array{Array{Int64}, 1}
 end
 
 FuzzyMDLFilter() = FuzzyMDLFilter(0, Array{Float64, 2}(undef, 1, 1),
                                 Array{Int64, 1}(undef, 1),
                                 Array{Bool, 1}(undef, 1),
                                 0, 0.0, 0, 0, true, "", 0.0,
-                                [], [], 0, 0, [])
+                                [], [], 0, 0, [], [])
 
 function __init__(self::FuzzyMDLFilter, numClasses::Int64, data::Matrix{Float64},
     labels::Array{Int64}, continuous::Array{Bool}, minImpurity::Float64=0.02,
@@ -76,7 +77,7 @@ function run(self::FuzzyMDLFilter)
 
     self.candidateSplits = findCandidateSplits(self, self.data)
     self.initEntr = zeros(size(self.data)[2])
-    self.cutPoints = findBestSplits(self.data)
+    self.cutPoints = findBestSplits(self, self.data)
     #if sum([len(k) for k in self.cutPoints]) == 0
         #logger.warning('Empty cut points for all the features!')
     #end
@@ -106,6 +107,91 @@ function findCandidateSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
     end
 
     return vector
+end
+
+function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
+    """
+    Find best splits among the data.
+    """
+
+    @info "Building histograms."
+
+    # Define histogram vectors
+    for k in range(1, self.M)
+        push!(self.histograms, zeros((length(self.candidateSplits[k]) + 1) * self.numClasses))
+    end
+
+    # Iterate among features
+    for k in range(1, self.M)
+        # Iterate among features
+        if self.continous[k]
+            for ind in range(1, self.N)
+                x = simpleHist(self, data[ind][k], k)
+                self.histograms[k][Int64(x * self.numClasses + self.label[ind])-2] += 1
+            end
+        end
+    end
+
+    # Histograms built
+
+    splits = []
+    for k in range(1, self.M)
+        if self.continous[k]
+            if self.threshold == 0
+                indexCutPoints = calculateCutPoints(k, 0, length(self.histograms[k]) - self.numClasses)
+            else
+                indexCutPointsIndex = self.calculateCutPointsIndex(k, 0, length(self.histograms[k]) - self.numClasses)
+                if length(indexCutPointsIndex) != 0
+                    depth, points, _ =  zip(*self.traceback(indexCutPointsIndex))
+                    indexCutPoints = sorted(points[:self.threshold])
+                else
+                    indexCutPoints = []
+                end
+            end
+                
+            if length(indexCutPoints) != 0
+                cutPoints = np.zeros(length(indexCutPoints) + 2)
+                cutPoints[0] = self.candidateSplits[k][0]
+                
+                for i in range(1, length(indexCutPoints))
+                    cSplitIdx = indexCutPoints[i] /self.numClasses
+                    if (cSplitIdx > 0 && cSplitIdx < length(self.candidateSplits[k]))
+                        cutPoints[i+1] = self.candidateSplits[k][int(cSplitIdx)]
+                    end
+                end
+
+                cutPoints[-1] = self.candidateSplits[k][-1]
+            
+                splits.append(cutPoints)
+            else
+                splits.append([])
+            end
+        else
+            splits.append([])
+        end
+    end
+
+    return splits
+end
+
+function simpleHist(self::FuzzyMDLFilter, e::Float64, fIndex::Int64)
+    """
+    Simple binary histogram function.
+
+    # Arguments
+    - `e::Float64`: point to locate in the histogram
+    - `fIndex::Int64`: feature index
+
+    # Returns
+    - Index of e in the histogram of feature fIndex.
+    """
+
+    ind = BisectPy.bisect_left(self.candidateSplits[fIndex], e)
+    if ind < 0
+        return -ind - 1
+    end
+
+    return ind
 end
 
 function createFuzzyMDLDiscretizer(numClasses::Int64, data::Matrix{Float64},

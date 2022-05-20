@@ -65,8 +65,8 @@ class CrispMDLFilter(object):
         return [np.unique(np.sort(data[:, k])) for k in range(self.M)]
 
     def __findBestSplits(self, data):
-        """Find best splits among the data.
-
+        """
+        Find best splits among the data.
         """
 
         # Define histogram vectors

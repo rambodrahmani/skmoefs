@@ -107,7 +107,7 @@ class FuzzyMDLFilter(object):
         """
         Find best splits among the data.
         """
-        
+
         # Define histogram vectors
         logger.info("BUILDING HISTOGRAMS...")
         self.histograms = []
@@ -129,7 +129,7 @@ class FuzzyMDLFilter(object):
             if self.continous[k]:
                 if self.threshold == 0:
                     indexCutPoints = self.calculateCutPoints(k, 0, len(self.histograms[k])-self.numClasses)
-                
+
                 else:
                     indexCutPointsIndex = self.calculateCutPointsIndex(k, 0, len(self.histograms[k])-self.numClasses)
                     if len(indexCutPointsIndex) != 0:
@@ -158,14 +158,15 @@ class FuzzyMDLFilter(object):
 
     @staticmethod
     def traceback(splitList):
-        """ Trace a list of splits back to its original order.
+        """
+        Trace a list of splits back to its original order.
         
         Given a list of split points, the gain value, and its position in the
         splitting "chain". Given by the regular expression T(.[lr]){0,}
         A split in position T.x..[lr] can exist only if exist the corresponding
         father split.
-        
         """
+
         if len(splitList) == 0:
             return []
         base = 'T'

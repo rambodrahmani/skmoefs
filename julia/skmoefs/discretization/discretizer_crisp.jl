@@ -80,7 +80,7 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
 
     # Define histogram vectors
     for k in range(1, self.M)
-        push!(self.histograms, zeros(((length(self.candidateSplits[k]) + 1) * self.numClasses)))
+        push!(self.histograms, zeros((length(self.candidateSplits[k]) + 1) * self.numClasses))
     end
 
     # Iterate among features
@@ -93,6 +93,7 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
             end
         end
     end
+
     # Histograms built
 
     splits = []
