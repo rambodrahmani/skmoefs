@@ -4,7 +4,7 @@ import bisect
 import logging
 
 logger = logging.getLogger('CrispMDLFilter')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 class CrispMDLFilter(object):
@@ -86,7 +86,7 @@ class CrispMDLFilter(object):
         splits = []
         for k in range(self.M):
             indexCutPoints = self.__calculateCutPoints(k, 0, len(self.histograms[k]) - self.numClasses)
-            if len(indexCutPoints != 0):
+            if len(indexCutPoints) != 0:
                 cutPoints = np.zeros(len(indexCutPoints))
 
                 for i in range(len(indexCutPoints)):
@@ -141,7 +141,6 @@ class CrispMDLFilter(object):
         currSplitIndex = first
 
         while (currSplitIndex < lastPlusOne):
-
             if (leftNumInstances > self.minNumExamples and (totalCounts - leftNumInstances) > self.minNumExamples):
                 leftImpurity = entropy(counts[0, :], leftNumInstances)
                 rightImpurity = entropy(counts[1, :], totalCounts - leftNumInstances)

@@ -98,7 +98,7 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
     splits = []
     for k in range(1, self.M)
         indexCutPoints = __calculateCutPoints(self, k, 0, length(self.histograms[k]) - self.numClasses)
-        if length(indexCutPoints != 0)
+        if length(indexCutPoints) != 0
             cutPoints = zeros(length(indexCutPoints))
 
             for i in range(1, length(indexCutPoints))
@@ -108,7 +108,7 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
                 end
             end
 
-            append!(splits, cutPoints)
+            append!(splits, [cutPoints])
         else
             append!(splits, [])
         end
@@ -143,14 +143,14 @@ function __calculateCutPoints(self::CrispMDLFilter, fIndex::Int64, first::Int64,
     """
 
     counts = zeros(2, self.numClasses)
-    counts[1, :] = evalCounts(self.histograms[fIndex], self.numClasses, first, lastPlusOne)
-    totalCounts = sum(counts[1, :])
+    counts[2, :] = evalCounts(self.histograms[fIndex], self.numClasses, first, lastPlusOne)
+    totalCounts = sum(counts[2, :])
 
     if totalCounts < self.minNumExamples
         return []
     end
 
-    priorCounts = copy(counts[1, :])
+    priorCounts = copy(counts[2, :])
     priorEntropy = entropy(priorCounts, totalCounts)
 
     bestEntropy = priorEntropy
@@ -185,9 +185,9 @@ function __calculateCutPoints(self::CrispMDLFilter, fIndex::Int64, first::Int64,
     end
 
     gain = priorEntropy - bestEntropy
-    if (gain < self.minGain || !self.__mdlStopCondition(gain, priorEntropy, bestCounts, entropy))
+    if (gain < self.minGain || !__mdlStopCondition(gain, priorEntropy, bestCounts, entropy))
         @info "Feature $(fIndex) index $(bestIndex), gain $(gain) REJECTED"
-        return np.array([])
+        return []
     end
     @info "Feature $(fIndex) index $(bestIndex), gain $(gain) ACCEPTED"
 
@@ -199,7 +199,7 @@ function __calculateCutPoints(self::CrispMDLFilter, fIndex::Int64, first::Int64,
     for k in range(1, length(left))
         indexCutPoints[k] = left[k]
     end
-    indexCutPoints[length(left)] = bestIndex
+    indexCutPoints[length(left)+1] = bestIndex
     for k in range(1, length(right))
         indexCutPoints[length(left) + 1 + k] = right[k]
     end
@@ -247,6 +247,43 @@ function entropy(counts::Array{Float64}, totalCount)
     end
 
     return impurity
+end
+
+function __mdlStopCondition(gain::Float64, priorEntropy::Float64,
+        bestCounts::Matrix{Float64}, impurity::Function)
+    """
+    MDL Stop Condition evaluation.
+
+    # Arguments
+    - `gain::Float64`: entropy gain for the best split;
+    - `priorEntropy::Float64`: entropy for the partition prior to the split;
+    - `bestCounts::Matrix{Float64}`: counts for the best split, divided by classes,
+        shape(numPartitions, numClasses)
+    - `impurity::Function`: impurity function to evaluate
+    """
+
+    leftClassCounts = 0
+    rightClassCounts = 0
+    totalClassCounts = 0
+    for i in range(1, length(bestCounts[1, :]))
+        if bestCounts[1, i] > 0.0
+            leftClassCounts += 1
+            totalClassCounts += 1
+            if bestCounts[2, i] > 0.0
+                rightClassCounts += 1
+            end
+        elseif bestCounts[2, i] > 0
+            rightClassCounts += 1
+            totalClassCounts += 1
+        end
+    end
+
+    totalCounts = sum(bestCounts)
+    delta = log2(3^totalClassCounts - 2) - 
+            totalClassCounts * priorEntropy + 
+            leftClassCounts * impurity(bestCounts[1, :], sum(bestCounts[1, :])) + 
+            rightClassCounts * impurity(bestCounts[2, :], sum(bestCounts[2, :]))
+    return gain > ((log2(totalCounts - 1) + delta) / (totalCounts))
 end
 
 function createCrispMDLFDiscretizer(numClasses::Int64, data::Matrix{Float64}, labels::Array{Int64},
