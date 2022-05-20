@@ -94,6 +94,6 @@ crisp_mdlf_discretizer = createCrispMDLFDiscretizer(3, X_n, y, [true, true, true
 crisp_mdlf_splits = runCrispMDLFDiscretizer(crisp_mdlf_discretizer)
 print(crisp_mdlf_splits)
 
-#fuzzy_mdlf_discretizer = createFuzzyMDLDiscretizer(3, X_n, y, [true, true, true, true])
-#fuzzy_mdlf_splits = runFuzzyMDLDiscretizer(fuzzy_mdlf_discretizer)
+fuzzy_mdlf_discretizer = createFuzzyMDLDiscretizer(3, X_n, y, [true, true, true, true])
+fuzzy_mdlf_splits = runFuzzyMDLDiscretizer(fuzzy_mdlf_discretizer)
 #print(fuzzy_mdlf_splits)

@@ -236,6 +236,6 @@ if __name__ == "__main__":
     crisp_mdlf_splits = crisp_mdlf_discretizer.run()
     print(crisp_mdlf_splits)
 
-    #fuzzy_mdlf_discretizer = FuzzyMDLFilter(3, X_n, y, [True, True, True, True])
-    #fuzzy_mdlf_splits = fuzzy_mdlf_discretizer.run()
+    fuzzy_mdlf_discretizer = FuzzyMDLFilter(3, X_n, y, [True, True, True, True])
+    fuzzy_mdlf_splits = fuzzy_mdlf_discretizer.run()
     #print(fuzzy_mdlf_splits)

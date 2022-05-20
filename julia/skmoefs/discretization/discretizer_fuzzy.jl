@@ -29,13 +29,14 @@ mutable struct FuzzyMDLFilter
     cutPoints::Array{Array{Float64}, 1}
     N::Int64
     M::Int64
+    initEntr::Array{Float64}
 end
 
 FuzzyMDLFilter() = FuzzyMDLFilter(0, Array{Float64, 2}(undef, 1, 1),
                                 Array{Int64, 1}(undef, 1),
                                 Array{Bool, 1}(undef, 1),
                                 0, 0.0, 0, 0, true, "", 0.0,
-                                [], [], 0, 0)
+                                [], [], 0, 0, [])
 
 function __init__(self::FuzzyMDLFilter, numClasses::Int64, data::Matrix{Float64},
     labels::Array{Int64}, continuous::Array{Bool}, minImpurity::Float64=0.02,
@@ -75,7 +76,7 @@ function run(self::FuzzyMDLFilter)
 
     self.candidateSplits = findCandidateSplits(self, self.data)
     self.initEntr = zeros(size(self.data)[2])
-    #self.cutPoints = findBestSplits(self.data)
+    self.cutPoints = findBestSplits(self.data)
     #if sum([len(k) for k in self.cutPoints]) == 0
         #logger.warning('Empty cut points for all the features!')
     #end
@@ -97,10 +98,10 @@ function findCandidateSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
     vector = []
     for k in range(1, self.M)
         uniques = unique!(sort(data[:,k]))
-        if len(uniques) > numBins
-            vector.append(uniques[np.linspace(0,len(uniques)-1,num_bins, dtype=int)])
+        if length(uniques) > numBins
+            append!(vector, uniques[LinRange(0, length(uniques)-1, num_bins)])
         else
-            vector.append(uniques)
+            append!(vector, [uniques])
         end
     end
 

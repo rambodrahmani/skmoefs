@@ -128,12 +128,10 @@ class FuzzyMDLFilter(object):
         for k in range(self.M):
             if self.continous[k]:
                 if self.threshold == 0:
-                    indexCutPoints = self.calculateCutPoints(k, 0 ,
-                                                             len(self.histograms[k])-self.numClasses)
+                    indexCutPoints = self.calculateCutPoints(k, 0, len(self.histograms[k])-self.numClasses)
                 
                 else:
-                    indexCutPointsIndex = self.calculateCutPointsIndex(k, 0 ,
-                                                                       len(self.histograms[k])-self.numClasses)
+                    indexCutPointsIndex = self.calculateCutPointsIndex(k, 0, len(self.histograms[k])-self.numClasses)
                     if len(indexCutPointsIndex) != 0:
                         depth,points,_ =  zip(*self.traceback(indexCutPointsIndex))
                         indexCutPoints = sorted(points[:self.threshold])
@@ -213,20 +211,18 @@ class FuzzyMDLFilter(object):
     def calculateCutPoints(self, fIndex, first, lastPlusOne, depth=0):
         """ Main iterator
         """
-            
+
         s = np.sum(evalCounts(self.histograms[fIndex], self.numClasses, first, lastPlusOne)) 
         # Evaluating prior cardinality
         if self.ftype=="trapezoidal":
-            
             s0s1 = calculatePriorTrapezoidalCardinality(self.histograms[fIndex],
                                                    self.candidateSplits[fIndex],
                                                     self.numClasses, first, lastPlusOne,self.trpzPrm)
         elif self.ftype=="triangular":
-            
             s0s1 = calculatePriorTriangularCardinality(self.histograms[fIndex],
                                                    self.candidateSplits[fIndex],
                                                     self.numClasses, first, lastPlusOne)
-    
+
         wPriorFuzzyEntropy = calculateWeightedFuzzyImpurity(s0s1,s, entropy)
         s0s1s2 = np.zeros((3, self.numClasses))
         bestEntropy = wPriorFuzzyEntropy
@@ -238,37 +234,32 @@ class FuzzyMDLFilter(object):
         currClassIndex = 0
 
         while(currSplitIndex < lastPlusOne):
-            
             if (leftNumInstances > self.minNumExamples and (s-leftNumInstances) > self.minNumExamples):
                 if self.ftype=="trapezoidal":
-                    
                     s0s1s2 = calculateNewTrapezoidalCardinality(self.histograms[fIndex], 
                                                                  self.candidateSplits[fIndex],
                                                                  currSplitIndex/self.numClasses,
                                                                  self.numClasses, first, lastPlusOne, self.trpzPrm)
                 elif self.ftype=="triangular":
-                    
                     s0s1s2 = calculateNewTriangularCardinality(self.histograms[fIndex], 
                                                                self.candidateSplits[fIndex],
                                                                 currSplitIndex/self.numClasses,
                                                                 self.numClasses, first, lastPlusOne)
                 
                 currentEntropy = calculateWeightedFuzzyImpurity(s0s1s2, s, entropy)
-                
 
                 if currentEntropy < bestEntropy:
                     bestEntropy = currentEntropy
                     bestIndex = currSplitIndex
                     bestS0S1S2 = s0s1s2.copy()
 
-                    
             for currClassIndex in range(0,self.numClasses):
                 leftNumInstances += self.histograms[fIndex][currSplitIndex+currClassIndex]
-            
+
             currSplitIndex += self.numClasses
 
         gain = wPriorFuzzyEntropy - bestEntropy
-        
+
         if (gain < self.minGain or not self.mdlStopCondition(gain, wPriorFuzzyEntropy, bestS0S1S2, entropy,None)):# (bestwEntroA, besttCountA, bestwEntroB, besttCountB))):
             logger.debug("Feature %d index %d, gain %f REJECTED" %(fIndex, bestIndex, gain))
             return np.array([])
@@ -284,13 +275,13 @@ class FuzzyMDLFilter(object):
         indexCutPoints[len(left)] = bestIndex
         for k in range(len(right)):
             indexCutPoints[len(left)+1+k] = right[k]
-            
+
         return indexCutPoints
 
     def calculateCutPointsIndex(self, fIndex, first, lastPlusOne, depth=0, baseIndex='T'):
         """ Main iterator
         """
-        
+
         s = sum(evalCounts(self.histograms[fIndex], self.numClasses, first, lastPlusOne)) 
         # Evaluating prior cardinality
         if self.ftype=="trapezoidal":
@@ -315,7 +306,6 @@ class FuzzyMDLFilter(object):
         currClassIndex = 0
 
         while(currSplitIndex < lastPlusOne):
-            
             if (leftNumInstances > self.minNumExamples and (s-leftNumInstances) > self.minNumExamples):
                 s0s1s2 = calculateNewTriangularCardinality(self.histograms[fIndex], 
                                                            self.candidateSplits[fIndex],
