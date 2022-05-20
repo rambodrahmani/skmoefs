@@ -129,7 +129,6 @@ class FuzzyMDLFilter(object):
             if self.continuous[k]:
                 if self.threshold == 0:
                     indexCutPoints = self.calculateCutPoints(k, 0, len(self.histograms[k])-self.numClasses)
-
                 else:
                     indexCutPointsIndex = self.calculateCutPointsIndex(k, 0, len(self.histograms[k])-self.numClasses)
                     if len(indexCutPointsIndex) != 0:
@@ -137,18 +136,18 @@ class FuzzyMDLFilter(object):
                         indexCutPoints = sorted(points[:self.threshold])
                     else:
                         indexCutPoints = []
-                    
+
                 if len(indexCutPoints) != 0:
                     cutPoints = np.zeros(len(indexCutPoints)+2)
                     cutPoints[0] = self.candidateSplits[k][0]
-                    
+
                     for i in range(len(indexCutPoints)):
                         cSplitIdx = indexCutPoints[i] /self.numClasses
                         if (cSplitIdx > 0 and cSplitIdx < len(self.candidateSplits[k])):
                             cutPoints[i+1] = self.candidateSplits[k][int(cSplitIdx)]
     
                     cutPoints[-1] = self.candidateSplits[k][-1]
-                
+
                     splits.append(cutPoints)
                 else:
                     splits.append([])
@@ -210,7 +209,8 @@ class FuzzyMDLFilter(object):
         return ind
 
     def calculateCutPoints(self, fIndex, first, lastPlusOne, depth=0):
-        """ Main iterator
+        """
+        Main iterator
         """
 
         s = np.sum(evalCounts(self.histograms[fIndex], self.numClasses, first, lastPlusOne)) 
@@ -223,7 +223,6 @@ class FuzzyMDLFilter(object):
             s0s1 = calculatePriorTriangularCardinality(self.histograms[fIndex],
                                                    self.candidateSplits[fIndex],
                                                     self.numClasses, first, lastPlusOne)
-
         wPriorFuzzyEntropy = calculateWeightedFuzzyImpurity(s0s1,s, entropy)
         s0s1s2 = np.zeros((3, self.numClasses))
         bestEntropy = wPriorFuzzyEntropy
