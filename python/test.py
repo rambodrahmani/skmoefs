@@ -231,6 +231,6 @@ if __name__ == "__main__":
     fuzzy_splits = discretizer.run(X_n, [True, True, True, True])
     print(fuzzy_splits)
 
-    discretizer = CrispMDLFilter(3, X_n, y_n, [True, True, True, True])
-    fuzzy_splits = discretizer.run()
+    #discretizer = CrispMDLFilter(3, X_n, y_n, [True, True, True, True])
+    #fuzzy_splits = discretizer.run()
     #print(fuzzy_splits)

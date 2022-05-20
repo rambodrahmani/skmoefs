@@ -186,21 +186,21 @@ function __calculateCutPoints(self::CrispMDLFilter, fIndex::Int64, first::Int64,
 
     gain = priorEntropy - bestEntropy
     if (gain < self.minGain || !self.__mdlStopCondition(gain, priorEntropy, bestCounts, entropy))
-        logger.debug("Feature %d index %d, gain %f REJECTED" % (fIndex, bestIndex, gain))
+        @info "Feature $(fIndex) index $(bestIndex), gain $(gain) REJECTED"
         return np.array([])
     end
-    logger.debug("Feature %d index %d, gain %f ACCEPTED" % (fIndex, bestIndex, gain))
+    @info "Feature $(fIndex) index $(bestIndex), gain $(gain) ACCEPTED"
 
-    left = self.__calculateCutPoints(fIndex, first, bestIndex)
-    right = self.__calculateCutPoints(fIndex, bestIndex, lastPlusOne)
+    left = __calculateCutPoints(self, fIndex, first, bestIndex)
+    right = __calculateCutPoints(self, fIndex, bestIndex, lastPlusOne)
 
-    indexCutPoints = np.zeros((length(left) + 1 + length(right)))
+    indexCutPoints = zeros(length(left) + 1 + length(right))
 
-    for k in range(length(left))
+    for k in range(1, length(left))
         indexCutPoints[k] = left[k]
     end
     indexCutPoints[length(left)] = bestIndex
-    for k in range(length(right))
+    for k in range(1, length(right))
         indexCutPoints[length(left) + 1 + k] = right[k]
     end
 

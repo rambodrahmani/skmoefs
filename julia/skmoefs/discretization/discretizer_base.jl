@@ -29,7 +29,7 @@ function run(self::FuzzyDiscretization, data::Matrix{Float64}, continous::Vector
     for k in range(1, self.M)
         if self.continous[k]
             if self.method == "equifreq"
-                cutPoints = sort(data[:,k])[range(0, self.N-1, self.numSet)]
+                cutPoints = sort(data[:,k])[LinRange(0, self.N-1, self.numSet)]
             elseif self.method == "uniform"
                 cutPoints = collect(LinRange(minimum(data[:,k]), maximum(data[:,k]), self.numSet))
             end
