@@ -33,10 +33,10 @@ function run(self::FuzzyDiscretization, data::Matrix{Float64}, continous::Vector
             elseif self.method == "uniform"
                 cutPoints = collect(LinRange(minimum(data[:,k]), maximum(data[:,k]), self.numSet))
             end
-            if length(unique!(cutPoints)) < 3
+            if length(unique(cutPoints)) < 3
                 append!(splits, hcat(zeros(1,1), ones(1,self.numSet-1)))
             else
-                uPoints = unique!(cutPoints)
+                uPoints = unique(cutPoints)
                 append!(splits, [append!(uPoints, ones(1, self.numSet - length(uPoints)))])
             end
         else

@@ -73,8 +73,8 @@ function run(self::FuzzyMDLFilter)
         @info "nRunning Discretization with fuzzyset " * self.ftype * " and trpzPrm = " * self.trpzPrm * "."
     end
 
-    #self.candidateSplits = findCandidateSplits(self.data)
-    #self.initEntr = zeros(self.data.shape[1])
+    self.candidateSplits = findCandidateSplits(self, self.data)
+    self.initEntr = zeros(size(self.data)[2])
     #self.cutPoints = findBestSplits(self.data)
     #if sum([len(k) for k in self.cutPoints]) == 0
         #logger.warning('Empty cut points for all the features!')
@@ -90,12 +90,13 @@ function findCandidateSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
     In the simplest case, the candidate splits are the unique elements in the
     sorted feature array.
     """
+
     self.N, self.M = size(data)
     numBins = self.numBins
 
-    vector= []
+    vector = []
     for k in range(1, self.M)
-        uniques = np.unique(np.sort(data[:,k]))
+        uniques = unique!(sort(data[:,k]))
         if len(uniques) > numBins
             vector.append(uniques[np.linspace(0,len(uniques)-1,num_bins, dtype=int)])
         else

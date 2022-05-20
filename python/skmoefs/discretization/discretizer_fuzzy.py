@@ -74,8 +74,7 @@ class FuzzyMDLFilter(object):
 
         if self.ftype=="trapezoidal":
             logger.info("\nRunning Discretization with fuzzyset " + str(self.ftype)+ " and trpzPrm = " + str(self.trpzPrm))
-        
-        
+
         self.candidateSplits = self.findCandidateSplits(self.data)
         self.initEntr = np.zeros(self.data.shape[1])
         self.cutPoints = self.findBestSplits(self.data)
@@ -91,10 +90,10 @@ class FuzzyMDLFilter(object):
             In the simplest case, the candidate splits are the unique elements
             in the sorted feature array.
         """
+
         self.N,self.M = data.shape
         num_bins = self.num_bins
-        
-        
+
         vector= []
         for k in range(self.M):
             uniques = np.unique(np.sort(data[:,k]))
@@ -114,7 +113,7 @@ class FuzzyMDLFilter(object):
         self.histograms = []
         for k in range(self.M):
             self.histograms.append(np.zeros(((len(self.candidateSplits[k])+1)*self.numClasses),dtype=int))
-        
+
         # Iterate among features
         for k in range(self.M):
             # Iterate among features
@@ -122,7 +121,7 @@ class FuzzyMDLFilter(object):
                 for ind in range(self.N):
                     x = self.simpleHist(data[ind][k], k)
                     self.histograms[k][int(x*self.numClasses +self.label[ind])] +=1
-        
+
         # Histograms built
 
         splits = []

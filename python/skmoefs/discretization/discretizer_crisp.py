@@ -3,6 +3,7 @@ import numpy as np
 import bisect
 import logging
 
+# set logging level
 logger = logging.getLogger('CrispMDLFilter')
 logger.setLevel(logging.DEBUG)
 
