@@ -226,7 +226,7 @@ end
 
 function entropy(counts::Array{Float64}, totalCount)
     """
-    Evaluate entropy.
+    Evaluates the entropy.
     """
 
     if totalCount == 0

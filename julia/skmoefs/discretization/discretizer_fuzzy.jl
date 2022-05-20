@@ -148,7 +148,7 @@ function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
                     indexCutPoints = []
                 end
             end
-                
+
             if length(indexCutPoints) != 0
                 cutPoints = zeros(length(indexCutPoints) + 2)
                 cutPoints[0] = self.candidateSplits[k][0]
@@ -487,11 +487,37 @@ function calculateWeightedFuzzyImpurity(partition::Matrix{Float64}, partitionCar
     
     summedImp = 0.0
     
-    for k in range(length(partition))
+    for k in range(1, length(partition))
         summedImp += sum(partition[k])/partitionCardinality * impurity(partition[k], sum(partition[k])) 
     end
 
     return summedImp
+end
+
+function entropy(counts::Array{Float64}, totalCount)
+    """
+    Evaluates the entropy.
+    """
+
+    if totalCount == 0
+        return 0
+    end
+    
+    numClasses = length(counts)
+    impurity = 0.0
+    classIndex = 1
+    while (classIndex <= numClasses)
+        classCount = counts[classIndex]
+        if classCount != 0
+            freq = classCount / totalCount
+            if freq != 0
+                impurity -= freq * log2(freq)
+            end
+        end
+        classIndex += 1
+    end
+
+    return impurity
 end
 
 function createFuzzyMDLDiscretizer(numClasses::Int64, data::Matrix{Float64},
