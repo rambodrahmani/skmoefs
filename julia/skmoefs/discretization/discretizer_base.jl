@@ -37,8 +37,7 @@ function run(self::FuzzyDiscretization, data::Matrix{Float64}, continous::Vector
                 append!(splits, hcat(zeros(1,1), ones(1,self.numSet-1)))
             else
                 uPoints = unique!(cutPoints)
-                append!(uPoints, ones(1, self.numSet - length(uPoints)))
-                append!(splits, [uPoints])
+                append!(splits, [append!(uPoints, ones(1, self.numSet - length(uPoints)))])
             end
         else
             append!(splits, [])
