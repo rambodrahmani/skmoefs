@@ -68,7 +68,7 @@ function __findCandidateSplits(self::CrispMDLFilter, data::Matrix{Float64})
     """
 
     self.N, self.M = size(data)
-    return [unique!(sort!(data[:,k])) for k in range(1, self.M)]
+    return [unique(sort(data[:,k])) for k in range(1, self.M)]
 end
 
 function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
@@ -102,7 +102,7 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
             cutPoints = zeros(length(indexCutPoints))
 
             for i in range(1, length(indexCutPoints))
-                cSplitIdx = Int64(indexCutPoints[i] / self.numClasses)
+                cSplitIdx = Int64(indexCutPoints[i] / self.numClasses)+1
                 if (cSplitIdx > 0 && cSplitIdx < length(self.candidateSplits[k]))
                     cutPoints[i] = self.candidateSplits[k][cSplitIdx]
                 end
