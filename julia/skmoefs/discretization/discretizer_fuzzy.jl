@@ -124,7 +124,7 @@ function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
     # Iterate among features
     for k in range(1, self.M)
         # Iterate among features
-        if self.continous[k]
+        if self.continuous[k]
             for ind in range(1, self.N)
                 x = simpleHist(self, data[ind][k], k)
                 self.histograms[k][Int64(x * self.numClasses + self.label[ind])-2] += 1
@@ -136,7 +136,7 @@ function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
 
     splits = []
     for k in range(1, self.M)
-        if self.continous[k]
+        if self.continuous[k]
             if self.threshold == 0
                 indexCutPoints = calculateCutPoints(k, 0, length(self.histograms[k]) - self.numClasses)
             else

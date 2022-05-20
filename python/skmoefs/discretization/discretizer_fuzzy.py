@@ -24,7 +24,7 @@ logger = logging.getLogger('FuzzyMDLFilter')
 logger.setLevel(logging.INFO)
 
 class FuzzyMDLFilter(object):
-    def __init__(self, numClasses, data, label, continous, minImpurity=0.02, minGain=0.000001,
+    def __init__(self, numClasses, data, label, continuous, minImpurity=0.02, minGain=0.000001,
         threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1):
         """
         Class for performing fuzzy discretization of the dataset.
@@ -38,7 +38,7 @@ class FuzzyMDLFilter(object):
         label: np.array, shape (numSamples)
             Class label for each sample.
         countinous: list, shape(numFeatures)
-            True for each continous feature, False for each categorical feature.
+            True for each continuous feature, False for each categorical feature.
         minNumExamples: int
             Minimum number of examples per node.
         minGain: float
@@ -48,7 +48,7 @@ class FuzzyMDLFilter(object):
         
         """
         self.numClasses = numClasses
-        self.continous = continous
+        self.continuous = continuous
         self.minNumExamples = int(minImpurity*data.shape[0])
         self.data = data
         self.label = label
@@ -117,7 +117,7 @@ class FuzzyMDLFilter(object):
         # Iterate among features
         for k in range(self.M):
             # Iterate among features
-            if self.continous[k]:
+            if self.continuous[k]:
                 for ind in range(self.N):
                     x = self.simpleHist(data[ind][k], k)
                     self.histograms[k][int(x*self.numClasses +self.label[ind])] +=1
@@ -126,7 +126,7 @@ class FuzzyMDLFilter(object):
 
         splits = []
         for k in range(self.M):
-            if self.continous[k]:
+            if self.continuous[k]:
                 if self.threshold == 0:
                     indexCutPoints = self.calculateCutPoints(k, 0, len(self.histograms[k])-self.numClasses)
 
@@ -607,13 +607,12 @@ def calculatePriorTrapezoidalCardinality(hist, candidateSplits, numClasses, firs
         for j in range(0, numClasses):
             s0s1[0][j] += hist[i * numClasses + j] * (1 - uS1)
             s0s1[1][j] += hist[i * numClasses + j] * uS1
-            
 
     return s0s1
 
 
 # MULTIPROCESSING STUFF
-def parallel_FuzzyMDLFilter(numClasses, data, label, continous, minImpurity=0.02,
+def parallel_FuzzyMDLFilter(numClasses, data, label, continuous, minImpurity=0.02,
         minGain=0.000001, threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1):
     try:
         num_cores = os.cpu_count()
@@ -626,7 +625,7 @@ def parallel_FuzzyMDLFilter(numClasses, data, label, continous, minImpurity=0.02
     with futures.ProcessPoolExecutor() as executor:
         to_do = []
         for k in range(len(indexes)-1):
-            future = executor.submit(FuzzyMDLFilter_run,*(k,numClasses,data[:,indexes[k]:indexes[k+1]],label,continous[indexes[k]:indexes[k+1]]),
+            future = executor.submit(FuzzyMDLFilter_run,*(k,numClasses,data[:,indexes[k]:indexes[k+1]],label,continuous[indexes[k]:indexes[k+1]]),
             **dict(minImpurity=0.02,
                  minGain=0.000001, threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1))
             to_do.append(future)
@@ -645,8 +644,8 @@ def parallel_FuzzyMDLFilter(numClasses, data, label, continous, minImpurity=0.02
         return ordered_results
 
 
-def FuzzyMDLFilter_run(index,numClasses, data, label, continous, minImpurity=0.02,
+def FuzzyMDLFilter_run(index,numClasses, data, label, continuous, minImpurity=0.02,
         minGain=0.000001, threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1):
 
-    return index,FuzzyMDLFilter(numClasses, data, label, continous, minImpurity=0.02,
+    return index,FuzzyMDLFilter(numClasses, data, label, continuous, minImpurity=0.02,
             minGain=0.000001, threshold = 0, num_bins = 500, ignore=True, ftype="triangular", trpzPrm=0.1).run()
