@@ -48,7 +48,7 @@ function __init__(self::FuzzyMDLFilter, numClasses::Int64, data::Matrix{Float64}
     self.data = data
     self.labels = labels
     self.continuous = continuous
-    self.minNumExamples = Int64(minImpurity*size(data)[1])
+    self.minNumExamples = floor(Int64, minImpurity*size(data)[1])
     self.minGain = minGain
     self.threshold = threshold
     self.numBins = numBins
@@ -72,15 +72,15 @@ function run(self::FuzzyMDLFilter)
     end
 
     if self.ftype == "trapezoidal"
-        @info "nRunning Discretization with fuzzyset " * self.ftype * " and trpzPrm = " * self.trpzPrm * "."
+        @info "Running Discretization with fuzzyset " * self.ftype * " and trpzPrm = " * self.trpzPrm * "."
     end
 
     self.candidateSplits = findCandidateSplits(self, self.data)
     self.initEntr = zeros(size(self.data)[2])
     self.cutPoints = findBestSplits(self, self.data)
-    #if sum([len(k) for k in self.cutPoints]) == 0
-        #logger.warning('Empty cut points for all the features!')
-    #end
+    if sum([length(k) for k in self.cutPoints]) == 0
+        @warn "Empty cut points for all the features."
+    end
 
     return self.cutPoints
 end
@@ -98,7 +98,7 @@ function findCandidateSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
 
     vector = []
     for k in range(1, self.M)
-        uniques = unique!(sort(data[:,k]))
+        uniques = unique(sort(data[:,k]))
         if length(uniques) > numBins
             append!(vector, uniques[LinRange(0, length(uniques)-1, num_bins)])
         else
@@ -127,7 +127,7 @@ function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
         if self.continuous[k]
             for ind in range(1, self.N)
                 x = simpleHist(self, data[ind, k], k)
-                self.histograms[k][Int64(x * self.numClasses + self.labels[ind])-2] += 1
+                self.histograms[k][floor(Int64, x * self.numClasses + self.labels[ind])-2] += 1
             end
         end
     end
@@ -138,9 +138,9 @@ function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
     for k in range(1, self.M)
         if self.continuous[k]
             if self.threshold == 0
-                indexCutPoints = calculateCutPoints(self, k, 0, length(self.histograms[k]) - self.numClasses)
+                indexCutPoints = calculateCutPoints(self, k, 1, length(self.histograms[k]) - self.numClasses)
             else
-                indexCutPointsIndex = calculateCutPointsIndex(k, 0, length(self.histograms[k]) - self.numClasses)
+                indexCutPointsIndex = calculateCutPointsIndex(self, k, 1, length(self.histograms[k]) - self.numClasses)
                 if length(indexCutPointsIndex) != 0
                     depth, points, _ =  zip(traceback(indexCutPointsIndex))
                     indexCutPoints = sorted(points[:self.threshold])
@@ -162,12 +162,12 @@ function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
 
                 cutPoints[-1] = self.candidateSplits[k][-1]
             
-                splits.append(cutPoints)
+                append!(splits, [cutPoints])
             else
-                splits.append([])
+                append!(splits, [])
             end
         else
-            splits.append([])
+            append!(splits, [])
         end
     end
 
@@ -214,9 +214,10 @@ function calculateCutPoints(self::FuzzyMDLFilter, fIndex::Int64, first::Int64,
     end
 
     wPriorFuzzyEntropy = calculateWeightedFuzzyImpurity(s0s1, s, entropy)
+    println(wPriorFuzzyEntropy)
     s0s1s2 = zeros(3, self.numClasses)
     bestEntropy = wPriorFuzzyEntropy
-    bestS0S1S2 = np.zeros_like(s0s1s2)
+    bestS0S1S2 = zeros(3, self.numClasses)
     bestIndex = -1
     currentEntropy = 0.0
     leftNumInstances = 0
@@ -299,6 +300,7 @@ function calculatePriorTrapezoidalCardinality(hist::Array{Int64}, candidateSplit
     """
     Prior trapezoidal cardinality.
     """
+
     s0s1 = zeros(Float64, 2, numClasses)
     minimum = candidateSplits[first ÷ numClasses]
     diff = candidateSplits[lastPlusOne ÷ numClasses - 1] - minimum
@@ -306,7 +308,7 @@ function calculatePriorTrapezoidalCardinality(hist::Array{Int64}, candidateSplit
     slope = diff*(1-2*trpzPrm)
     uS1 = 0.0
     xi = 0.0
-    for i in range(Int64(first / numClasses)+1, Int64(lastPlusOne / numClasses))
+    for i in range(floor(Int64, first / numClasses)+1, floor(Int64, lastPlusOne / numClasses))
         xi = candidateSplits[i]
         uS1 = 0.0
         if slope != 0.
@@ -334,14 +336,13 @@ function calculatePriorTriangularCardinality(hist::Array{Int64}, candidateSplits
     diff = candidateSplits[lastPlusOne ÷ numClasses - 1] - minimum
     uS1 = 0.0
     xi = 0.0
-    for i in range(Int64(first / numClasses)+1, Int64(lastPlusOne / numClasses))
+    for i in range(floor(Int64, first / numClasses)+1, floor(Int64, lastPlusOne / numClasses))
         xi = candidateSplits[i]
         uS1 = 0.0
         if diff != 0.0
             uS1 = (xi - minimum) / diff
         end
         for j in range(1, numClasses)
-            println(hist[i * numClasses + j] * (1 - uS1))
             s0s1[1,j] += hist[i * numClasses + j] * (1 - uS1)
             s0s1[2,j] += hist[i * numClasses + j] * uS1
         end
@@ -376,7 +377,7 @@ function calculateCutPointsIndex(self::FuzzyMDLFilter, fIndex::Int64, first::Int
 
     s0s1s2 = zeros(3, self.numClasses)
     bestEntropy = wPriorFuzzyEntropy
-    bestS0S1S2 = np.zeros_like(s0s1s2)
+    bestS0S1S2 = zeros(3, self.numClasses)
     bestIndex = -1
     currentEntropy = 0.0
     leftNumInstances = 0
@@ -487,8 +488,8 @@ function calculateWeightedFuzzyImpurity(partition::Matrix{Float64}, partitionCar
     
     summedImp = 0.0
     
-    for k in range(1, length(partition))
-        summedImp += sum(partition[k])/partitionCardinality * impurity(partition[k], sum(partition[k])) 
+    for k in range(1, size(partition)[1])
+        summedImp += sum(partition[k,:])/partitionCardinality * impurity(partition[k,:], sum(partition[k,:])) 
     end
 
     return summedImp
@@ -518,6 +519,56 @@ function entropy(counts::Array{Float64}, totalCount)
     end
 
     return impurity
+end
+
+
+function calculateNewTriangularCardinality(hist::Array{Int64}, candidateSplits::Array{Float64},
+                                            indexOfCandidateSplit::Float64, numClasses::Int64, 
+                                            first::Int64, lastPlusOne::Int64)
+    """
+    Partitions cardinality for a 3 triangular fuzzy set partition.
+
+    # Arguments
+    ----------
+    - `hist::Array{Int64}`: histograms;
+    - `candidateSplits::Array{Float64}`: array of candidate split points;
+    - `indexOfCandidateSplit::Int64`: index of current candidate split to evaluate;
+    - `numClasses::Int64`: number of classes in the current partition;
+    - `first::Int64`: first index of the partition;
+    - `lastPlusOne::Int64`: last index of the partition (plus one);
+
+    # Returns
+    a 3 by M matrix, where M is the number of classes, 
+    where matrix[i,j] contains the cardinality of set i for the class j.
+    """
+
+    s0s1s2 = zeros(3, numClasses)
+    minimum = candidateSplits[first ÷ numClasses + 1]
+    peak = candidateSplits[floor(Int64, indexOfCandidateSplit)]
+    diff = peak - minimum
+    uSi = 0.0
+    xi = 0.0
+    
+    for i in range(floor(Int64, first / numClasses)+1, floor(Int64, indexOfCandidateSplit + 1))
+        xi = candidateSplits[i]
+        uSi = (xi - minimum) / diff
+        for j in range(1, numClasses)
+            s0s1s2[1,j] += hist[i * numClasses + j] * (1 - uSi)
+            s0s1s2[2,j] += hist[i * numClasses + j] * uSi
+        end
+    end
+    diff = candidateSplits[lastPlusOne ÷ numClasses - 1] - peak 
+
+    for i in range(floor(Int64, indexOfCandidateSplit + 1), floor(Int64, lastPlusOne/numClasses))
+        xi = candidateSplits[i]
+        uSi = (xi - peak) / diff
+        for j in range(1, numClasses)
+            s0s1s2[1,j] += hist[i * numClasses + j] * (1 - uSi)
+            s0s1s2[2,j] += hist[i * numClasses + j] * uSi
+        end
+    end
+    
+    return s0s1s2
 end
 
 function createFuzzyMDLDiscretizer(numClasses::Int64, data::Matrix{Float64},

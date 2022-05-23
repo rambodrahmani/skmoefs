@@ -89,7 +89,7 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
         if self.continuous[k]
             for ind in range(1, self.N)
                 x = __simpleHist(self, data[ind, k], k)
-                self.histograms[k][Int64(x * self.numClasses + self.labels[ind])-2] += 1
+                self.histograms[k][floor(Int64, x * self.numClasses + self.labels[ind])-2] += 1
             end
         end
     end
@@ -103,7 +103,7 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
             cutPoints = zeros(length(indexCutPoints))
 
             for i in range(1, length(indexCutPoints))
-                cSplitIdx = Int64(indexCutPoints[i] / self.numClasses)+1
+                cSplitIdx = floor(Int64, indexCutPoints[i] / self.numClasses)+1
                 if (cSplitIdx > 0 && cSplitIdx < length(self.candidateSplits[k]))
                     cutPoints[i] = self.candidateSplits[k][cSplitIdx]
                 end

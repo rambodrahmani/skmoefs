@@ -94,7 +94,7 @@ class FuzzyMDLFilter(object):
         self.N,self.M = data.shape
         num_bins = self.num_bins
 
-        vector= []
+        vector = []
         for k in range(self.M):
             uniques = np.unique(np.sort(data[:,k]))
             if len(uniques)>num_bins:
@@ -213,7 +213,8 @@ class FuzzyMDLFilter(object):
         Main iterator
         """
 
-        s = np.sum(evalCounts(self.histograms[fIndex], self.numClasses, first, lastPlusOne)) 
+        s = np.sum(evalCounts(self.histograms[fIndex], self.numClasses, first, lastPlusOne))
+
         # Evaluating prior cardinality
         if self.ftype=="trapezoidal":
             s0s1 = calculatePriorTrapezoidalCardinality(self.histograms[fIndex],
@@ -223,7 +224,10 @@ class FuzzyMDLFilter(object):
             s0s1 = calculatePriorTriangularCardinality(self.histograms[fIndex],
                                                    self.candidateSplits[fIndex],
                                                     self.numClasses, first, lastPlusOne)
+
         wPriorFuzzyEntropy = calculateWeightedFuzzyImpurity(s0s1,s, entropy)
+        print("RAMBOD RAMBOD")
+        print(wPriorFuzzyEntropy)
         s0s1s2 = np.zeros((3, self.numClasses))
         bestEntropy = wPriorFuzzyEntropy
         bestS0S1S2 = np.zeros_like(s0s1s2)
@@ -292,7 +296,7 @@ class FuzzyMDLFilter(object):
             s0s1 = calculatePriorTriangularCardinality(self.histograms[fIndex],
                                                    self.candidateSplits[fIndex],
                                                     self.numClasses, first, lastPlusOne)
-        
+
         wPriorFuzzyEntropy = calculateWeightedFuzzyImpurity(s0s1,s, entropy)
         if depth == 0:
             self.initEntr[fIndex] = wPriorFuzzyEntropy
