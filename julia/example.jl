@@ -3,8 +3,15 @@
 """
 
 include("skmoefs/toolbox.jl")
+using PyCall
 using Random
 using ScikitLearn.CrossValidation: train_test_split
+
+# add path for importing local module
+pushfirst!(PyVector(pyimport("sys")["path"]), "/home/rr/DevOps/skmoefs/python/")
+
+# import python modules
+skmoefs_py_toolbox = pyimport("skmoefs.toolbox")
 
 function test1()
     X, y, attributes, inputs, outputs = load_dataset("newthyroid")

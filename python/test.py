@@ -203,6 +203,7 @@ if __name__ == "__main__":
     for fuzzy_trapezoidal in fuzzy_trapezoidals:
         print(fuzzy_trapezoidal)
 
+
     #########
     # TOOLBOX
     #########
@@ -224,6 +225,7 @@ if __name__ == "__main__":
     X_n, y_n = normalize(X, y, attributes)
     print(X_n)
     print(y_n)
+
 
     ##############
     # DISCRETIZERS
