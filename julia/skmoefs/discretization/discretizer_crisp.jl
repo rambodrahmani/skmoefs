@@ -144,7 +144,7 @@ function __calculateCutPoints(self::CrispMDLFilter, fIndex::Int64, first::Int64,
     """
 
     counts = zeros(2, self.numClasses)
-    counts[2, :] = evalCounts(self.histograms[fIndex], self.numClasses, first, lastPlusOne)
+    counts[2, :] = evalCounts(self, self.histograms[fIndex], self.numClasses, first, lastPlusOne)
     totalCounts = sum(counts[2, :])
 
     if totalCounts < self.minNumExamples
@@ -208,7 +208,7 @@ function __calculateCutPoints(self::CrispMDLFilter, fIndex::Int64, first::Int64,
     return indexCutPoints
 end
 
-function evalCounts(hist::Array{Int64}, numClasses::Int64, first::Int64, lastPlusOne::Int64)
+function evalCounts(self::CrispMDLFilter, hist::Array{Int64}, numClasses::Int64, first::Int64, lastPlusOne::Int64)
     """
     Number of counts.
     """

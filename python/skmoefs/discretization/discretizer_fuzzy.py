@@ -142,7 +142,7 @@ class FuzzyMDLFilter(object):
                     cutPoints[0] = self.candidateSplits[k][0]
 
                     for i in range(len(indexCutPoints)):
-                        cSplitIdx = indexCutPoints[i] /self.numClasses
+                        cSplitIdx = indexCutPoints[i]/self.numClasses
                         if (cSplitIdx > 0 and cSplitIdx < len(self.candidateSplits[k])):
                             cutPoints[i+1] = self.candidateSplits[k][int(cSplitIdx)]
     
@@ -226,8 +226,6 @@ class FuzzyMDLFilter(object):
                                                     self.numClasses, first, lastPlusOne)
 
         wPriorFuzzyEntropy = calculateWeightedFuzzyImpurity(s0s1,s, entropy)
-        print("RAMBOD RAMBOD")
-        print(wPriorFuzzyEntropy)
         s0s1s2 = np.zeros((3, self.numClasses))
         bestEntropy = wPriorFuzzyEntropy
         bestS0S1S2 = np.zeros_like(s0s1s2)
@@ -237,7 +235,7 @@ class FuzzyMDLFilter(object):
         currSplitIndex = first
         currClassIndex = 0
 
-        while(currSplitIndex < lastPlusOne):
+        while (currSplitIndex < lastPlusOne):
             if (leftNumInstances > self.minNumExamples and (s-leftNumInstances) > self.minNumExamples):
                 if self.ftype=="trapezoidal":
                     s0s1s2 = calculateNewTrapezoidalCardinality(self.histograms[fIndex], 
@@ -249,7 +247,7 @@ class FuzzyMDLFilter(object):
                                                                self.candidateSplits[fIndex],
                                                                 currSplitIndex/self.numClasses,
                                                                 self.numClasses, first, lastPlusOne)
-                
+
                 currentEntropy = calculateWeightedFuzzyImpurity(s0s1s2, s, entropy)
 
                 if currentEntropy < bestEntropy:
@@ -265,9 +263,9 @@ class FuzzyMDLFilter(object):
         gain = wPriorFuzzyEntropy - bestEntropy
 
         if (gain < self.minGain or not self.mdlStopCondition(gain, wPriorFuzzyEntropy, bestS0S1S2, entropy,None)):# (bestwEntroA, besttCountA, bestwEntroB, besttCountB))):
-            logger.debug("Feature %d index %d, gain %f REJECTED" %(fIndex, bestIndex, gain))
+            logger.info("Feature %d index %d, gain %f REJECTED" %(fIndex, bestIndex, gain))
             return np.array([])
-        logger.debug("Feature %d index %d, gain %f ACCEPTED" %(fIndex, bestIndex, gain))
+        logger.info("Feature %d index %d, gain %f ACCEPTED" %(fIndex, bestIndex, gain))
 
         left = self.calculateCutPoints(fIndex, first, bestIndex,depth=depth+1)
         right = self.calculateCutPoints(fIndex, bestIndex, lastPlusOne,depth=depth+1)
@@ -430,23 +428,22 @@ def calculateNewTriangularCardinality(hist, candidateSplits, indexOfCandidateSpl
     -------
     a 3 by M matrix, where M is the number of classes, 
     where matrix[i,j] contains the cardinality of set i for the class j.
-    
     """
-    
+
     s0s1s2 = np.zeros((3, numClasses))
     minimum = candidateSplits[first//numClasses]
     peak = candidateSplits[int(indexOfCandidateSplit)]
     diff = peak - minimum
     uSi = 0.0
     xi = 0.0
-    
+
     for i in range(int(first/numClasses), int(indexOfCandidateSplit+1)):
         xi = candidateSplits[i]
         uSi = (xi-minimum)/diff
         for j in range(0, numClasses):
             s0s1s2[0][j] += hist[i*numClasses+j] * (1-uSi)
             s0s1s2[1][j] += hist[i*numClasses+j] * uSi
-    diff = candidateSplits[lastPlusOne//numClasses-1] - peak 
+    diff = candidateSplits[lastPlusOne//numClasses-1] - peak
 
     for i in range(int(indexOfCandidateSplit+1), int(lastPlusOne/numClasses)):
         xi = candidateSplits[i]
@@ -454,7 +451,7 @@ def calculateNewTriangularCardinality(hist, candidateSplits, indexOfCandidateSpl
         for j in range(0, numClasses):
             s0s1s2[1][j] += hist[i*numClasses+j] * (1-uSi)
             s0s1s2[2][j] += hist[i*numClasses+j] * uSi
-    
+
     return s0s1s2
 
 
@@ -485,9 +482,10 @@ def calculateWeightedFuzzyImpurity(partition, partitionCardinality, impurity):
 
 @jit
 def evalCounts(hist, numClasses, first, lastPlusOne):
-    """ Number of counts.
-    
     """
+    Number of counts.
+    """
+
     counts = np.zeros((numClasses))
     index = first
     while (index<lastPlusOne):
@@ -499,14 +497,16 @@ def evalCounts(hist, numClasses, first, lastPlusOne):
 
 @jit
 def calculatePriorTriangularCardinality(hist, candidateSplits, numClasses, first, lastPlusOne):
-    """Prior triangular cardinality.
     """
-   
+    Prior triangular cardinality.
+    """
+
     s0s1 = np.zeros((2, numClasses))
     minimum = candidateSplits[first // numClasses]
     diff = candidateSplits[lastPlusOne // numClasses - 1] - minimum
     uS1 = 0.0
     xi = 0.0
+
     for i in range(int(first / numClasses), int(lastPlusOne / numClasses)):
         xi = candidateSplits[i]
         uS1 = 0.0
