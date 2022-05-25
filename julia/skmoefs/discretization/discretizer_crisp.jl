@@ -152,7 +152,7 @@ function __calculateCutPoints(self::CrispMDLFilter, fIndex::Int64, first::Int64,
     end
 
     priorCounts = copy(counts[2, :])
-    priorEntropy = entropy(priorCounts, totalCounts)
+    priorEntropy = entropy(self, priorCounts, totalCounts)
 
     bestEntropy = priorEntropy
 
@@ -163,8 +163,8 @@ function __calculateCutPoints(self::CrispMDLFilter, fIndex::Int64, first::Int64,
 
     while (currSplitIndex < lastPlusOne)
         if (leftNumInstances > self.minNumExamples && (totalCounts - leftNumInstances) > self.minNumExamples)
-            leftImpurity = entropy(counts[1, :], leftNumInstances)
-            rightImpurity = entropy(counts[2, :], totalCounts - leftNumInstances)
+            leftImpurity = entropy(self, counts[1, :], leftNumInstances)
+            rightImpurity = entropy(self, counts[2, :], totalCounts - leftNumInstances)
             leftWeight = float(leftNumInstances) / totalCounts
             rightWeight = float(totalCounts - leftNumInstances) / totalCounts
             currentEntropy = leftWeight * leftImpurity + rightWeight * rightImpurity
@@ -186,7 +186,7 @@ function __calculateCutPoints(self::CrispMDLFilter, fIndex::Int64, first::Int64,
     end
 
     gain = priorEntropy - bestEntropy
-    if (gain < self.minGain || !__mdlStopCondition(gain, priorEntropy, bestCounts, entropy))
+    if (gain < self.minGain || !__mdlStopCondition(self, gain, priorEntropy, bestCounts, entropy))
         @info "Feature $(fIndex) index $(bestIndex), gain $(gain) REJECTED"
         return []
     end
@@ -224,7 +224,7 @@ function evalCounts(self::CrispMDLFilter, hist::Array{Int64}, numClasses::Int64,
     return counts
 end
 
-function entropy(counts::Array{Float64}, totalCount)
+function entropy(self::CrispMDLFilter, counts::Array{Float64}, totalCount)
     """
     Evaluates the entropy.
     """
@@ -250,8 +250,8 @@ function entropy(counts::Array{Float64}, totalCount)
     return impurity
 end
 
-function __mdlStopCondition(gain::Float64, priorEntropy::Float64,
-        bestCounts::Matrix{Float64}, impurity::Function)
+function __mdlStopCondition(self::CrispMDLFilter, gain::Float64, priorEntropy::Float64,
+                            bestCounts::Matrix{Float64}, impurity::Function)
     """
     MDL Stop Condition evaluation.
 
