@@ -459,8 +459,7 @@ class FMDT(object):
             return -1
     @staticmethod
     def tNorm(array1, array2, tnorm='product'):
-        """
-        Method for calculating various elemntwise t_norms.
+        """Method for calculating various elemntwise t_norms.
 
         Parameters
         ----------
