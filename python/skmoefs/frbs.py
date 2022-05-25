@@ -1,17 +1,15 @@
 from __future__ import print_function
 
-import matplotlib.pyplot as plt
 import numpy as np
 from numba import jit
+import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import LabelBinarizer
 
 
 class ClassificationRule():
-
     def __init__(self, antecedent, fuzzyset, consequent, weight=1.0, label=None):
         """
-
         @param antecedent: antecedents in the rule. For each one [a, b, c] that represents the triangular fuzzyset
         @param fuzzyset:
         @param consequent:
@@ -58,7 +56,6 @@ def membership_value(mf, value, type='triangular'):
 @jit(nopython=True)
 def predict_fast(x, ant_matrix, cons_vect, weights, part_matrix):
     """
-
     :param x: input matrix NxM where N is the number of samples and M is the number of features
     :param ant_matrix: antecedents of every rule in the RB
     :param cons_vect: consequents of every rule in the RB
@@ -90,7 +87,6 @@ def predict_fast(x, ant_matrix, cons_vect, weights, part_matrix):
 @jit(nopython=True)
 def compute_weights_fast(train_x, train_y, ant_matrix, cons_vect, part_matrix):
     """
-
     :param train_x: Training input
     :param train_y: Training output
     :param ant_matrix: antecedents
@@ -124,9 +120,7 @@ class FuzzyRuleBasedClassifier():
     """
 
     def __init__(self, rules, partitions):
-
         """
-
         :param rules: a list of ClassificationRule objects
         :param partitions: fuzzyset partitions for each fuzzy input
         """
@@ -230,7 +224,6 @@ class FuzzyRuleBasedClassifier():
 
     def show_DB(self, inputs):
         """
-
         :param inputs: names of the input variables
         :return: for each input, plot a graph representing the membership functions of
                 fuzzyset partitions

@@ -1,16 +1,15 @@
 import copy
 import random
-
 import numpy as np
-from platypus import Problem, Solution, Binary, Real, Variator
 
 from skmoefs import fmdt
 from skmoefs.discretization.discretizer_base import fuzzyDiscretization
 from skmoefs.frbs import FuzzyRuleBasedClassifier, ClassificationRule
 
+from platypus import Problem, Solution, Binary, Real, Variator
+
 
 class RCSVariator(Variator):
-
     def __init__(self, p_crb=0.2, p_cdb=0.5, alpha=0.5, p_mrb=0.1, p_mrb_add=0.5, p_mrb_del=0.2,
                  p_mrb_flip=0.7, p_mdb=0.2, p_cond=0.5):
         super(RCSVariator, self).__init__(2)
@@ -260,7 +259,6 @@ class RCSVariator(Variator):
 
 
 class RCSInitializer:
-
     def __init__(self, discretizer=fuzzyDiscretization(5), tree=fmdt.FMDT(priorDiscretization=True, verbose=True)):
         self.discretizer = discretizer
         self.tree = tree
@@ -284,7 +282,6 @@ class RCSInitializer:
 
 
 class RCSProblem(Problem):
-
     def __init__(self, Amin, M, J, splits, objectives, TFmax=7):
         """
         @param Amin: minimum number of antecedents per rule

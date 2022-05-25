@@ -1,13 +1,15 @@
+"""
+    Examples of Usage of SK-MOEFS.
+"""
+
 from __future__ import print_function
 
 import os.path
-
 import numpy as np
 from platypus.algorithms import *
 from sklearn.model_selection import train_test_split
-
-from skmoefs.discretization.discretizer_base import fuzzyDiscretization
 from skmoefs.rcs import RCSInitializer, RCSVariator
+from skmoefs.discretization.discretizer_base import fuzzyDiscretization
 from skmoefs.toolbox import MPAES_RCS, load_dataset, normalize, is_object_present, store_object, load_object
 
 
@@ -15,13 +17,17 @@ def set_rng(seed):
     np.random.seed(seed)
     random.seed(seed)
 
+
 def make_directory(path):
     try:
         os.stat(path)
     except:
         os.makedirs(path)
 
-def test1():
+
+def test1(seed):
+    set_rng(seed)
+
     X, y, attributes, inputs, outputs = load_dataset('newthyroid')
     X_n, y_n = normalize(X, y, attributes)
     Xtr, Xte, ytr, yte = train_test_split(X_n, y_n, test_size=0.3)
@@ -32,6 +38,7 @@ def test1():
     my_moefs.show_pareto()
     my_moefs.show_pareto(Xte, yte)
     my_moefs.show_model('median', inputs=inputs, outputs=outputs)
+
 
 def test2():
     X, y, attributes, inputs, outputs = load_dataset('newthyroid')
@@ -82,6 +89,6 @@ def test3(dataset, alg, seed, nEvals=50000, store=False):
 
 
 if __name__=="__main__":
-    #test1()
+    test1(2)
     #test2()
-    test3('iris', 'mpaes22', 2, nEvals=2000, store=False)
+    #test3('iris', 'mpaes22', 2, nEvals=2000, store=False)

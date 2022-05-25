@@ -1,20 +1,22 @@
 from __future__ import print_function
+
+import numpy as np
+
 from skmoefs.discretization import discretizer_fuzzy as df
 from skmoefs.fuzzysets.TriangularFuzzySet import TriangularFuzzySet
 from skmoefs.fuzzysets.SingletonFuzzySet import SingletonFuzzySet
 from skmoefs.fuzzysets.UniverseFuzzySet import UniverseFuzzySet
 from skmoefs.fuzzysets.TrapezoidalFuzzySet import TrapezoidalFuzzySet
-import numpy as np
 
 
 class FuzzyImpurity(object):
     """
     Fuzzy impurity class.
     """
-
     @staticmethod
     def calculate(counts, totalCount):
-        """Evaluate fuzzy impurity, given a list of fuzzy cardinalities.
+        """
+        Evaluate fuzzy impurity, given a list of fuzzy cardinalities.
 
         Parameters
         ----------
@@ -42,8 +44,8 @@ class FuzzyImpurity(object):
                 impurity -= freq * np.log2(freq)
             classIndex += 1
         return impurity
-    
-    
+
+
 def findContinous(X):
     """
     Parameters
@@ -62,15 +64,14 @@ def findContinous(X):
 
 
 class decisionNode:
-
     def __init__(self, feature=-1, isLeaf=False, results=None,
                  child=None, weight=None ,fSet=None):
-        """Decision Node.
+        """
+        Decision Node.
         """
         # Feature corresponding to the set on the node.
         # it is not the feature used for splitting the child.
         self.feature = feature
-        
         self.fSet = fSet
         self.isLeaf = isLeaf
         self.results = results
@@ -81,7 +82,6 @@ class decisionNode:
         if currMD > 0:
             if self.isLeaf:
                 return self.results * FMDT.tNorm(currMD, self.fSet.membershipDegree(observation[self.feature]))
-
             else:
                 v = np.zeros(numClasses)
                 childSum = map(lambda child: child.predict(observation, FMDT.tNorm(currMD,
@@ -177,8 +177,7 @@ class decisionNode:
             return depth
         else:
             return depth + sum([child._ruleLength(depth+1) for child in self.child])
-            
-        
+
     def _numDescendants(self, empty):
         if self.isLeaf:
             if (sum(self.results) <= 0) and (not empty):
@@ -196,7 +195,8 @@ class FMDT(object):
                  discr_minGain=0.01, minGain=0.01,
                  minNumExamples=2, max_prop=1.0, priorDiscretization=False,
                  discr_threshold=0, verbose=False, features='all'):
-        """FMDT with fuzzy discretization on the node.
+        """
+        FMDT with fuzzy discretization on the node.
 
         Parameters
         ----------
@@ -306,7 +306,7 @@ class FMDT(object):
                 elif ftype == 'trapezoidal':
                     self.fSets.append(TrapezoidalFuzzySet.createFuzzySets(points, isStrongPartition=True, trpzPrm=trpzPrm))
                     pass
-                
+
         tree = self.buildtree(np.concatenate((X, y.reshape(y.shape[0], 1)), axis=1), depth=0,
                               fSet=UniverseFuzzySet.createFuzzySet())
         self.tree = tree
@@ -373,23 +373,21 @@ class FMDT(object):
             return decisionNode(results=np.nan_to_num(class_counts /
                 float(np.sum(class_counts))), feature=feature, child=child_list, weight=memb_degree.sum(),
                                 fSet = fSet)
-
         else:
             return decisionNode(results=np.nan_to_num(class_counts / float(np.sum(class_counts))), feature=feature,
                                 isLeaf=True, weight=memb_degree.sum(), fSet = fSet)
 
     def __multidivide(self, rows, membership, column, fSets):
-        
         memb_vect = []
         row_vect = []
         for fSet in fSets:
             mask = list(map(lambda x: fSet.isInSupport(x), rows[:,column]))
             row_vect.append(rows[mask,:])
             memb_vect.append(FMDT.tNorm(list(map(lambda x: fSet.membershipDegree(x), rows[mask,column])), membership[mask]))
-            
+
         return row_vect, memb_vect
-        
-    
+
+
     def classCounts(self, rows, memb_degree):
         """Returns the sum of the membership degree for each class in a given set.
         """
@@ -461,7 +459,8 @@ class FMDT(object):
             return -1
     @staticmethod
     def tNorm(array1, array2, tnorm='product'):
-        """Method for calculating various elemntwise t_norms.
+        """
+        Method for calculating various elemntwise t_norms.
 
         Parameters
         ----------
