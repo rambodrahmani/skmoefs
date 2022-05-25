@@ -2,6 +2,7 @@
     Developer Harness Test
 """
 
+include("skmoefs/rcs.jl")
 include("skmoefs/toolbox.jl")
 include("skmoefs/fuzzysets/SingletonFuzzySet.jl")
 include("skmoefs/fuzzysets/TriangularFuzzySet.jl")
@@ -97,3 +98,9 @@ println(crisp_mdlf_splits)
 fuzzy_mdlf_discretizer = createFuzzyMDLDiscretizer(3, X_n, y, [true, true, true, true])
 fuzzy_mdlf_splits = runFuzzyMDLDiscretizer(fuzzy_mdlf_discretizer)
 println(fuzzy_mdlf_splits)
+
+
+#####
+# RCS
+#####
+rcs_initializer = createRCSInitializer()
