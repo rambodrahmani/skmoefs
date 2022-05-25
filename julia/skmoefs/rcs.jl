@@ -4,7 +4,6 @@
 """
 
 include("fmdt.jl")
-include("discretization/discretizer_base.jl")
 
 mutable struct RCSInitializer
     discretizer::FuzzyDiscretization
@@ -26,12 +25,12 @@ function __init__(self::RCSInitializer, discretizer::FuzzyDiscretization=createF
     return self
 end
 
-function fit_tree(self::RCSInitializer, x, y)
-    continous = [True] * x.shape[1]
-    cPoints = self.discretizer.run(x, continous)
-    self.fTree = self.tree.fit(x, y, cPoints=cPoints, continous=continous)
-    self.rules = np.array(self.fTree.tree._csv_ruleMine(x.shape[1], []))
-    self.rules[:, -1] -= 1
+function fit_tree(self::RCSInitializer, X::Matrix{Float64}, y)
+    continous = [true] * size(X)[2]
+    cPoints = runFuzzyDiscretizer(self.discretizer, X, continous)
+    self.fTree = self.tree.fit(X, y, cPoints, continous)
+    self.rules = np.array(self.fTree.tree._csv_ruleMine(size(X)[2], []))
+    self.rules[:, end] -= 1
     self.splits = np.array(self.fTree.cPoints)
 end
 
