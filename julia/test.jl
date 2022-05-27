@@ -2,6 +2,9 @@
     Developer Harness Test
 """
 
+using Dates
+using Statistics
+
 include("skmoefs/rcs.jl")
 include("skmoefs/toolbox.jl")
 include("skmoefs/fuzzysets/SingletonFuzzySet.jl")
@@ -10,6 +13,17 @@ include("skmoefs/fuzzysets/TrapezoidalFuzzySet.jl")
 include("skmoefs/discretization/discretizer_base.jl")
 include("skmoefs/discretization/discretizer_crisp.jl")
 include("skmoefs/discretization/discretizer_fuzzy.jl")
+
+function test_fit_timed()
+    n = 30
+    intervals = zeros(n)
+    for seed in range(1, n)
+        start_time = datetime2unix(now())
+        sleep(0.5)
+        intervals[seed] = datetime2unix(now()) - start_time
+    end
+    println("Mean processing time is " * string(mean(intervals)) * " seconds")
+end
 
 ###########
 # FUZZYSETS
@@ -104,3 +118,5 @@ println(fuzzy_mdlf_splits)
 # RCS
 #####
 rcs_initializer = createRCSInitializer()
+
+test_fit_timed()
