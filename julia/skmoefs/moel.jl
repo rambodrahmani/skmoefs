@@ -45,6 +45,8 @@ function __init__(self::MOEL_FRBC, classifiers::Array{Any}=nothing)
         classifiers = []
     end
     self.classifiers = classifiers
+
+    return self
 end
 
 function predict(self::MOEL_FRBC, X::Matrix{Float64}, position::String="first")
@@ -98,6 +100,8 @@ function __init__(self::MOEL_FRBR, regressors::Array{Any}=nothing)
         regressors = []
     end
     self.regressors = regressors
+
+    return self
 end
 
 function predict(self::MOEL_FRBR, X::Matrix{Float64}, position::String="first")

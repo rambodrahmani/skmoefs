@@ -2,6 +2,8 @@
     SK-MOEFS Toolbox.
 """
 
+include("rcs.jl")
+include("moel.jl")
 using Random
 using JLD
 
@@ -115,4 +117,58 @@ function normalize(X::Matrix{Float64}, y::Vector{Int64}, attributes::Vector{Arra
     end
 
     return X_n, y
+end
+
+mutable struct MPAES_RCS
+    """
+    In charge of handling the rule and condition selection multi-objective
+    learning scheme, by means of (2 + 2)M-PAES algorithm.
+    """
+    learning_scheme::MOEL_FRBC
+    M::Int64
+    Amin::Int64
+    capacity::Int64
+    divisions::Int64
+    variator::RCSVariator
+    initializer::RCSInitializer
+    objectives::Array{String}
+    moea_type::String
+end
+
+function __init__(self::MPAES_RCS, M::Int64=100, Amin::Int64=1, capacity::Int64=64, divisions::Int64=8,
+                variator::RCSVariator=createRCSVariator(), initializer::RCSInitializer=createRCSInitializer(),
+                objectives=["accuracy", "trl"], moea_type::String="mpaes22")
+    """
+    # Arguments:
+    - `M`: Number of maximum rules that a solution (Fuzzy classifier) can have
+    - `Amin`: minimum number of antecedents for each rule
+    - `capacity`: maximum capacity of the archive
+    - `divisions`: number of divisions for the grid within the archive
+    - `variator`: genetic operator (embeds crossover and mutation functionalities)
+    - `initializer`: define the initial state of the archive
+    - `objectives`: list of objectives to minimize/maximize. As for now, only the pairs:
+        ('accuracy', 'trl') and ('auc', 'trl') are provided
+    - `moea_type`: the Multi-Objective Evolutionary Algorithm from the ones available. If not
+        provided, the default one is MPAES(2+2)
+    """
+    self.learning_scheme = __init__(MOEL_FRBC(), [])
+    self.M = M
+    self.Amin = Amin
+    self.capacity = capacity
+    self.divisions = divisions
+    self.objectives = objectives
+    self.variator = variator
+    self.initializer = initializer
+    self.moea_type = moea_type
+end
+
+function _initialize(self, X, y)
+    self.initializer.fit_tree(X, y)
+    J = self.initializer.get_rules()
+    splits = self.initializer.get_splits()
+
+    # Find initial set of rules and fuzzy partitions
+    # MOEFS problem
+    self.problem = RCSProblem(self.Amin, self.M, J, splits, self.objectives)
+    self.problem.set_training_set(X, y)
 end
