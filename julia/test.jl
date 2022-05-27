@@ -114,16 +114,16 @@ end
 
 # load dataset
 X, y, attributes, inputs, outputs = load_dataset("iris")
-println(X)
-println(y)
 println(attributes)
 println(inputs)
 println(outputs)
-println(typeof(X))
-println(typeof(y))
+println(X)
+println(y)
 println(typeof(attributes))
 println(typeof(inputs))
 println(typeof(outputs))
+println(typeof(X))
+println(typeof(y))
 
 # normalize dataset
 X_n, y_n = normalize(X, y, attributes)

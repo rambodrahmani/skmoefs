@@ -58,10 +58,7 @@ function load_dataset(name::String)
                 if txt[1] == "@attribute"
                     domain = findall(r"(\[|\{)(.+)(\]|\})", line)
                     range_str = SubString(line, domain[1])
-                    range_str = replace(range_str, "{" => "[")
-                    range_str = replace(range_str, "}" => "]")
-                    range_str = replace(range_str, "[" => "")
-                    range_str = replace(range_str, "]" => "")
+                    range_str = replace(range_str, "{" => "", "}" => "", "[" => "", "]" => "")
                     range_fl = parse.(Float64, split(range_str, ','))
                     push!(attributes, range_fl)
                 elseif txt[1] == "@inputs"

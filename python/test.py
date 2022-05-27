@@ -204,16 +204,16 @@ if __name__ == "__main__":
 
     # load dataset
     X, y, attributes, inputs, outputs = load_dataset("iris")
-    print(X)
-    print(y)
     print(attributes)
     print(inputs)
     print(outputs)
-    print(type(X))
-    print(type(y))
+    print(X)
+    print(y)
     print(type(attributes))
     print(type(inputs))
     print(type(outputs))
+    print(type(X))
+    print(type(y))
 
     # normalize dataset
     X_n, y_n = normalize(X, y, attributes)
