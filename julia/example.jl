@@ -4,7 +4,6 @@
 
 include("skmoefs/toolbox.jl")
 using PyCall
-using Random
 using ScikitLearn.CrossValidation: train_test_split
 
 # add path for importing local module

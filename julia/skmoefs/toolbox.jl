@@ -2,6 +2,8 @@
     SK-MOEFS Toolbox.
 """
 
+using Random
+
 milestones = [500, 1000, 2000, 5000, 10000, 20000, 30000, 40000, 50000, 75000, 100000]
 
 function set_rng_seed(seed::Int64)

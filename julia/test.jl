@@ -4,6 +4,7 @@
 
 using Dates
 using Statistics
+using ScikitLearn.CrossValidation: train_test_split
 
 include("skmoefs/rcs.jl")
 include("skmoefs/toolbox.jl")
@@ -19,10 +20,21 @@ function test_fit_timed()
     intervals = zeros(n)
     for seed in range(1, n)
         start_time = datetime2unix(now())
-        sleep(0.5)
+        test_fit("iris", "mpaes22", 0)
         intervals[seed] = datetime2unix(now()) - start_time
     end
     println("Mean processing time is " * string(mean(intervals)) * " seconds")
+end
+
+function test_fit(dataset::String, algorithm::String, seed::Int64, nEvals::Int64=50000, store::Bool=false)
+    path = "julia/results/" * dataset * '/' * algorithm * '/'
+    make_path(path)
+    set_rng_seed(seed)
+
+    X, y, attributes, inputs, outputs = load_dataset(dataset)
+    X_n, y_n = normalize(X, y, attributes)
+
+    Xtr, Xte, ytr, yte = train_test_split(X_n, y_n, test_size=0.3, random_state=seed)
 end
 
 ###########
