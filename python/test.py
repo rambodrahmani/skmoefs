@@ -165,12 +165,6 @@ def parse_results():
 
 
 if __name__ == "__main__":
-    #freeze_support()
-    #test_multiple()
-    #parse_results()
-    #test_crossval('appendicitis', 'moead', 1, nEvals=1000)
-    test_fit('iris', 'mpaes22', 2, nEvals=2000, store=True)
-
     ###########
     # FUZZYSETS
     ###########
@@ -246,3 +240,10 @@ if __name__ == "__main__":
     # RCS
     #####
     rcs_initializer = RCSInitializer()
+
+
+    #freeze_support()
+    #test_multiple()
+    #parse_results()
+    #test_crossval('appendicitis', 'moead', 1, nEvals=1000)
+    test_fit('iris', 'mpaes22', 2, nEvals=2000, store=False)

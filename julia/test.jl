@@ -154,4 +154,6 @@ println(fuzzy_mdlf_splits)
 #####
 rcs_initializer = createRCSInitializer()
 
-test_fit_timed()
+
+#test_fit_timed()
+test_fit("iris", "mpaes22", 2, 2000, false)

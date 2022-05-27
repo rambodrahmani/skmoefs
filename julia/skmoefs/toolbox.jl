@@ -168,7 +168,9 @@ function __init__(self::MPAES_RCS, M::Int64=100, Amin::Int64=1, capacity::Int64=
 end
 
 function _initialize(self::MPAES_RCS, X::Matrix{Float64}, y::Array{Int64})
-    error("Not Implemented.")
+    fit_tree(self.initializer, X, y)
+
+    error("Implementation To Be Continued.")
 end
 
 function _choose_algorithm(self::MPAES_RCS)

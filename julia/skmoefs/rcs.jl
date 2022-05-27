@@ -63,12 +63,12 @@ function __init__(self::RCSInitializer, discretizer::FuzzyDiscretization=createF
 end
 
 function fit_tree(self::RCSInitializer, X::Matrix{Float64}, y)
-    continous = [true] * size(X)[2]
+    continous = ones(Bool, size(X)[2])
     cPoints = runFuzzyDiscretizer(self.discretizer, X, continous)
-    self.fTree = self.tree.fit(X, y, cPoints, continous)
-    self.rules = np.array(self.fTree.tree._csv_ruleMine(size(X)[2], []))
-    self.rules[:, end] -= 1
-    self.splits = np.array(self.fTree.cPoints)
+    println("RAMBOD RAMBOD")
+    println(cPoints)
+    
+    error("Implementation To Be Continued.")
 end
 
 function get_splits(self::RCSInitializer)
