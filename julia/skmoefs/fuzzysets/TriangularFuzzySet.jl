@@ -2,7 +2,7 @@
     Triangular Fuzzy Set
 """
 
-include("../utils.jl")
+include("../porting.jl")
 import Base.show
 
 mutable struct TriangularFuzzySet

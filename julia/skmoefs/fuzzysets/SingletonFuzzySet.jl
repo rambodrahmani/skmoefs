@@ -3,7 +3,7 @@
     Fuzzy set which support is a single point in universe of discourse.
 """
 
-include("../utils.jl")
+include("../porting.jl")
 import Base.show
 
 mutable struct SingletonFuzzySet
