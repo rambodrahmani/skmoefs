@@ -31,6 +31,8 @@ function __init__(self::RCSVariator, p_crb::Float64=0.2, p_cdb::Float64=0.5, alp
     self.p_mrb_flip = p_mrb_flip
     self.p_mdb = p_mdb
     self.p_cond = p_cond
+
+    return self
 end
 
 function createRCSVariator(p_crb::Float64=0.2, p_cdb::Float64=0.5, alpha::Float64=0.5,

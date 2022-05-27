@@ -135,9 +135,12 @@ mutable struct MPAES_RCS
     moea_type::String
 end
 
-function __init__(self::MPAES_RCS, M::Int64=100, Amin::Int64=1, capacity::Int64=64, divisions::Int64=8,
-                variator::RCSVariator=createRCSVariator(), initializer::RCSInitializer=createRCSInitializer(),
-                objectives=["accuracy", "trl"], moea_type::String="mpaes22")
+MPAES_RCS() = MPAES_RCS(MOEL_FRBC([]), 0, 0, 0, 0, createRCSVariator(), createRCSInitializer(), [], "")
+
+function __init__(self::MPAES_RCS, M::Int64=100, Amin::Int64=1, capacity::Int64=64,
+            divisions::Int64=8, variator::RCSVariator=createRCSVariator(),
+            initializer::RCSInitializer=createRCSInitializer(), objectives=["accuracy", "trl"],
+            moea_type::String="mpaes22")
     """
     # Arguments:
     - `M`: Number of maximum rules that a solution (Fuzzy classifier) can have
@@ -160,15 +163,27 @@ function __init__(self::MPAES_RCS, M::Int64=100, Amin::Int64=1, capacity::Int64=
     self.variator = variator
     self.initializer = initializer
     self.moea_type = moea_type
+
+    return self
 end
 
-function _initialize(self, X, y)
-    self.initializer.fit_tree(X, y)
-    J = self.initializer.get_rules()
-    splits = self.initializer.get_splits()
+function _initialize(self::MPAES_RCS, X::Matrix{Float64}, y::Array{Int64})
+    error("Not Implemented.")
+end
 
-    # Find initial set of rules and fuzzy partitions
-    # MOEFS problem
-    self.problem = RCSProblem(self.Amin, self.M, J, splits, self.objectives)
-    self.problem.set_training_set(X, y)
+function _choose_algorithm(self::MPAES_RCS)
+    error("Not Implemented.")
+end
+
+function fit(self::MPAES_RCS, X::Matrix{Float64}, y::Array{Int64}, max_evals::Int64=10000)
+    _initialize(self, X, y)
+    
+    error("Implementation To Be Continued.")
+end
+
+function CREATE_MPAES_RCS(M::Int64=100, Amin::Int64=1, capacity::Int64=64, divisions::Int64=8,
+    variator::RCSVariator=createRCSVariator(), initializer::RCSInitializer=createRCSInitializer(),
+    objectives=["accuracy", "trl"], moea_type::String="mpaes22")
+    return __init__(MPAES_RCS(), M, Amin, capacity, divisions, variator, initializer,
+            objectives, moea_type)
 end

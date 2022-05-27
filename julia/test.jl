@@ -46,21 +46,17 @@ function test_fit(dataset::String, algorithm::String, seed::Int64, nEvals::Int64
     if store
         base = path * "moefs_" * string(seed)
         if !is_object_present(base)
-            mpaes_rcs_fdt = MPAES_RCS(M=M, Amin=Amin, capacity=capacity,
-                                      divisions=divisions, variator=variator,
-                                      initializer=initializer, moea_type=algorithm,
-                                      objectives=["accuracy", "trl"])
-            mpaes_rcs_fdt.fit(Xtr, ytr, max_evals=nEvals)
+            mpaes_rcs_fdt = CREATE_MPAES_RCS(M, Amin, capacity, divisions, variator,
+                                      initializer, ["accuracy", "trl"], algorithm)
+            fit(mpaes_rcs_fdt, Xtr, ytr, nEvals)
             store_object(base, "MPAES_RCS", mpaes_rcs_fdt)
         else
             mpaes_rcs_fdt = load_object(base)["MPAES_RCS"]
         end
     else
-        mpaes_rcs_fdt = MPAES_RCS(M=M, Amin=Amin, capacity=capacity,
-                                  divisions=divisions, variator=variator,
-                                  initializer=initializer, moea_type=algorithm,
-                                  objectives=["accuracy", "trl"])
-        mpaes_rcs_fdt.fit(Xtr, ytr, max_evals=nEvals)
+        mpaes_rcs_fdt = CREATE_MPAES_RCS(M, Amin, capacity, divisions, variator,
+                                      initializer, ["accuracy", "trl"], algorithm)
+        fit(mpaes_rcs_fdt, Xtr, ytr, nEvals)
     end
 end
 
