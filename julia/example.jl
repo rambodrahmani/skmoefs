@@ -22,7 +22,7 @@ function test1(seed::Int64)
     Xtr, Xte, ytr, yte = train_test_split(X_n, y_n, test_size=0.3)
 
     my_moefs = skmoefs_py_toolbox.MPAES_RCS(capacity=32, variator=skmoefs_py_rcs.RCSVariator(), initializer=skmoefs_py_rcs.RCSInitializer())
-    my_moefs.fit(Xtr, ytr, max_evals=10000)
+    my_moefs.fit(Xtr, ytr, max_evals=1000)
 
     my_moefs.show_pareto()
     my_moefs.show_pareto(Xte, yte)

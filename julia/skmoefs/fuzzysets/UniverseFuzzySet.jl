@@ -14,8 +14,8 @@ show(io::IO, self::UniverseFuzzySet) = print(io,
     "Universe Fuzzy Set"
 )
 
-function isInSupport(self::UniverseFuzzySet,x)
-    return 1.0
+function isInSupport(self::UniverseFuzzySet, x)
+    return true
 end
 
 function isFirstOfPartition(self::UniverseFuzzySet)
@@ -23,7 +23,7 @@ function isFirstOfPartition(self::UniverseFuzzySet)
 end
 
 function isLastOfPartition(self::UniverseFuzzySet)
-    return 1.0
+    return true
 end
 
 function membershipDegree(self::UniverseFuzzySet,x)
@@ -31,5 +31,5 @@ function membershipDegree(self::UniverseFuzzySet,x)
 end
 
 function createFuzzySet()
-   return UniverseFuzzySet()
+    return UniverseFuzzySet()
 end

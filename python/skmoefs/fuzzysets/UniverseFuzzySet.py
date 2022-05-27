@@ -10,7 +10,7 @@ class UniverseFuzzySet(FuzzySet):
         return "Universe Fuzzy Set"
 
     def isInSupport(self, xi):
-        return 1.0
+        return True
 
     def isFirstOfPartition(self):
         return True
@@ -20,6 +20,7 @@ class UniverseFuzzySet(FuzzySet):
 
     def membershipDegree(self, xi):
         return 1.0
+
     @staticmethod
     def createFuzzySet():
         return UniverseFuzzySet()
