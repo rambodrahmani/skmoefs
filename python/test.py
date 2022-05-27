@@ -169,7 +169,7 @@ if __name__ == "__main__":
     #test_multiple()
     #parse_results()
     #test_crossval('appendicitis', 'moead', 1, nEvals=1000)
-    test_fit('iris', 'mpaes22', 2, nEvals=2000, store=False)
+    test_fit('iris', 'mpaes22', 2, nEvals=2000, store=True)
 
     ###########
     # FUZZYSETS

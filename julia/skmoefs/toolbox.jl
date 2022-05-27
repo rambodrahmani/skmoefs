@@ -3,6 +3,7 @@
 """
 
 using Random
+using JLD
 
 milestones = [500, 1000, 2000, 5000, 10000, 20000, 30000, 40000, 50000, 75000, 100000]
 
@@ -12,6 +13,18 @@ end
 
 function make_path(path::String)
     mkpath(path)
+end
+
+function is_object_present(name)
+    return isfile(name * ".obj")
+end
+
+function store_object(filename::String, name::String, object::Any)
+    save(filename * ".jld", name, object)
+end
+
+function load_object(filename::String)
+    return load(filename * ".jld")
 end
 
 function load_dataset(name::String)

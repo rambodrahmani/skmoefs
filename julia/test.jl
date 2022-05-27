@@ -40,9 +40,28 @@ function test_fit(dataset::String, algorithm::String, seed::Int64, nEvals::Int64
     M = 50
     capacity = 32
     divisions = 8
-    #variator = RCSVariator()
+    variator = createRCSVariator()
     discretizer = createFuzzyDiscretizer("uniform", 5)
     initializer = createRCSInitializer(discretizer)
+    if store
+        base = path * "moefs_" * string(seed)
+        if !is_object_present(base)
+            mpaes_rcs_fdt = MPAES_RCS(M=M, Amin=Amin, capacity=capacity,
+                                      divisions=divisions, variator=variator,
+                                      initializer=initializer, moea_type=algorithm,
+                                      objectives=["accuracy", "trl"])
+            mpaes_rcs_fdt.fit(Xtr, ytr, max_evals=nEvals)
+            store_object(base, "MPAES_RCS", mpaes_rcs_fdt)
+        else
+            mpaes_rcs_fdt = load_object(base)["MPAES_RCS"]
+        end
+    else
+        mpaes_rcs_fdt = MPAES_RCS(M=M, Amin=Amin, capacity=capacity,
+                                  divisions=divisions, variator=variator,
+                                  initializer=initializer, moea_type=algorithm,
+                                  objectives=["accuracy", "trl"])
+        mpaes_rcs_fdt.fit(Xtr, ytr, max_evals=nEvals)
+    end
 end
 
 ###########
