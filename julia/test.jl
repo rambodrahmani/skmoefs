@@ -35,6 +35,14 @@ function test_fit(dataset::String, algorithm::String, seed::Int64, nEvals::Int64
     X_n, y_n = normalize(X, y, attributes)
 
     Xtr, Xte, ytr, yte = train_test_split(X_n, y_n, test_size=0.3, random_state=seed)
+
+    Amin = 1
+    M = 50
+    capacity = 32
+    divisions = 8
+    #variator = RCSVariator()
+    discretizer = createFuzzyDiscretizer("uniform", 5)
+    initializer = createRCSInitializer(discretizer)
 end
 
 ###########
