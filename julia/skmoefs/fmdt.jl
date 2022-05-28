@@ -61,9 +61,10 @@ mutable struct FMDT
     cont::Array{Bool}
     N::Int64
     M::Int64
+    fSets::Array{SingletonFuzzySet}
 end
 
-FMDT() = FMDT(5, 0.02, 0.01, 0.01, 2, 1.0, true, 0, true, "all", 0, [], 0, 0)
+FMDT() = FMDT(5, 0.02, 0.01, 0.01, 2, 1.0, true, 0, true, "all", 0, [], 0, 0, [])
 
 function __init__(self::FMDT, max_depth::Int64=5, discr_minImpurity::Float64=0.02,
                 discr_minGain::Float64=0.01, minGain::Float64=0.01, min_num_examples::Int64=2,
@@ -148,6 +149,20 @@ function fit(self::FMDT, X::Matrix{Float64}, y::Vector{Int64}, continuous::Array
     end
 
     self.N, self.M = size(X)
+
+    if self.prior_discretization
+        if !isnothing(cPoints)
+            self.cPoints = cPoints
+        else
+            discr = df.FuzzyMDLFilter(self.K, X, y, self.cont,
+                                      minGain=self.discr_minGain,
+                                      minImpurity=self.discr_minImpurity,
+                                      threshold=self.discr_threshold)
+            self.cPoints = np.array(discr.run())
+        end
+    end
+
+    self.fSets = []
 end
 
 function findContinous(X::Matrix{Float64})
