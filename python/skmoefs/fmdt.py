@@ -46,7 +46,7 @@ class FuzzyImpurity(object):
         return impurity
 
 
-def findContinous(X):
+def findcontinuous(X):
     """
     Parameters
     ----------
@@ -55,7 +55,7 @@ def findContinous(X):
     Returns
     -------
     list, len Nfeatures
-        A list containing True if the corresponding element is regarded as continous,
+        A list containing True if the corresponding element is regarded as continuous,
         False otherwise
     """
     N, M = X.shape
@@ -237,7 +237,7 @@ class FMDT(object):
         self.discr_threshold = discr_threshold
         self.features = features
 
-    def fit(self, X, y, continous=None, numClasses=None, cPoints=None, ftype='triangular',trpzPrm=-1):
+    def fit(self, X, y, continuous=None, numClasses=None, cPoints=None, ftype='triangular',trpzPrm=-1):
         """Build a multi-way fuzzy decision tree classifier from the training set (X, y).
 
         Parameters
@@ -267,11 +267,10 @@ class FMDT(object):
             self.K = numClasses
         else:
             self.K = int(np.max(y) + 1)
-
-        if continous is None:
-            self.cont = np.array(findContinous(X))
+        if continuous is None:
+            self.cont = np.array(findcontinuous(X))
         else:
-            self.cont = np.array(continous)
+            self.cont = np.array(continuous)
 
         self.N, self.M = X.shape
 
@@ -290,7 +289,7 @@ class FMDT(object):
         self.fSets = []
         
         for k, points in enumerate(self.cPoints):
-            if not continous[k] == True:
+            if not continuous[k] == True:
                 if self.cPoints[k]:
                     points = self.cPoints[k]
                 else:

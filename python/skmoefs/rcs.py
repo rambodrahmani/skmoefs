@@ -267,11 +267,9 @@ class RCSInitializer:
         self.rules = None
 
     def fit_tree(self, x, y):
-        continous = [True] * x.shape[1]
-        cPoints = self.discretizer.run(x, continous)
-        print("RAMBOD RAMBOD")
-        print(cPoints)
-        self.fTree = self.tree.fit(x, y, cPoints=cPoints, continous=continous)
+        continuous = [True] * x.shape[1]
+        cPoints = self.discretizer.run(x, continuous)
+        self.fTree = self.tree.fit(x, y, cPoints=cPoints, continuous=continuous)
         self.rules = np.array(self.fTree.tree._csv_ruleMine(x.shape[1], []))
         self.rules[:, -1] -= 1
         self.splits = np.array(self.fTree.cPoints)

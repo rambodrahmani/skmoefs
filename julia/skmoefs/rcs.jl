@@ -62,12 +62,11 @@ function __init__(self::RCSInitializer, discretizer::FuzzyDiscretization=createF
     return self
 end
 
-function fit_tree(self::RCSInitializer, X::Matrix{Float64}, y)
-    continous = ones(Bool, size(X)[2])
-    cPoints = runFuzzyDiscretizer(self.discretizer, X, continous)
-    println("RAMBOD RAMBOD")
-    println(cPoints)
-    
+function fit_tree(self::RCSInitializer, X::Matrix{Float64}, y::Vector{Int64})
+    continuous = ones(Bool, size(X)[2])
+    cPoints = runFuzzyDiscretizer(self.discretizer, X, continuous)
+    self.fTree = fitFMDTTree(self.tree, X, y, continuous, cPoints)
+
     error("Implementation To Be Continued.")
 end
 

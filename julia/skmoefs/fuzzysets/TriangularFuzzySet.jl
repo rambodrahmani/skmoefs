@@ -103,21 +103,18 @@ function createTriangularFuzzySetsFromStrongPartition(points::Array{Float64})
 end
 
 function createTriangularFuzzySetsFromNoStrongPartition(points::Array{Float64})
-    @assert (length(points)-4)%3 == 0, "Triangular Fuzzy Set Builder requires "* 
-                                        "a multiple of three plus 4 " *
-                                        "but $(length(params)) values have"*
-                                        " been provided."
-                
+    @assert (length(points)-4)%3 == 0 "Triangular Fuzzy Set Builder requires a multiple of " *
+                                       "three plus 4 but $(length(points)) values have been provided."
     fuzzySets = []
-    push!(fuzzySets, __init__(TriangularFuzzySet(), -Inf, points[1], points[2]))
+    push!(fuzzySets, __init__(TriangularFuzzySet(), -Inf, points[1], points[2], 0))
 
     for index in range(1, length(points)-2)
         indexPoints = index*3
-        push!(fuzzySets, __init__(TriangularFuzzySet(), points[indexPoints], 
-              points[indexPoints + 1], points[indexPoints + 2]))
+        push!(fuzzySets, __init__(TriangularFuzzySet(), points[indexPoints-1], 
+              points[indexPoints], points[indexPoints + 1], 0))
     end
 
-    push!(fuzzySets, __init__(TriangularFuzzySet(), points[end - 1], points[end], Inf))
+    push!(fuzzySets, __init__(TriangularFuzzySet(), points[end - 1], points[end], Inf, 0))
 
     return fuzzySets
 end

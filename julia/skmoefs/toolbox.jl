@@ -76,11 +76,11 @@ function load_dataset(name::String)
                 end
             end
         end
-        X = copy(hcat(X...)')
-        y = convert(Array{Int64, 1}, y)
         attributes = convert(Array{Array{Float64}, 1}, attributes)
         inputs = convert(Array{String, 1}, inputs)
         outputs = convert(Array{String,1}, outputs)
+        X = copy(hcat(X...)')
+        y = convert(Array{Int64, 1}, y)
     end
 
     return X, y, attributes, inputs, outputs

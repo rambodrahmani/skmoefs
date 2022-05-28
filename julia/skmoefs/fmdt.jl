@@ -57,9 +57,13 @@ mutable struct FMDT
     discr_threshold::Int64
     verbose::Bool
     features::String
+    K::Int64
+    cont::Array{Bool}
+    N::Int64
+    M::Int64
 end
 
-FMDT() = FMDT(5, 0.02, 0.01, 0.01, 2, 1.0, true, 0, true, "all")
+FMDT() = FMDT(5, 0.02, 0.01, 0.01, 2, 1.0, true, 0, true, "all", 0, [], 0, 0)
 
 function __init__(self::FMDT, max_depth::Int64=5, discr_minImpurity::Float64=0.02,
                 discr_minGain::Float64=0.01, minGain::Float64=0.01, min_num_examples::Int64=2,
@@ -107,10 +111,69 @@ function __init__(self::FMDT, max_depth::Int64=5, discr_minImpurity::Float64=0.0
     return self
 end
 
+function fit(self::FMDT, X::Matrix{Float64}, y::Vector{Int64}, continuous::Array{Bool}=nothing,
+                cPoints::Array{Array{Float64}}=nothing, numClasses::Any=nothing,
+                ftype::Any="triangular", trpzPrm::Any=-1.0)
+    """
+    Build a multi-way fuzzy decision tree classifier from the training set (X, y).
+
+    # Arguments
+    - `X::Matrix{Float64}`: shape = [n_samples, n_features]
+        The training input samples. Internally, it will be converted to
+        ``dtype=np.float32`` and if a sparse matrix is provided
+        to a sparse ``csc_matrix``.
+
+    - `y::Vector{Int64}`: shape = [n_samples] or [n_samples, n_outputs]
+        The target values (class labels)
+
+    - `numClasses::Int64`: Number of classes for the dataset.
+
+    - `cPoints::Array{Array{Float64}}`: Array of array of cut points.
+
+    # Returns
+    -------
+    - `self::FMDT`
+    """
+    @assert ftype in ["triangular", "trapezoidal"] "Invalid fuzzy set type: $(ftype)"
+    if !isnothing(numClasses)
+        self.K = numClasses
+    else
+        self.K = Int64(maximum(y) + 1)
+    end
+
+    if isnothing(continuous)
+        self.cont = findContinous(X)
+    else
+        self.cont = continuous
+    end
+
+    self.N, self.M = size(X)
+end
+
+function findContinous(X::Matrix{Float64})
+    """
+    # Arguments
+    - `X::Matrix{Float64}`: shape (Nsample, Nfeatures)
+
+    # Returns
+    - A list containing True if the corresponding element is regarded as continous,
+      False otherwise
+    """
+    N, M = size(X)
+    red_axis = [length(unique(X[:, k])) for k in range(1, M)] / Float64(N)
+    return red_axis .> 0.05
+end
+
 function createFMDT(max_depth::Int64=5, discr_minImpurity::Float64=0.02,
         discr_minGain::Float64=0.01, minGain::Float64=0.01, min_num_examples::Int64=2,
         max_prop::Float64=1.0, prior_discretization::Bool=true,
         discr_threshold::Int64=0, verbose::Bool=true, features::String="all")
     return __init__(FMDT(), max_depth, discr_minImpurity, discr_minGain, minGain,
     min_num_examples, max_prop, prior_discretization, discr_threshold, verbose, features)
+end
+
+function fitFMDTTree(self::FMDT, X::Matrix{Float64}, y::Vector{Int64}, continuous::Array{Bool}=nothing,
+                cPoints::Array{Array{Float64}}=nothing, numClasses::Any=nothing,
+                ftype::Any="triangular", trpzPrm::Any=-1.0)
+    fit(self, X, y, continuous, cPoints, numClasses, ftype, trpzPrm)
 end
