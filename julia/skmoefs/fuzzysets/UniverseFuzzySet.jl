@@ -30,6 +30,6 @@ function membershipDegree(self::UniverseFuzzySet,x)
     return 1.0
 end
 
-function createFuzzySet()
+function createUniverseFuzzySet()
     return UniverseFuzzySet()
 end

@@ -65,6 +65,8 @@ end
 ###########
 
 # Fuzzy Universe
+fuzzy_universe = createUniverseFuzzySet()
+println(fuzzy_universe)
 
 # Fuzzy Singleton
 fuzzy_singleton = createSingletonFuzzySet(43.2, 3)

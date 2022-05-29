@@ -309,11 +309,11 @@ class FMDT(object):
         tree = self.buildtree(np.concatenate((X, y.reshape(y.shape[0], 1)), axis=1), depth=0,
                               fSet=UniverseFuzzySet.createFuzzySet())
         self.tree = tree
+
         return self
 
-    def buildtree(self, rows, scoref=FuzzyImpurity, depth=0,
-                  memb_degree=None, leftAttributes=None, feature=-1, fSet = None):
-
+    def buildtree(self, rows, scoref=FuzzyImpurity, depth=0, memb_degree=None,
+                                    leftAttributes=None, feature=-1, fSet=None):
         # Attributes are "consumed" on a given path from root to leaf,
         # Please note: [] != None
         if leftAttributes == None:
@@ -386,7 +386,6 @@ class FMDT(object):
 
         return row_vect, memb_vect
 
-
     def classCounts(self, rows, memb_degree):
         """Returns the sum of the membership degree for each class in a given set.
         """
@@ -456,6 +455,7 @@ class FMDT(object):
             return np.argmax(prediction)
         else:
             return -1
+
     @staticmethod
     def tNorm(array1, array2, tnorm='product'):
         """Method for calculating various elemntwise t_norms.

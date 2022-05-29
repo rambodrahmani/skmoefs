@@ -14,7 +14,7 @@ mutable struct FuzzyImpurity
     """
 end
 
-function calculate(counts::Array{Float64}, totalCount::Float64)
+function calculateFuzzyImpurity(counts::Array{Float64}, totalCount::Float64)
     """
     Evaluates fuzzy impurity, given a list of fuzzy cardinalities.
 
@@ -41,6 +41,47 @@ function calculate(counts::Array{Float64}, totalCount::Float64)
         classIndex += 1
     end
     return impurity
+end
+
+function findcontinous(X::Matrix{Float64})
+    """
+    # Arguments
+    - `X::Matrix{Float64}`: shape (Nsample, Nfeatures)
+
+    # Returns
+    - A list containing True if the corresponding element is regarded as continous,
+      False otherwise
+    """
+    N, M = size(X)
+    red_axis = [length(unique(X[:, k])) for k in range(1, M)] / Float64(N)
+    return red_axis .> 0.05
+end
+
+mutable struct DecisionNode
+    """
+    Decision Node.
+    """
+    feature
+    fSet
+    isLeaf
+    results
+    child
+    weight
+end
+
+function __init__(self::DecisionNode, feature=-1, fSet=nothing, isLeaf::Bool=false,
+            results=nothing, child=nothing, weight=nothing)
+    """
+    # Arguments:
+     - `feature`: feature corresponding to the set on the node
+            it is not the feature used for splitting the child
+    """
+    self.feature = feature
+    self.fSet = fSet
+    self.isLeaf = isLeaf
+    self.results = results
+    self.child = child
+    self.weight = weight
 end
 
 mutable struct FMDT
@@ -144,7 +185,7 @@ function fit(self::FMDT, X::Matrix{Float64}, y::Vector{Int64}, continuous::Array
     end
 
     if isnothing(continuous)
-        self.cont = findContinous(X)
+        self.cont = findcontinous(X)
     else
         self.cont = continuous
     end
@@ -183,21 +224,16 @@ function fit(self::FMDT, X::Matrix{Float64}, y::Vector{Int64}, continuous::Array
         end
     end
 
-    println(self.fSets)
+    tree = buildtree(self, hcat(X, reshape(y, length(y), 1)), 0, createUniverseFuzzySet())
+    self.tree = tree
+
+    return self
 end
 
-function findContinous(X::Matrix{Float64})
-    """
-    # Arguments
-    - `X::Matrix{Float64}`: shape (Nsample, Nfeatures)
-
-    # Returns
-    - A list containing True if the corresponding element is regarded as continous,
-      False otherwise
-    """
-    N, M = size(X)
-    red_axis = [length(unique(X[:, k])) for k in range(1, M)] / Float64(N)
-    return red_axis .> 0.05
+function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::UniverseFuzzySet=nothing,
+                    scoref::Function=calculateFuzzyImpurity, memb_degree::Any=nothing,
+                    leftAttributes::Any=nothing, feature::Any=-1)
+    error("Implementation To Be Continued")
 end
 
 function createFMDT(max_depth::Int64=5, discr_minImpurity::Float64=0.02,
