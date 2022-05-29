@@ -10,7 +10,7 @@ This fork focuses on porting the original implementation to
 [Julia](https://julialang.org/).
 
 ## Installation
-### Dependencies
+### Python Dependencies
 `skmoefs` requires:
 ```console
 - Python (>= 3.6)
@@ -22,9 +22,24 @@ This fork focuses on porting the original implementation to
 - Platypus
 ```
 
-In order to use the library, it is necessary to have the above dependencies installed::
+In order to use the library, it is necessary to have the above dependencies installed:
 ```console
 pip install pandas numpy scipy numba matplotlib scikit-learn platypus-opt
+```
+
+### Julia Dependencies
+The Julia port requires the following packages to be installed:
+```console
+- Julia (>= 1.7.2)
+- ScikitLearn (0.6.4
+- BisectPy (1.0.0
+- JLD (0.13.1
+- PyCall (1.93.1)
+```
+
+In order to use the library, it is necessary to have the above dependencies installed:
+```console
+julia> import Pkg; Pkg.add("ScikitLearn"); Pkg.add("BisectPy"); Pkg.add("JLD"); Pkg.add("PyCall");
 ```
 
 ### Source code
