@@ -388,7 +388,8 @@ class FMDT(object):
         return row_vect, memb_vect
 
     def classCounts(self, rows, memb_degree):
-        """Returns the sum of the membership degree for each class in a given set.
+        """
+        Returns the sum of the membership degree for each class in a given set.
         """
         labels = rows[:, -1]
         numClasses = self.K
@@ -403,7 +404,8 @@ class FMDT(object):
         return counts
 
     def predict(self, X):
-        """Predict class or regression value for X.
+        """
+        Predict class or regression value for X.
 
         For a classification model, the predicted class for each sample in X is
         returned. For a regression model, the predicted value based on X is

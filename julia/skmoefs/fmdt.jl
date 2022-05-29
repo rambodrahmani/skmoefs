@@ -104,9 +104,10 @@ mutable struct FMDT
     M::Int64
     fSets::Array{Any}
     cPoints::Array{Array{Float64}, 1}
+    dom_class::Int64
 end
 
-FMDT() = FMDT(5, 0.02, 0.01, 0.01, 2, 1.0, true, 0, true, "all", 0, [], 0, 0, [], [])
+FMDT() = FMDT(5, 0.02, 0.01, 0.01, 2, 1.0, true, 0, true, "all", 0, [], 0, 0, [], [], 0)
 
 function __init__(self::FMDT, max_depth::Int64=5, discr_minImpurity::Float64=0.02,
                 discr_minGain::Float64=0.01, minGain::Float64=0.01, min_num_examples::Int64=2,
@@ -252,7 +253,17 @@ function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::Univ
     # Class counts on the current node
     class_counts = classCounts(self, rows, memb_degree)
     if depth == 0
-        self.dom_class = np.argmax(class_counts)
+        self.dom_class = findmax(class_counts)[2]
+    end
+
+    # Stop splitting if
+    # - the proportion of dataset of a class k is greater than a threshold max_prop
+    # - the cardinality of the dataset in the node is lower then a threshold self.min_num_examples
+    # - there are no attributes left
+    if (np.any(class_counts / float(np.sum(class_counts)) >= self.max_prop) ||
+                sum(class_counts) < self.min_num_examples || leftAttributes == [])
+        return decisionNode(results=np.nan_to_num(class_counts / float(np.sum(class_counts))), feature=feature,
+                            isLeaf=True, weight=memb_degree.sum(), fSet = fSet)
     end
 
     error("Implementation To Be Continued")
