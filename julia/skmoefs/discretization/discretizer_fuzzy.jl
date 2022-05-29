@@ -164,10 +164,10 @@ function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
             
                 append!(splits, [cutPoints])
             else
-                append!(splits, [])
+                append!(splits, [[]])
             end
         else
-            append!(splits, [])
+            append!(splits, [[]])
         end
     end
 

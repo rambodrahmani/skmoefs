@@ -111,7 +111,7 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
 
             append!(splits, [cutPoints])
         else
-            append!(splits, [])
+            append!(splits, [[]])
         end
     end
 

@@ -40,7 +40,7 @@ function run(self::FuzzyDiscretization, data::Matrix{Float64}, continous::Vector
                 append!(splits, [append!(uPoints, ones(1, self.numSet - length(uPoints)))])
             end
         else
-            append!(splits, [])
+            append!(splits, [[]])
         end
     end
 

@@ -276,7 +276,7 @@ class FMDT(object):
 
         if self.priorDiscretization:
 
-            if not cPoints is None:
+            if cPoints is None:
                 self.cPoints = cPoints
 
             # Executing discretization
@@ -286,6 +286,9 @@ class FMDT(object):
                                           minImpurity=self.discr_minImpurity,
                                           threshold=self.discr_threshold)
                 self.cPoints = np.array(discr.run())
+        
+        print("RAMBOD RAMBOD")
+        print(self.cPoints)
         self.fSets = []
         
         for k, points in enumerate(self.cPoints):

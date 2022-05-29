@@ -62,9 +62,10 @@ mutable struct FMDT
     N::Int64
     M::Int64
     fSets::Array{SingletonFuzzySet}
+    cPoints::Array{Array{Float64}, 1}
 end
 
-FMDT() = FMDT(5, 0.02, 0.01, 0.01, 2, 1.0, true, 0, true, "all", 0, [], 0, 0, [])
+FMDT() = FMDT(5, 0.02, 0.01, 0.01, 2, 1.0, true, 0, true, "all", 0, [], 0, 0, [], [])
 
 function __init__(self::FMDT, max_depth::Int64=5, discr_minImpurity::Float64=0.02,
                 discr_minGain::Float64=0.01, minGain::Float64=0.01, min_num_examples::Int64=2,
@@ -151,16 +152,17 @@ function fit(self::FMDT, X::Matrix{Float64}, y::Vector{Int64}, continuous::Array
     self.N, self.M = size(X)
 
     if self.prior_discretization
-        if !isnothing(cPoints)
+        if isnothing(cPoints)
             self.cPoints = cPoints
         else
-            discr = df.FuzzyMDLFilter(self.K, X, y, self.cont,
-                                      minGain=self.discr_minGain,
-                                      minImpurity=self.discr_minImpurity,
-                                      threshold=self.discr_threshold)
-            self.cPoints = np.array(discr.run())
+            fuzzy_mdlf_discretizer = createFuzzyMDLDiscretizer(self.K, X, y, self.cont,
+                                        self.discr_minImpurity, self.discr_minGain, self.discr_threshold)
+            self.cPoints = runFuzzyMDLDiscretizer(fuzzy_mdlf_discretizer)
         end
     end
+
+    println("RAMBOD RAMBOD")
+    println(self.cPoints)
 
     self.fSets = []
 end
