@@ -14,6 +14,9 @@ class SingletonFuzzySet(FuzzySet):
     def __str__(self):
         return "value=%f"%self.value
 
+    def __repr__(self):
+        return str(self)
+
     def isInSupport(self, xi):
         return xi == self.value
 

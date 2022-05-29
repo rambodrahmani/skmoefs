@@ -2,7 +2,6 @@ from __future__ import division
 from skmoefs.fuzzysets.FuzzySet import FuzzySet
 
 class TriangularFuzzySet(FuzzySet):
-
     def __init__(self, a, b, c, index=None):
         self.a = float(a)
         self.b = float(b)
@@ -16,6 +15,9 @@ class TriangularFuzzySet(FuzzySet):
 
     def __str__(self):
         return "a=%f, b=%f, c=%f"%(self.a, self.b, self.c)
+
+    def __repr__(self):
+        return str(self)
 
     def isInSupport(self, xi):
         return xi > self.a and xi < self.c

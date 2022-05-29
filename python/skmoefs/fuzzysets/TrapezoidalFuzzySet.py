@@ -18,6 +18,9 @@ class __TrapezoidalFuzzySet(FuzzySet):
     def __str__(self):
         return "a=%f, b=%f, c=%f, d=%f"%(self.a, self.b, self.c, self.d)
 
+    def __repr__(self):
+        return str(self)
+
     def isInSupport(self, xi):
         return xi > self.a and xi < self.d
 

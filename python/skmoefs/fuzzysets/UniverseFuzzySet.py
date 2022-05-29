@@ -2,12 +2,14 @@ from __future__ import division
 from skmoefs.fuzzysets.FuzzySet import FuzzySet
 
 class UniverseFuzzySet(FuzzySet):
-
     def __init__(self):
         pass
 
     def __str__(self):
         return "Universe Fuzzy Set"
+
+    def __repr__(self):
+        return str(self)
 
     def isInSupport(self, xi):
         return True

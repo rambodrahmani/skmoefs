@@ -61,7 +61,7 @@ mutable struct FMDT
     cont::Array{Bool}
     N::Int64
     M::Int64
-    fSets::Array{SingletonFuzzySet}
+    fSets::Array{Any}
     cPoints::Array{Array{Float64}, 1}
 end
 
@@ -152,7 +152,7 @@ function fit(self::FMDT, X::Matrix{Float64}, y::Vector{Int64}, continuous::Array
     self.N, self.M = size(X)
 
     if self.prior_discretization
-        if isnothing(cPoints)
+        if !isnothing(cPoints)
             self.cPoints = cPoints
         else
             fuzzy_mdlf_discretizer = createFuzzyMDLDiscretizer(self.K, X, y, self.cont,
@@ -161,10 +161,29 @@ function fit(self::FMDT, X::Matrix{Float64}, y::Vector{Int64}, continuous::Array
         end
     end
 
-    println("RAMBOD RAMBOD")
-    println(self.cPoints)
-
     self.fSets = []
+
+    for (k,points) in enumerate(self.cPoints)
+        if !continuous[k] == true
+            if self.cPoints[k]
+                points = self.cPoints[k]
+            else
+                points = unique(X[:,k])
+                self.cPoints[k] = points
+            end
+            append!(self.fSets, [createSingletonFuzzySets(points)])
+        elseif length(points) == 0
+            append!(self.fSets, [[]])
+        else
+            if ftype == "triangular"
+                append!(self.fSets, [createTriangularFuzzySets(points, true)])
+            elseif ftype == "trapezoidal"
+                append!(self.fSets, [createTrapezoidalFuzzySets(points, trpzPrm, true)])
+            end
+        end
+    end
+
+    println(self.fSets)
 end
 
 function findContinous(X::Matrix{Float64})
