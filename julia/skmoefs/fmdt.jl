@@ -233,7 +233,46 @@ end
 function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::UniverseFuzzySet=nothing,
                     scoref::Function=calculateFuzzyImpurity, memb_degree::Any=nothing,
                     leftAttributes::Any=nothing, feature::Any=-1)
+    # Attributes are "consumed" on a given path from root to leaf,
+    # Please note: [] != None
+    if isnothing(leftAttributes)
+        leftAttributes = [range(1, self.M)]
+    end
+
+    # Membership degree of the given set of samples for the current node
+    if isnothing(memb_degree)
+        memb_degree = ones(length(rows))
+    end
+
+    # Set up some variables to track the best criteria
+    best_gain = 0.0
+    best_criteria = nothing
+    best_sets = nothing
+
+    # Class counts on the current node
+    class_counts = classCounts(self, rows, memb_degree)
+    if depth == 0
+        self.dom_class = np.argmax(class_counts)
+    end
+
     error("Implementation To Be Continued")
+end
+
+function classCounts(self::FMDT, rows::Matrix{Float64}, memb_degree::Array{Float64})
+    """
+    Returns the sum of the membership degree for each class in a given set.
+    """
+    labels = rows[:, end]
+    println(labels)
+    numClasses = self.K
+    llab = sort(unique(labels))
+    counts = zeros(numClasses)
+    for k in range(1, length(llab))
+        ind = Int64(llab[k]+1)
+        counts[ind] = sum(memb_degree[findall(==(llab[k]), labels)])
+    end
+
+    return counts
 end
 
 function createFMDT(max_depth::Int64=5, discr_minImpurity::Float64=0.02,

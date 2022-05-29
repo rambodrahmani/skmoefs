@@ -332,6 +332,7 @@ class FMDT(object):
         class_counts = self.classCounts(rows, memb_degree)
         if depth == 0:
             self.dom_class = np.argmax(class_counts)
+
         # Stop splitting if
         # - the proportion of dataset of a class k is greater than a threshold max_prop
         # - the cardinality of the dataset in the node is lower then a threshold self.min_num_examples
@@ -397,7 +398,8 @@ class FMDT(object):
         for k in range(len(llab)):
             ind = int(llab[k])
             counts[ind] = np.nan_to_num(np.sum(memb_degree[labels == llab[k]]))
-            # counts[ind] = np.nan_to_num(np.sum((memb_degree!=0)[labels == llab[k]]))
+            # counts[ind] = np.nan_to_num(np.sum((memb_degree!=0)[labels == llab[k]]))7
+
         return counts
 
     def predict(self, X):
