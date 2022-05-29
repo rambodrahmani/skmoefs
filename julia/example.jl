@@ -4,6 +4,7 @@
 
 include("skmoefs/toolbox.jl")
 using PyCall
+using Random
 using ScikitLearn.CrossValidation: train_test_split
 
 # add path for importing local module
@@ -34,7 +35,7 @@ function test2(seed::Int64)
     X, y, attributes, inputs, outputs = load_dataset("newthyroid")
     X_n, y_n = normalize(X, y, attributes)
     my_moefs = skmoefs_py_toolbox.MPAES_RCS(variator=skmoefs_py_rcs.RCSVariator(), initializer=skmoefs_py_rcs.RCSInitializer())
-    my_moefs.cross_val_score(X_n, y_n, num_fold=5)
+    my_moefs.cross_val_score(X_n, y_n, nEvals=1000, num_fold=5)
 end
 
 function test3(dataset::String, algorithm::String, seed::Int64, nEvals::Int64=50000, store::Bool=false)
