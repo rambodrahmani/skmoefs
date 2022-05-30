@@ -88,6 +88,27 @@ function __init__(self::DecisionNode, feature::Int64, fSet::Any, isLeaf::Bool,
     return self
 end
 
+function predict(self::DecisionNode, observation::Matrix{Float64}, currMD::Array{Float64}, numClasses::Int64)
+    if currMD > 0
+        if self.isLeaf
+            return self.results * tNorm(currMD, self.fSet.membershipDegree(observation[self.feature]))
+        else
+            v = zeros(numClasses)
+            childSum = map(child -> predict(child, observation,
+                                tNorm(currMD, membershipDegree(self.fSet, observation[self.feature])),
+                                numClasses
+                            ),
+                        self.child)
+            for k in childSum
+                v += k
+            end
+            return v
+        end
+    else
+        return zeros(numClasses)
+    end
+end
+
 function _printSubTree(self::DecisionNode, indentFactor::Int64=0)
     prefix = prefix = repeat("|    ", indentFactor)
     stringa = ""
@@ -105,6 +126,21 @@ function _printSubTree(self::DecisionNode, indentFactor::Int64=0)
     end
 
     return stringa
+end
+
+function _num_leaves(self::DecisionNode)
+    if self.isLeaf == 1 && sum(self.results) != 0
+        leaf = 1.
+    else
+        leaf = 0.
+    end
+    if !isnothing(self.child)
+        childSum = map(child -> _num_leaves(child), self.child)
+        for k in childSum
+            leaf += k
+        end
+    end
+    return leaf
 end
 
 function createDecisionNode(feature::Int64, fSet::Any, isLeaf::Bool,
@@ -361,27 +397,10 @@ function __multidivide(self::FMDT, rows::Matrix{Float64}, membership::Array{Floa
     for fSet in fSets
         mask = findall(>(0), map((x) -> isInSupport(fSet, x), rows[:,column]))
         append!(row_vect, [rows[mask,:]])
-        append!(memb_vect, [tNorm(self, map((x) -> membershipDegree(fSet, x), rows[mask, column]), membership[mask], "product")])
+        append!(memb_vect, [tNorm(map((x) -> membershipDegree(fSet, x), rows[mask, column]), membership[mask], "product")])
     end
 
     return row_vect, memb_vect
-end
-
-function tNorm(self::FMDT, array1::Array{Float64}, array2::Array{Float64}, tnorm::String="product")
-    """
-    Method for calculating various elemntwise t_norms.
-
-    # Arguments:
-    - `array1`, numpy.array()
-        First array
-    array2, numpy.array()
-        Second array
-    """
-    if tnorm == "product"
-        return array1 .* array2
-    elseif tnorm == "min"
-        return map((x, y) -> min(x, y), array1, array2)
-    end
 end
 
 function predict(self::FMDT, X::Matrix{Float64})
@@ -400,13 +419,13 @@ function predict(self::FMDT, X::Matrix{Float64})
     - `y`: array of shape = [n_samples] or [n_samples, n_outputs]
         The predicted classes, or the predict values.
     """
-    error("To Be Implemented")
+    return [(X -> classify(self, X, self.tree, self.K), X)]
 end
 
-function classify(self::FMDT, observation, tree, numClass)
-    prediction = tree.predict(observation, 1., numClass)
+function classify(self::FMDT, observation::Matrix{Float64}, tree::DecisionNode, numClass::Int64)
+    prediction = predict(tree, observation, 1., numClass)
     if sum(prediction) > 0
-        return np.argmax(prediction)
+        return findmax(prediction)
     else
         return -1
     end
@@ -416,11 +435,11 @@ function predictRF(self::FMDT, obs)
     """
     Prediction for RF.
     """
-    prediction = predict(self, obs, 1., self.K)
+    prediction = predict(self.tree, obs, 1., self.K)
     return prediction
 end
 
-function printTree(self)
+function printTree(self::FMDT)
     """
     Print the decision tree.
     """
@@ -432,7 +451,7 @@ function numLeaves(self::FMDT)
     """
     Number of non-empty leaves in the three.
     """
-    error("To Be Implemented")
+    return _num_leaves(self.tree)
 end
 
 function numNodes(self::FMDT, empty::Bool=false)
@@ -461,4 +480,21 @@ function fitFMDTTree(self::FMDT, X::Matrix{Float64}, y::Vector{Int64}, continuou
                 cPoints::Array{Array{Float64}}=nothing, numClasses::Any=nothing,
                 ftype::Any="triangular", trpzPrm::Any=-1.0)
     fit(self, X, y, continuous, cPoints, numClasses, ftype, trpzPrm)
+end
+
+function tNorm(array1::Array{Float64}, array2::Array{Float64}, tnorm::String="product")
+    """
+    Method for calculating various elemntwise t_norms.
+
+    # Arguments:
+    - `array1`, numpy.array()
+        First array
+    array2, numpy.array()
+        Second array
+    """
+    if tnorm == "product"
+        return array1 .* array2
+    elseif tnorm == "min"
+        return map((x, y) -> min(x, y), array1, array2)
+    end
 end
