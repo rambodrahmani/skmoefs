@@ -171,6 +171,37 @@ function _ruleLength(self::DecisionNode, depth::Int64)
     end
 end
 
+function _csv_ruleMine(self::DecisionNode, numFeat, prec=[], ruleArray=nothing)
+    if isnothing(ruleArray)
+        ruleArray = []
+    end
+    if self.isLeaf
+        if sum(self.results) > 0
+            prec[end] = findmax(self.results)[2]
+            append!(ruleArray, [prec])
+        else
+            # pass
+        end
+    else
+        if isnothing(self.child)
+            # pass
+        else
+            if !isempty(prec)
+                # pass
+            else
+                prec = zeros(numFeat + 1)
+            end
+            for k in range(1, length(self.child))
+                precL = prec[:]
+                precL[self.child[k].feature] = self.child[k].fSet.index + 1
+                _csv_ruleMine(self.child[k], numFeat, precL[:], ruleArray)
+            end
+        end
+    end
+
+    return ruleArray
+end
+
 function createDecisionNode(feature::Int64, fSet::Any, isLeaf::Bool,
     results::Array{Float64}, weight::Float64, child::Any=nothing)
     return __init__(DecisionNode(), feature, fSet, isLeaf, results, weight, child)
@@ -451,7 +482,7 @@ end
 function classify(self::FMDT, observation::Matrix{Float64}, tree::DecisionNode, numClass::Int64)
     prediction = predict(tree, observation, 1., numClass)
     if sum(prediction) > 0
-        return findmax(prediction)
+        return findmax(prediction)[2]
     else
         return -1
     end
