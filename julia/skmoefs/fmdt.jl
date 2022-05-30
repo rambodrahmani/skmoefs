@@ -153,6 +153,7 @@ function _numDescendants(self::DecisionNode, empty::Bool)
     if self.isLeaf
         if (sum(self.results) <= 0) && (!empty)
             return 0
+        end
         return 1.
     else
         return 1 + sum([_numDescendants(child, empty) for child in self.child])
@@ -372,7 +373,6 @@ function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::Any=
             cCounts = [classCounts(self, r, m) for (r,m) in zip(row_vect, memb_vect)]
             I = [scoref(c, sum(c)) for c in cCounts]
             gain = current_score - sum(pj .* I)
-            println(gain)
         end
 
         if gain > best_gain
@@ -389,7 +389,6 @@ function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::Any=
         child_list = []
         filter!(e->e≠leftAttributes[col_index], leftAttributes)
         for k in range(1, length(memb_val))
-            println(k)
             append!(child_list,
                     [buildtree(self, row_vect[k], depth + 1, self.fSets[best_criteria][k], 
                         calculateFuzzyImpurity, memb_val[k], leftAttributes[:], best_criteria)]
