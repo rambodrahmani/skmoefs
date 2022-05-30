@@ -428,32 +428,34 @@ class FMDT(object):
         return np.array(list(map(lambda X: self.classify(X, self.tree, self.K), X)))
 
     def predictRF(self, obs):
-        """Prediction for RF.
+        """
+        Prediction for RF.
         """
         prediction = self.tree.predict(obs, 1., self.K)
         return prediction
 
     def printTree(self):
-        """Print the decision tree.
         """
-
+        Print the decision tree.
+        """
         stringTree = "Fuzzy Decision tree \n" + self.tree._printSubTree(0)
-
         print(stringTree)
 
     def numLeaves(self):
-        """ Number of non-empty leaves in the three.
+        """
+        Number of non-empty leaves in the three.
         """
         return self.tree._num_leaves()
 
     def numNodes(self, empty=False):
-        """Number of nodes in the three.
         """
-
+        Number of nodes in the three.
+        """
         return np.sum(list(map(lambda x: x._numDescendants(empty), self.tree._sons())))
     
     def totalRuleLength(self):
-        """Rule length.
+        """
+        Rule length.
         """
         return self.tree._ruleLength(depth=0)
 

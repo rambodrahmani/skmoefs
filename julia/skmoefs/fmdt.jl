@@ -143,6 +143,33 @@ function _num_leaves(self::DecisionNode)
     return leaf
 end
 
+function _sons(self::DecisionNode)
+    array = []
+    array = self.child
+    return array
+end
+
+function _numDescendants(self::DecisionNode, empty::Bool)
+    if self.isLeaf
+        if (sum(self.results) <= 0) && (!empty)
+            return 0
+        return 1.
+    else
+        return 1 + sum([_numDescendants(child, empty) for child in self.child])
+    end
+end
+
+function _ruleLength(self::DecisionNode, depth::Int64)
+    if self.isLeaf
+        if (sum(self.results) <= 0)
+            return 0.
+        end
+        return depth
+    else
+        return depth + sum([_ruleLength(child, depth+1) for child in self.child])
+    end
+end
+
 function createDecisionNode(feature::Int64, fSet::Any, isLeaf::Bool,
     results::Array{Float64}, weight::Float64, child::Any=nothing)
     return __init__(DecisionNode(), feature, fSet, isLeaf, results, weight, child)
@@ -458,14 +485,14 @@ function numNodes(self::FMDT, empty::Bool=false)
     """
     Number of nodes in the three.
     """
-    error("To Be Implemented")
+    return sum([(map(x -> _numDescendants(x, empty), _sons(self.tree)))])
 end
 
 function totalRuleLength(self::FMDT)
     """
     Rule length.
     """
-    error("To Be Implemented")
+    return _ruleLength(self.tree, 0)
 end
 
 function createFMDT(max_depth::Int64=5, discr_minImpurity::Float64=0.02,
