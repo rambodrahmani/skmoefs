@@ -2,6 +2,7 @@
     Fuzzy Decision Tree for generating the initial set of rules.
 """
 
+include("porting.jl")
 include("fuzzysets/UniverseFuzzySet.jl")
 include("fuzzysets/SingletonFuzzySet.jl")
 include("fuzzysets/TriangularFuzzySet.jl")
@@ -386,7 +387,7 @@ function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::Any=
     # - there are no attributes left    
     if (!isempty(findall(>(0), (class_counts / Float64(sum(class_counts))) .>= self.max_prop))) ||
         sum(class_counts) < self.min_num_examples || isempty(leftAttributes)
-        return createDecisionNode(feature, fSet, true, class_counts / Float64(sum(class_counts)),
+        return createDecisionNode(feature, fSet, true, nan_to_num(class_counts / Float64(sum(class_counts))),
                                 sum(memb_degree))
     end
 
@@ -425,9 +426,9 @@ function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::Any=
                         calculateFuzzyImpurity, memb_val[k], leftAttributes[:], best_criteria)]
             )
         end
-        return createDecisionNode(feature, fSet, false, (class_counts / Float64(sum(class_counts))), sum(memb_degree), child_list)
+        return createDecisionNode(feature, fSet, false, nan_to_num(class_counts / Float64(sum(class_counts))), sum(memb_degree), child_list)
     else
-        return createDecisionNode(feature, fSet, true, (class_counts / Float64(sum(class_counts))), sum(memb_degree))
+        return createDecisionNode(feature, fSet, true, nan_to_num(class_counts / Float64(sum(class_counts))), sum(memb_degree))
     end
 end
 
@@ -441,7 +442,7 @@ function classCounts(self::FMDT, rows::Matrix{Float64}, memb_degree::Array{Float
     counts = zeros(numClasses)
     for k in range(1, length(llab))
         ind = Int64(llab[k]+1)
-        counts[ind] = sum(memb_degree[findall(==(llab[k]), labels)])
+        counts[ind] = nan_to_num(sum(memb_degree[findall(==(llab[k]), labels)]))
     end
 
     return counts

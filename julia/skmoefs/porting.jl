@@ -13,3 +13,8 @@ indicating that an object behaves as an N-dimensional array for broadcasting.
 """
 isscalar(x::T) where T = isscalar(T)
 isscalar(::Type{T}) where T = BroadcastStyle(T) isa Broadcast.DefaultArrayStyle{0}
+
+"""
+Replace NaN with zero.
+"""
+nan_to_num(v) = map(x -> isnan(x) ? zero(x) : x, v)

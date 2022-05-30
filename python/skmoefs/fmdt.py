@@ -399,7 +399,6 @@ class FMDT(object):
         for k in range(len(llab)):
             ind = int(llab[k])
             counts[ind] = np.nan_to_num(np.sum(memb_degree[labels == llab[k]]))
-            # counts[ind] = np.nan_to_num(np.sum((memb_degree!=0)[labels == llab[k]]))7
 
         return counts
 
