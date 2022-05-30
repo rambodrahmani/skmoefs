@@ -283,6 +283,8 @@ function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::Univ
     for col in leftAttributes
         if !isempty(self.fSets[col])
             row_vect, memb_vect = __multidivide(self, rows, memb_degree, col, self.fSets[col])
+            classes = [sum(k) for k in memb_vect]
+            println(classes)
         end
     end
 end
