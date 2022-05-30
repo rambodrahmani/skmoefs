@@ -175,6 +175,8 @@ end
 
 function _initialize(self::MPAES_RCS, X::Matrix{Float64}, y::Array{Int64})
     fit_tree(self.initializer, X, y)
+    J = get_rules(self.initializer)
+    splits = get_splits(self.initializer)
 
     error("Implementation To Be Continued.")
 end
