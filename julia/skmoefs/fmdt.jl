@@ -88,6 +88,25 @@ function __init__(self::DecisionNode, feature::Int64, fSet::Any, isLeaf::Bool,
     return self
 end
 
+function _printSubTree(self::DecisionNode, indentFactor::Int64=0)
+    prefix = prefix = repeat("|    ", indentFactor)
+    stringa = ""
+    if self.isLeaf
+        stringa *= " : " * string(self.results)
+    else
+        if isnothing(self.child)
+            stringa *= ""
+        else
+            for k in range(1, length(self.child))
+                stringa *= "\n" * prefix * "Feature: " * string(self.child[k].feature) * " - [ " * string(self.child[k].fSet) * " ]"
+                stringa *= _printSubTree(self.child[k], indentFactor + 1)
+            end
+        end
+    end
+
+    return stringa
+end
+
 function createDecisionNode(feature::Int64, fSet::Any, isLeaf::Bool,
     results::Array{Float64}, weight::Float64, child::Any=nothing)
     return __init__(DecisionNode(), feature, fSet, isLeaf, results, weight, child)
@@ -114,9 +133,10 @@ mutable struct FMDT
     fSets::Array{Any}
     cPoints::Array{Array{Float64}, 1}
     dom_class::Int64
+    tree::DecisionNode
 end
 
-FMDT() = FMDT(5, 0.02, 0.01, 0.01, 2, 1.0, true, 0, true, "all", 0, [], 0, 0, [], [], 0)
+FMDT() = FMDT(5, 0.02, 0.01, 0.01, 2, 1.0, true, 0, true, "all", 0, [], 0, 0, [], [], 0, DecisionNode())
 
 function __init__(self::FMDT, max_depth::Int64=5, discr_minImpurity::Float64=0.02,
                 discr_minGain::Float64=0.01, minGain::Float64=0.01, min_num_examples::Int64=2,
@@ -240,7 +260,7 @@ function fit(self::FMDT, X::Matrix{Float64}, y::Vector{Int64}, continuous::Array
     return self
 end
 
-function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::UniverseFuzzySet=nothing,
+function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::Any=nothing,
                     scoref::Function=calculateFuzzyImpurity, memb_degree::Any=nothing,
                     leftAttributes::Any=nothing, feature::Any=-1)
     # Attributes are "consumed" on a given path from root to leaf,
@@ -280,12 +300,41 @@ function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::Univ
 
     # Iterate among features
     gain = best_gain
+    col_index = 0
     for col in leftAttributes
         if !isempty(self.fSets[col])
             row_vect, memb_vect = __multidivide(self, rows, memb_degree, col, self.fSets[col])
             classes = [sum(k) for k in memb_vect]
-            println(classes)
+            pj = classes / sum(classes)
+            cCounts = [classCounts(self, r, m) for (r,m) in zip(row_vect, memb_vect)]
+            I = [scoref(c, sum(c)) for c in cCounts]
+            gain = current_score - sum(pj .* I)
+            println(gain)
         end
+
+        if gain > best_gain
+            best_gain = gain
+            best_criteria = col
+            best_sets = (memb_vect, row_vect)
+        end
+
+        col_index = col
+    end
+
+    if (best_gain > self.minGain) && (depth < self.max_depth)
+        memb_val, row_vect = best_sets
+        child_list = []
+        filter!(e->e≠leftAttributes[col_index], leftAttributes)
+        for k in range(1, length(memb_val))
+            println(k)
+            append!(child_list,
+                    [buildtree(self, row_vect[k], depth + 1, self.fSets[best_criteria][k], 
+                        calculateFuzzyImpurity, memb_val[k], leftAttributes[:], best_criteria)]
+            )
+        end
+        return createDecisionNode(feature, fSet, false, (class_counts / Float64(sum(class_counts))), sum(memb_degree), child_list)
+    else
+        return createDecisionNode(feature, fSet, true, (class_counts / Float64(sum(class_counts))), sum(memb_degree))
     end
 end
 
@@ -318,7 +367,7 @@ function __multidivide(self::FMDT, rows::Matrix{Float64}, membership::Array{Floa
     return row_vect, memb_vect
 end
 
-function tNorm(elf::FMDT, array1::Array{Float64}, array2::Array{Float64}, tnorm::String="product")
+function tNorm(self::FMDT, array1::Array{Float64}, array2::Array{Float64}, tnorm::String="product")
     """
     Method for calculating various elemntwise t_norms.
 
@@ -333,6 +382,71 @@ function tNorm(elf::FMDT, array1::Array{Float64}, array2::Array{Float64}, tnorm:
     elseif tnorm == "min"
         return map((x, y) -> min(x, y), array1, array2)
     end
+end
+
+function predict(self::FMDT, X::Matrix{Float64})
+    """
+    Predict class or regression value for X.
+
+    For a classification model, the predicted class for each sample in X is
+    returned. For a regression model, the predicted value based on X is
+    returned.
+
+    # Arguments
+    - `X::Matrix{Float64}`: shape = [n_samples, n_features]
+        The input samples.
+
+    # Returns
+    - `y`: array of shape = [n_samples] or [n_samples, n_outputs]
+        The predicted classes, or the predict values.
+    """
+    error("To Be Implemented")
+end
+
+function classify(self::FMDT, observation, tree, numClass)
+    prediction = tree.predict(observation, 1., numClass)
+    if sum(prediction) > 0
+        return np.argmax(prediction)
+    else
+        return -1
+    end
+end
+
+function predictRF(self::FMDT, obs)
+    """
+    Prediction for RF.
+    """
+    prediction = predict(self, obs, 1., self.K)
+    return prediction
+end
+
+function printTree(self)
+    """
+    Print the decision tree.
+    """
+    stringTree = "Fuzzy Decision tree \n" * _printSubTree(self.tree, 0)
+    print(stringTree)
+end
+
+function numLeaves(self::FMDT)
+    """
+    Number of non-empty leaves in the three.
+    """
+    error("To Be Implemented")
+end
+
+function numNodes(self::FMDT, empty::Bool=false)
+    """
+    Number of nodes in the three.
+    """
+    error("To Be Implemented")
+end
+
+function totalRuleLength(self::FMDT)
+    """
+    Rule length.
+    """
+    error("To Be Implemented")
 end
 
 function createFMDT(max_depth::Int64=5, discr_minImpurity::Float64=0.02,

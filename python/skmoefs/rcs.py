@@ -270,6 +270,7 @@ class RCSInitializer:
         continuous = [True] * x.shape[1]
         cPoints = self.discretizer.run(x, continuous)
         self.fTree = self.tree.fit(x, y, cPoints=cPoints, continuous=continuous)
+        self.fTree.printTree()
         self.rules = np.array(self.fTree.tree._csv_ruleMine(x.shape[1], []))
         self.rules[:, -1] -= 1
         self.splits = np.array(self.fTree.cPoints)

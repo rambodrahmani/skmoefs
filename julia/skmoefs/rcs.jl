@@ -66,6 +66,7 @@ function fit_tree(self::RCSInitializer, X::Matrix{Float64}, y::Vector{Int64})
     continuous = ones(Bool, size(X)[2])
     cPoints = runFuzzyDiscretizer(self.discretizer, X, continuous)
     self.fTree = fitFMDTTree(self.tree, X, y, continuous, cPoints)
+    printTree(self.fTree)
 
     error("Implementation To Be Continued.")
 end

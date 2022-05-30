@@ -352,11 +352,11 @@ class FMDT(object):
             if list(self.fSets[col]):
                 row_vect, memb_vect = self.__multidivide(rows, memb_degree, col, self.fSets[col])
                 classes = np.array([np.sum(k) for k in memb_vect])
-                print(classes)
                 pj = classes / np.sum(classes)
                 cCounts = [self.classCounts(r, m) for r, m in zip(row_vect, memb_vect)]
                 I = np.array([scoref.calculate(c, sum(c)) for c in cCounts])
                 gain = current_score - np.sum(pj * I)
+                print(gain)
 
             if gain > best_gain:
                 best_gain = gain
@@ -368,6 +368,9 @@ class FMDT(object):
             child_list = []
             leftAttributes.pop(leftAttributes.index(col))
             for k in range(len(memb_val)):
+                print(k)
+                print(leftAttributes)
+                print(leftAttributes[:])
                 child_list.append(
                     self.buildtree(rows=row_vect[k], memb_degree=memb_val[k], leftAttributes=leftAttributes[:],
                                    depth=depth + 1, feature=best_criteria,fSet = self.fSets[best_criteria][k]))
