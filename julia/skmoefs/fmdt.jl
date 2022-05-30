@@ -179,7 +179,7 @@ function _csv_ruleMine(self::DecisionNode, numFeat, prec=[], ruleArray=nothing)
     if self.isLeaf
         if sum(self.results) > 0
             prec[end] = findmax(self.results)[2]
-            append!(ruleArray, [prec])
+            append!(ruleArray, [convert(Array{Int64, 1}, prec)])
         else
             # pass
         end

@@ -18,14 +18,23 @@ function make_path(path::String)
 end
 
 function is_object_present(name)
+    """
+    Check if file exists on the filesystem.
+    """
     return isfile(name * ".obj")
 end
 
 function store_object(filename::String, name::String, object::Any)
+    """
+    Save object as Julia Data format (JLD)
+    """
     save(filename * ".jld", name, object)
 end
 
 function load_object(filename::String)
+    """
+    Load JLD file to object.
+    """
     return load(filename * ".jld")
 end
 
