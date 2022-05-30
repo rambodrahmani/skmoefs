@@ -61,16 +61,18 @@ mutable struct DecisionNode
     """
     Decision Node.
     """
-    feature
-    fSet
-    isLeaf
-    results
-    child
-    weight
+    feature::Int64
+    fSet::Any
+    isLeaf::Bool
+    results::Array{Float64}
+    weight::Float64
+    child::Any
 end
 
-function __init__(self::DecisionNode, feature=-1, fSet=nothing, isLeaf::Bool=false,
-            results=nothing, child=nothing, weight=nothing)
+DecisionNode() = DecisionNode(0, nothing, false, [], 0.0, nothing)
+
+function __init__(self::DecisionNode, feature::Int64, fSet::Any, isLeaf::Bool,
+            results::Array{Float64}, weight::Float64, child::Any=nothing)
     """
     # Arguments:
      - `feature`: feature corresponding to the set on the node
@@ -82,6 +84,13 @@ function __init__(self::DecisionNode, feature=-1, fSet=nothing, isLeaf::Bool=fal
     self.results = results
     self.child = child
     self.weight = weight
+
+    return self
+end
+
+function createDecisionNode(feature::Int64, fSet::Any, isLeaf::Bool,
+    results::Array{Float64}, weight::Float64, child::Any=nothing)
+    return __init__(DecisionNode(), feature, fSet, isLeaf, results, weight, child)
 end
 
 mutable struct FMDT
@@ -237,7 +246,7 @@ function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::Univ
     # Attributes are "consumed" on a given path from root to leaf,
     # Please note: [] != None
     if isnothing(leftAttributes)
-        leftAttributes = [range(1, self.M)]
+        leftAttributes = collect(1:self.M)
     end
 
     # Membership degree of the given set of samples for the current node
@@ -259,14 +268,23 @@ function buildtree(self::FMDT, rows::Matrix{Float64}, depth::Int64=0, fSet::Univ
     # Stop splitting if
     # - the proportion of dataset of a class k is greater than a threshold max_prop
     # - the cardinality of the dataset in the node is lower then a threshold self.min_num_examples
-    # - there are no attributes left
-    if (np.any(class_counts / float(np.sum(class_counts)) >= self.max_prop) ||
-                sum(class_counts) < self.min_num_examples || leftAttributes == [])
-        return decisionNode(results=np.nan_to_num(class_counts / float(np.sum(class_counts))), feature=feature,
-                            isLeaf=True, weight=memb_degree.sum(), fSet = fSet)
+    # - there are no attributes left    
+    if (!isempty(findall(>(0), (class_counts / Float64(sum(class_counts))) .>= self.max_prop))) ||
+        sum(class_counts) < self.min_num_examples || isempty(leftAttributes)
+        return createDecisionNode(feature, fSet, true, class_counts / Float64(sum(class_counts)),
+                                sum(memb_degree))
     end
 
-    error("Implementation To Be Continued")
+    # Calculate entropy for the node
+    current_score = scoref(class_counts, sum(class_counts))
+
+    # Iterate among features
+    gain = best_gain
+    for col in leftAttributes
+        if !isempty(self.fSets[col])
+            row_vect, memb_vect = __multidivide(self, rows, memb_degree, col, self.fSets[col])
+        end
+    end
 end
 
 function classCounts(self::FMDT, rows::Matrix{Float64}, memb_degree::Array{Float64})
@@ -274,7 +292,6 @@ function classCounts(self::FMDT, rows::Matrix{Float64}, memb_degree::Array{Float
     Returns the sum of the membership degree for each class in a given set.
     """
     labels = rows[:, end]
-    println(labels)
     numClasses = self.K
     llab = sort(unique(labels))
     counts = zeros(numClasses)
@@ -284,6 +301,36 @@ function classCounts(self::FMDT, rows::Matrix{Float64}, memb_degree::Array{Float
     end
 
     return counts
+end
+
+function __multidivide(self::FMDT, rows::Matrix{Float64}, membership::Array{Float64},
+                    column::Int64, fSets::Any)
+    memb_vect = []
+    row_vect = []
+    for fSet in fSets
+        mask = findall(>(0), map((x) -> isInSupport(fSet, x), rows[:,column]))
+        append!(row_vect, [rows[mask,:]])
+        append!(memb_vect, [tNorm(self, map((x) -> membershipDegree(fSet, x), rows[mask, column]), membership[mask], "product")])
+    end
+
+    return row_vect, memb_vect
+end
+
+function tNorm(elf::FMDT, array1::Array{Float64}, array2::Array{Float64}, tnorm::String="product")
+    """
+    Method for calculating various elemntwise t_norms.
+
+    # Arguments:
+    - `array1`, numpy.array()
+        First array
+    array2, numpy.array()
+        Second array
+    """
+    if tnorm == "product"
+        return array1 .* array2
+    elseif tnorm == "min"
+        return map((x, y) -> min(x, y), array1, array2)
+    end
 end
 
 function createFMDT(max_depth::Int64=5, discr_minImpurity::Float64=0.02,

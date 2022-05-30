@@ -46,7 +46,7 @@ function membershipDegree(self::TriangularFuzzySet, x::Float64)
         if (x <= self.b && self.a == -Inf) || (x >= self.b && self.c == Inf)
             return 1.0
          elseif x  <= self.b
-             uAi = (x - self.a) / self__leftSupportWidth
+            uAi = (x - self.a) / self.__leftSupportWidth
          else 
             uAi = 1.0 - ((x - self.b) / self.__rightSupportWidth)
         end

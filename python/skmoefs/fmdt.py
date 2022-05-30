@@ -339,9 +339,9 @@ class FMDT(object):
         # - there are no attributes left
         with np.errstate(divide='ignore', invalid='ignore'):
             if (np.any(class_counts / float(np.sum(class_counts)) >= self.max_prop) or
-                        np.sum(class_counts) < self.minNumExamples or leftAttributes == []):
+                np.sum(class_counts) < self.minNumExamples or leftAttributes == []):
                 return decisionNode(results=np.nan_to_num(class_counts / float(np.sum(class_counts))), feature=feature,
-                                    isLeaf=True, weight=memb_degree.sum(), fSet = fSet)
+                                    isLeaf=True, weight=memb_degree.sum(), fSet=fSet)
 
         # Calculate entropy for the node
         current_score = scoref.calculate(class_counts, sum(class_counts))
@@ -382,7 +382,7 @@ class FMDT(object):
         row_vect = []
         for fSet in fSets:
             mask = list(map(lambda x: fSet.isInSupport(x), rows[:,column]))
-            row_vect.append(rows[mask,:])
+            row_vect.append(rows[mask, :])
             memb_vect.append(FMDT.tNorm(list(map(lambda x: fSet.membershipDegree(x), rows[mask,column])), membership[mask]))
 
         return row_vect, memb_vect
