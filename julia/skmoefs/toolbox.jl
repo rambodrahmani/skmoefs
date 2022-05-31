@@ -191,6 +191,7 @@ end
 
 function fit(self::MPAES_RCS, X::Matrix{Float64}, y::Array{Int64}, max_evals::Int64=10000)
     _initialize(self, X, y)
+    _choose_algorithm(self)
     
     error("Implementation To Be Continued.")
 end

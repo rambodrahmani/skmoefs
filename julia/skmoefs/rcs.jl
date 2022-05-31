@@ -4,6 +4,10 @@
 """
 
 include("fmdt.jl")
+using PyCall
+
+# import python modules
+platypus = pyimport("platypus")
 
 mutable struct RCSVariator
     p_crb::Float64
@@ -86,13 +90,27 @@ mutable struct RCSProblem
     M::Int64
     Mmax::Int64
     Mmin::Int64
+    F::Int64
+    TFmax::Int64
+    J::Matrix{Int64}
+    initialBfs::Array{Array{Float64}}
+    G::Array{Int64}
+    objectives::Array{String}
+    crb_l::Int64
+    gran_l::Int64
+    cdb_l::Int64
+    problem::PyObject
+    types::Array{Any}
+    directions::Array{Int64}
     train_x::Matrix{Float64}
     train_y::Array{Int64}
 end
 
-RCSProblem() = RCSProblem(0, 0, 0, 0, Array{Float64, 2}(undef, 1, 1), [])
+RCSProblem() = RCSProblem(0, 0, 0, 0, 0, 0, Array{Int64, 2}(undef, 1, 1), [],
+                        [], [], 0, 0, 0, platypus.Problem, [], [], Array{Float64, 2}(undef, 1, 1), [])
 
-function __init__(self::RCSProblem, Amin::Int64, M::Int64, J::Matrix{Int64})
+function __init__(self::RCSProblem, Amin::Int64, M::Int64, J::Matrix{Int64},
+                splits::Array{Array{Float64}}, objectives::Array{String}, TFmax::Int64=7)
     """
     @param Amin: minimum number of antecedents per rule
     @param M: maximum number of rules per individual
@@ -106,6 +124,34 @@ function __init__(self::RCSProblem, Amin::Int64, M::Int64, J::Matrix{Int64})
     self.M = M
     self.Mmax = size(J)[1]
     self.Mmin = length(unique(J[:, end]))
+    self.M = clamp(self.M, self.Mmin, self.Mmax)
+    self.F = size(J)[2] - 1
+    self.TFmax = TFmax
+
+    self.J = J
+    self.initialBfs = splits
+    self.G = [length(split) for split in splits]
+
+    self.objectives = objectives
+    self.crb_l = 2 * self.M
+    self.gran_l = self.F
+    self.cdb_l = self.gran_l * self.TFmax
+
+    # Creation of the problem and assignment of the types
+    #      CRB: rule part
+    #      Granularities: number of fuzzy sets
+    #      CDB: database part
+    self.problem = platypus.Problem(self.crb_l + self.gran_l + self.cdb_l, length(objectives))
+    self.types = []
+    for _ in range(1, self.M)
+        push!(self.types, platypus.Real(0, self.M))
+        push!(self.types, platypus.Binary(self.F))
+    end
+    [push!(self.types, platypus.Real(2, self.TFmax)) for _ in range(1, self.F)]
+    [push!(self.types, platypus.Real(0, 1)) for _ in range(1, self.cdb_l)]
+
+    # Maximize objectives by minimizing opposite
+    self.directions = [platypus.Problem.MINIMIZE for _ in range(1, length(objectives))]
 
     return self
 end
@@ -117,5 +163,5 @@ end
 
 function CreateRCSProblem(Amin::Int64, M::Int64, J::Matrix{Int64}, splits::Array{Array{Float64}},
                     objectives::Array{String}, TFmax::Int64=7)
-    return __init__(RCSProblem(), Amin, M, J)
+    return __init__(RCSProblem(), Amin, M, J, splits, objectives, TFmax)
 end
