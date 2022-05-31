@@ -206,3 +206,36 @@ end
 function createSPEA2S()
     return initialize(SPEA2S())
 end
+
+mutable struct EpsMOEAS
+    """
+        Extended version of Epsilon-MOEA algorithm with added support for snapshots.
+    """
+    snapshots::Array{Any}
+    algorithm::PyObject
+end
+
+EpsMOEAS() = EpsMOEAS([], platypus.algorithms.EpsMOEA)
+
+function initialize(self::EpsMOEAS)
+    self.snapshots = []
+    algorithm = platypus.algorithms.EpsMOEA()
+    algorithm.initialize()
+
+    return self
+end
+
+function iterate(self::EpsMOEAS)
+    if (self.algorithm.nfe % 100) == 0
+        print("Fitness evaluations " * self.algorithm.nfe)
+    end
+    if length(self.snapshots) < length(milestones) && self.algorithm.nfe >= milestones[length(self.snapshots)]
+        print("new milestone at " * string(self.algorithm.nfe))
+        append!(self.snapshots, self.algorithm.population)
+    end
+    self.algorithm.iterate()
+end
+
+function createEpsMOEAS()
+    return initialize(EpsMOEAS())
+end
