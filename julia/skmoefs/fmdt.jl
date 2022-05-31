@@ -200,7 +200,7 @@ function _csv_ruleMine(self::DecisionNode, numFeat, prec=[], ruleArray=nothing)
         end
     end
 
-    return ruleArray
+    return copy(hcat(ruleArray...)')
 end
 
 function createDecisionNode(feature::Int64, fSet::Any, isLeaf::Bool,
