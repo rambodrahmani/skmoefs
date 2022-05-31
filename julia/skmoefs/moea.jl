@@ -77,7 +77,7 @@ end
 
 mutable struct GDE3S
     """
-        Extended version of GDE2 algorithm with added support for snapshots.
+        Extended version of GDE3 algorithm with added support for snapshots.
     """
     snapshots::Array{Any}
     algorithm::PyObject
@@ -106,4 +106,37 @@ end
 
 function createGDE3S()
     return initialize(GDE3S())
+end
+
+mutable struct IBEAS
+    """
+        Extended version of IBEA algorithm with added support for snapshots.
+    """
+    snapshots::Array{Any}
+    algorithm::PyObject
+end
+
+IBEAS() = IBEAS([], platypus.algorithms.IBEA)
+
+function initialize(self::IBEAS)
+    self.snapshots = []
+    algorithm = platypus.algorithms.IBEA()
+    algorithm.initialize()
+
+    return self
+end
+
+function iterate(self::IBEAS)
+    if (self.algorithm.nfe % 100) == 0
+        print("Fitness evaluations " * self.algorithm.nfe)
+    end
+    if length(self.snapshots) < length(milestones) && self.algorithm.nfe >= milestones[length(self.snapshots)]
+        print("new milestone at " * string(self.algorithm.nfe))
+        append!(self.snapshots, self.algorithm.population)
+    end
+    self.algorithm.iterate()
+end
+
+function createIBEAS()
+    return initialize(IBEAS())
 end

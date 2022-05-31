@@ -173,7 +173,7 @@ class SPEA2S(SPEA2):
 
 class GDE3S(GDE3):
     """
-        Extended version of GDE2 algorithm with added support for snapshots.
+        Extended version of GDE3 algorithm with added support for snapshots.
     """
 
     def initialize(self):
