@@ -140,3 +140,36 @@ end
 function createIBEAS()
     return initialize(IBEAS())
 end
+
+mutable struct MOEADS
+    """
+        Extended version of MOEAD algorithm with added support for snapshots.
+    """
+    snapshots::Array{Any}
+    algorithm::PyObject
+end
+
+MOEADS() = MOEADS([], platypus.algorithms.MOEAD)
+
+function initialize(self::MOEADS)
+    self.snapshots = []
+    algorithm = platypus.algorithms.MOEAD()
+    algorithm.initialize()
+
+    return self
+end
+
+function iterate(self::MOEADS)
+    if (self.algorithm.nfe % 100) == 0
+        print("Fitness evaluations " * self.algorithm.nfe)
+    end
+    if length(self.snapshots) < length(milestones) && self.algorithm.nfe >= milestones[length(self.snapshots)]
+        print("new milestone at " * string(self.algorithm.nfe))
+        append!(self.snapshots, self.algorithm.population)
+    end
+    self.algorithm.iterate()
+end
+
+function createMOEADS()
+    return initialize(MOEADS())
+end
