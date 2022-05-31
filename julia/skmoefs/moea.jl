@@ -28,10 +28,10 @@ function initialize(self::NSGAIIS)
 end
 
 function iterate(self::NSGAIIS)
-    if (self.nfe % 100) == 0
+    if (self.algorithm.nfe % 100) == 0
         println("Fitness evaluations " * self.algorithm.nfe)
     end
-    if length(self.snapshots) < length(milestones) && self.nfe >= milestones[length(self.snapshots)]
+    if length(self.snapshots) < length(milestones) && self.algorithm.nfe >= milestones[length(self.snapshots)]
         print("new milestone at " * string(self.algorithm.nfe))
         append!(self.snapshots, self.algorithm.archive)
     end
@@ -61,11 +61,11 @@ function initialize(self::NSGAIIIS)
 end
 
 function iterate(self::NSGAIIIS)
-    if (self.nfe % 100) == 0
+    if (self.algorithm.nfe % 100) == 0
         print("Fitness evaluations " * self.algorithm.nfe)
     end
-    if length(self.snapshots) < length(milestones) && self.nfe >= milestones[length(self.snapshots)]
-        print("new milestone at " * string(self.nfe))
+    if length(self.snapshots) < length(milestones) && self.algorithm.nfe >= milestones[length(self.snapshots)]
+        print("new milestone at " * string(self.algorithm.nfe))
         append!(self.snapshots, self.algorithm.population)
     end
     self.algorithm.iterate()
@@ -73,4 +73,37 @@ end
 
 function createNSGAIIIS()
     return initialize(NSGAIIIS())
+end
+
+mutable struct GDE3S
+    """
+        Extended version of GDE2 algorithm with added support for snapshots.
+    """
+    snapshots::Array{Any}
+    algorithm::PyObject
+end
+
+GDE3S() = GDE3S([], platypus.algorithms.GDE3)
+
+function initialize(self::GDE3S)
+    self.snapshots = []
+    algorithm = platypus.algorithms.GDE3()
+    algorithm.initialize()
+
+    return self
+end
+
+function iterate(self::GDE3S)
+    if (self.algorithm.nfe % 100) == 0
+        print("Fitness evaluations " * self.algorithm.nfe)
+    end
+    if length(self.snapshots) < length(milestones) && self.algorithm.nfe >= milestones[length(self.snapshots)]
+        print("new milestone at " * string(self.algorithm.nfe))
+        append!(self.snapshots, self.algorithm.population)
+    end
+    self.algorithm.iterate()
+end
+
+function createGDE3S()
+    return initialize(GDE3S())
 end
