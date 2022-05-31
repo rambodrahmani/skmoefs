@@ -31,6 +31,31 @@ function generate(self::MOEAGenerator, problem)
     return solution
 end
 
+function createMOEAGenerator()
+    return __init__(MOEAGenerator())
+end
+
+mutable struct RandomSelector
+    """
+        Randomly selects an individual from the population
+    """
+    selector::PyObject
+end
+
+RandomSelector() = RandomSelector(platypus.Selector)
+
+function __init_(self::RandomSelector)
+    self.selector.__init_()
+end
+
+function select_one(self::RandomSelector, population)
+    return random.choice(population)
+end
+
+function createRandomSelector()
+    return __init__(RandomSelector())
+end
+
 mutable struct NSGAIIS
     """
         Extended version of NSGA2 algorithm with added support for snapshots.
