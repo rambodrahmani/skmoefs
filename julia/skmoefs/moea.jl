@@ -2,6 +2,7 @@
     Multiobjective evolutionary algorithms implementation based on Platypus.
 """
 
+include("rcs.jl")
 using PyCall
 
 # import python modules
@@ -49,11 +50,53 @@ function __init_(self::RandomSelector)
 end
 
 function select_one(self::RandomSelector, population)
-    return random.choice(population)
+    return rand(population)
 end
 
 function createRandomSelector()
     return __init__(RandomSelector())
+end
+
+mutable struct MPAES2_2
+    """
+        M-PEAS(2+2) algorithm implementation.
+    """
+    algorithm::PyObject
+    variator
+    dominance::PyObject
+    archive::PyObject
+end
+
+MPAES2_2() = MPAES2_2(platypus.algorithms.AbstractGeneticAlgorithm,
+                    nothing,
+                    platypus.ParetoDominance,
+                    platypus.AdaptiveGridArchive)
+
+function __init__(self::MPAES2_2, problem::RCSProblem, variator=nothing, capacity::Int64=32,
+                divisions::Int64=8, generator::MOEAGenerator=MOEAGenerator())
+    """
+    :param problem: the problem object which is responsible of creating and evaluating a solution.
+    :param variator: the genetic operator which can comprises elements of cross-over and mutation
+    :param capacity: the maximum number of solutions that can be held by the archive throughout
+        the evolution
+    :param divisions: the number of divisions for the grid within the archive. This value
+        influences how a new solution will replace an existing one
+    :param generator: a MOEA generator to initialize the population/archive
+    """
+
+    algorithm.__init__(problem, population_size=2, generator=generator)
+
+    self.variator = variator
+    self.dominance = platypus.ParetoDominance()
+    self.archive = platypus.AdaptiveGridArchive(capacity, problem.nobjs, divisions)
+
+    # from time to time we take snapshots of the archive for debugging purposes
+    self.snapshots = []
+end
+
+function createMPAES2_2(problem::RCSProblem, variator=nothing, capacity::Int64=32,
+                divisions::Int64=8, generator::MOEAGenerator=MOEAGenerator())
+    return __init__(problem, variator, capacity, divisions, generator)
 end
 
 mutable struct NSGAIIS
