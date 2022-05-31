@@ -29,10 +29,10 @@ end
 
 function iterate(self::NSGAIIS)
     if (self.nfe % 100) == 0
-        println("Fitness evaluations " * self.nfe)
+        println("Fitness evaluations " * self.algorithm.nfe)
     end
     if length(self.snapshots) < length(milestones) && self.nfe >= milestones[length(self.snapshots)]
-        print("new milestone at ", string(self.algorithm.nfe))
+        print("new milestone at " * string(self.algorithm.nfe))
         append!(self.snapshots, self.algorithm.archive)
     end
     self.algorithm.iterate()
@@ -40,4 +40,37 @@ end
 
 function createNSGAIIS()
     return initialize(NSGAIIS())
+end
+
+mutable struct NSGAIIIS
+    """
+        Extended version of NSGA3 algorithm with added support for snapshots.
+    """
+    snapshots::Array{Any}
+    algorithm::PyObject
+end
+
+NSGAIIIS() = NSGAIIIS([], platypus.algorithms.NSGAIII)
+
+function initialize(self::NSGAIIIS)
+    self.snapshots = []
+    algorithm = platypus.algorithms.NSGAIII()
+    algorithm.initialize()
+
+    return self
+end
+
+function iterate(self::NSGAIIIS)
+    if (self.nfe % 100) == 0
+        print("Fitness evaluations " * self.algorithm.nfe)
+    end
+    if length(self.snapshots) < length(milestones) && self.nfe >= milestones[length(self.snapshots)]
+        print("new milestone at " * string(self.nfe))
+        append!(self.snapshots, self.algorithm.population)
+    end
+    self.algorithm.iterate()
+end
+
+function createNSGAIIIS()
+    return initialize(NSGAIIIS())
 end
