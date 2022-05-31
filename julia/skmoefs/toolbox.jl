@@ -202,7 +202,7 @@ function _choose_algorithm(self::MPAES_RCS)
     elseif self.moea_type == "epsmoea"
         self.algorithm = createEpsMOEAS()
     else
-        self.algorithm = createMPAES2_2()
+        self.algorithm = createMPAES2_2(self.problem, self.variator, self.capacity, self.divisions)
     end
 end
 

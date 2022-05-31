@@ -62,17 +62,17 @@ mutable struct MPAES2_2
         M-PEAS(2+2) algorithm implementation.
     """
     algorithm::PyObject
-    variator
+    variator::RCSVariator
     dominance::PyObject
     archive::PyObject
 end
 
 MPAES2_2() = MPAES2_2(platypus.algorithms.AbstractGeneticAlgorithm,
-                    nothing,
+                    RCSVariator(),
                     platypus.ParetoDominance,
                     platypus.AdaptiveGridArchive)
 
-function __init__(self::MPAES2_2, problem::RCSProblem, variator=nothing, capacity::Int64=32,
+function __init__(self::MPAES2_2, problem::RCSProblem, variator::RCSVariator=nothing, capacity::Int64=32,
                 divisions::Int64=8, generator::MOEAGenerator=MOEAGenerator())
     """
     :param problem: the problem object which is responsible of creating and evaluating a solution.
@@ -84,7 +84,7 @@ function __init__(self::MPAES2_2, problem::RCSProblem, variator=nothing, capacit
     :param generator: a MOEA generator to initialize the population/archive
     """
 
-    algorithm.__init__(problem, population_size=2, generator=generator)
+    self.algorithm.__init__(problem, population_size=2, generator=generator)
 
     self.variator = variator
     self.dominance = platypus.ParetoDominance()
@@ -94,9 +94,9 @@ function __init__(self::MPAES2_2, problem::RCSProblem, variator=nothing, capacit
     self.snapshots = []
 end
 
-function createMPAES2_2(problem::RCSProblem, variator=nothing, capacity::Int64=32,
+function createMPAES2_2(problem::RCSProblem, variator::RCSVariator=nothing, capacity::Int64=32,
                 divisions::Int64=8, generator::MOEAGenerator=MOEAGenerator())
-    return __init__(problem, variator, capacity, divisions, generator)
+    return __init__(MPAES2_2(), problem, variator, capacity, divisions, generator)
 end
 
 mutable struct NSGAIIS
