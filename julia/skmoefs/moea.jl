@@ -9,6 +9,28 @@ platypus = pyimport("platypus")
 
 milestones = [500, 1000, 2000, 5000, 10000, 20000, 30000, 40000, 50000, 75000, 100000]
 
+mutable struct MOEAGenerator
+    """
+        Generates the initial population of a Multi-Objective GA.
+    """
+    counter::Int64
+    generator::PyObject
+end
+
+MOEAGenerator() = MOEAGenerator(0, platypus.Generator)
+
+function __init__(self::MOEAGenerator)
+    self.generator.__init__()
+    self.counter = 0
+end
+
+function generate(self::MOEAGenerator, problem)
+    self.counter += 1
+    solution = problem.random()
+
+    return solution
+end
+
 mutable struct NSGAIIS
     """
         Extended version of NSGA2 algorithm with added support for snapshots.
@@ -231,7 +253,7 @@ function iterate(self::EpsMOEAS)
     end
     if length(self.snapshots) < length(milestones) && self.algorithm.nfe >= milestones[length(self.snapshots)]
         print("new milestone at " * string(self.algorithm.nfe))
-        append!(self.snapshots, self.algorithm.population)
+        append!(self.snapshots, self.algorithm.archive)
     end
     self.algorithm.iterate()
 end
