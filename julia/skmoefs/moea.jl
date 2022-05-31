@@ -173,3 +173,36 @@ end
 function createMOEADS()
     return initialize(MOEADS())
 end
+
+mutable struct SPEA2S
+    """
+        Extended version of SPEA2 algorithm with added support for snapshots.
+    """
+    snapshots::Array{Any}
+    algorithm::PyObject
+end
+
+SPEA2S() = SPEA2S([], platypus.algorithms.SPEA2)
+
+function initialize(self::SPEA2S)
+    self.snapshots = []
+    algorithm = platypus.algorithms.SPEA2()
+    algorithm.initialize()
+
+    return self
+end
+
+function iterate(self::SPEA2S)
+    if (self.algorithm.nfe % 100) == 0
+        print("Fitness evaluations " * self.algorithm.nfe)
+    end
+    if length(self.snapshots) < length(milestones) && self.algorithm.nfe >= milestones[length(self.snapshots)]
+        print("new milestone at " * string(self.algorithm.nfe))
+        append!(self.snapshots, self.algorithm.population)
+    end
+    self.algorithm.iterate()
+end
+
+function createSPEA2S()
+    return initialize(SPEA2S())
+end
