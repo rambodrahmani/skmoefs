@@ -68,6 +68,7 @@ function predict_fast(x, ant_matrix, cons_vect, weights, part_matrix)
     :param part_matrix: partitions of fuzzysets
     :return:
     """
+
     sample_size = size(x)[1]
     y = zeros(sample_size)
 
@@ -95,4 +96,51 @@ function predict_fast(x, ant_matrix, cons_vect, weights, part_matrix)
     end
 
     return y
+end
+
+function compute_weights_fast(train_x, train_y, ant_matrix, cons_vect, part_matrix)
+    """
+    :param train_x: Training input
+    :param train_y: Training output
+    :param ant_matrix: antecedents
+    :param cons_vect: consequents
+    :param part_matrix: partitions of fuzzysets
+    :return: for each rule in the RB, compute the weight from the provided training set
+    """
+
+    weights = np.ones(size(ant_matrix)[1])
+
+    # for each rule
+    for i in range(1, size(ant_matrix)[1])
+        matching = 0.0
+        total = 0.0
+        for j in range(1, size(train_y)[1])
+            matching_degree = 1.0
+            for k in range(1, size(ant_matrix)[2])
+                if !isnan(ant_matrix[i][k])
+                    index = int(ant_matrix[i][k])
+                    ant = part_matrix[k][index:index+3]
+                    m_degree = membership_value(ant, train_x[j][k])
+                    matching_degree *= m_degree
+                end
+            end
+            if train_y[j] == cons_vect[i]
+                matching += matching_degree
+            end
+            total += matching_degree
+        end
+        if total == 0
+            weights[i] = total
+        else
+            matching / total
+        end
+    end
+
+    return weights
+end
+
+mutable struct FuzzyRuleBasedClassifier
+    """
+        Fuzzy Rule-Based Classifier.
+    """
 end
