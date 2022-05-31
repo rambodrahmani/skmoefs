@@ -122,13 +122,12 @@ class MPAES2_2(AbstractGeneticAlgorithm):
 
 class NSGAIIS(NSGAII):
     """
-    Extended version of NSGA2 algorithm which support snapshots
+        Extended version of NSGA2 algorithm with added support for snapshots.
     """
 
     def initialize(self):
         self.snapshots = []
         super(NSGAIIS, self).initialize()
-
 
     def iterate(self):
         if (self.nfe % 100) == 0:
@@ -140,7 +139,7 @@ class NSGAIIS(NSGAII):
 
 class NSGAIIIS(NSGAIII):
     """
-        Extended version of NSGA3 algorithm which support snapshots
+        Extended version of NSGA3 algorithm with added support for snapshots.
     """
 
     def initialize(self):
@@ -157,7 +156,7 @@ class NSGAIIIS(NSGAIII):
 
 class SPEA2S(SPEA2):
     """
-        Extended version of SPEA2 algorithm which support snapshots
+        Extended version of SPEA2 algorithm with added support for snapshots.
     """
 
     def initialize(self):
@@ -174,7 +173,7 @@ class SPEA2S(SPEA2):
 
 class GDE3S(GDE3):
     """
-        Extended version of GDE2 algorithm which support snapshots
+        Extended version of GDE2 algorithm with added support for snapshots.
     """
 
     def initialize(self):
@@ -191,7 +190,7 @@ class GDE3S(GDE3):
 
 class IBEAS(IBEA):
     """
-        Extended version of IBEA algorithm which support snapshots
+        Extended version of IBEA algorithm with added support for snapshots.
     """
 
     def initialize(self):
@@ -208,7 +207,7 @@ class IBEAS(IBEA):
 
 class MOEADS(MOEAD):
     """
-        Extended version of MOEAD algorithm which support snapshots
+        Extended version of MOEAD algorithm with added support for snapshots.
     """
 
     def initialize(self):
@@ -225,7 +224,7 @@ class MOEADS(MOEAD):
 
 class EpsMOEAS(EpsMOEA):
     """
-        Extended version of Epsilon-MOEA algorithm which support snapshots
+        Extended version of Epsilon-MOEA algorithm with added support for snapshots.
     """
 
     def initialize(self):
