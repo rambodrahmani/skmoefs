@@ -4,6 +4,7 @@
 
 include("rcs.jl")
 include("moel.jl")
+include("moea.jl")
 using Random
 using JLD
 
@@ -186,13 +187,29 @@ function _initialize(self::MPAES_RCS, X::Matrix{Float64}, y::Array{Int64})
 end
 
 function _choose_algorithm(self::MPAES_RCS)
-    error("Not Implemented.")
+    if self.moea_type == "nsga2"
+        self.algorithm = createNSGAIIS()
+    elseif self.moea_type == "nsga3"
+        self.algorithm = createNSGAIIIS()
+    elseif self.moea_type == "gde3"
+        self.algorithm = createGDE3S()
+    elseif self.moea_type == "ibea"
+        self.algorithm = createIBEAS()
+    elseif self.moea_type == "moead"
+        self.algorithm = createMOEADS()
+    elseif self.moea_type == "spea2"
+        self.algorithm = createSPEA2S()
+    elseif self.moea_type == "epsmoea"
+        self.algorithm = createEpsMOEAS()
+    else
+        self.algorithm = createMPAES2_2()
+    end
 end
 
 function fit(self::MPAES_RCS, X::Matrix{Float64}, y::Array{Int64}, max_evals::Int64=10000)
     _initialize(self, X, y)
     _choose_algorithm(self)
-    
+
     error("Implementation To Be Continued.")
 end
 
