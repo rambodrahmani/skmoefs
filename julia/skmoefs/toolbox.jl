@@ -139,9 +139,10 @@ mutable struct MPAES_RCS
     initializer::RCSInitializer
     objectives::Array{String}
     moea_type::String
+    problem::RCSProblem
 end
 
-MPAES_RCS() = MPAES_RCS(MOEL_FRBC([]), 0, 0, 0, 0, createRCSVariator(), createRCSInitializer(), [], "")
+MPAES_RCS() = MPAES_RCS(MOEL_FRBC(), 0, 0, 0, 0, RCSVariator(), RCSInitializer(), [], "", RCSProblem())
 
 function __init__(self::MPAES_RCS, M::Int64=100, Amin::Int64=1, capacity::Int64=64,
             divisions::Int64=8, variator::RCSVariator=createRCSVariator(),
@@ -178,7 +179,10 @@ function _initialize(self::MPAES_RCS, X::Matrix{Float64}, y::Array{Int64})
     J = get_rules(self.initializer)
     splits = get_splits(self.initializer)
 
-    error("Implementation To Be Continued.")
+    # Find initial set of rules and fuzzy partitions
+    # MOEFS problem
+    self.problem = CreateRCSProblem(self.Amin, self.M, J, splits, self.objectives)
+    set_training_set(self.problem, X, y)
 end
 
 function _choose_algorithm(self::MPAES_RCS)

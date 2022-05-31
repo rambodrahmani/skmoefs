@@ -227,7 +227,7 @@ mutable struct FMDT
     N::Int64
     M::Int64
     fSets::Array{Any}
-    cPoints::Array{Array{Float64}, 1}
+    cPoints::Array{Array{Float64}}
     dom_class::Int64
     tree::DecisionNode
 end
@@ -537,7 +537,7 @@ end
 function fitFMDTTree(self::FMDT, X::Matrix{Float64}, y::Vector{Int64}, continuous::Array{Bool}=nothing,
                 cPoints::Array{Array{Float64}}=nothing, numClasses::Any=nothing,
                 ftype::Any="triangular", trpzPrm::Any=-1.0)
-    fit(self, X, y, continuous, cPoints, numClasses, ftype, trpzPrm)
+    return fit(self, X, y, continuous, cPoints, numClasses, ftype, trpzPrm)
 end
 
 function tNorm(array1::Array{Float64}, array2::Array{Float64}, tnorm::String="product")

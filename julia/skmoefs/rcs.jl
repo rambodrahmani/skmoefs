@@ -45,19 +45,19 @@ end
 mutable struct RCSInitializer
     discretizer::FuzzyDiscretization
     tree::FMDT
-    fTree
-    splits
-    rules
+    fTree::FMDT
+    splits::Array{Array{Float64}}
+    rules::Array{Array{Int64}}
 end
 
-RCSInitializer() = RCSInitializer(createFuzzyDiscretizer("uniform", 5), createFMDT(), nothing, nothing, nothing)
+RCSInitializer() = RCSInitializer(FuzzyDiscretization(), FMDT(), FMDT(), [], [])
 
 function __init__(self::RCSInitializer, discretizer::FuzzyDiscretization=createFuzzyDiscretizer("uniform", 5), tree::FMDT=createFMDT())
     self.discretizer = discretizer
     self.tree = tree
-    self.fTree = nothing
-    self.splits = nothing
-    self.rules = nothing
+    #self.fTree = nothing
+    self.splits = []
+    self.rules = []
 
     return self
 end
@@ -68,7 +68,7 @@ function fit_tree(self::RCSInitializer, X::Matrix{Float64}, y::Vector{Int64})
     self.fTree = fitFMDTTree(self.tree, X, y, continuous, cPoints)
     self.rules = _csv_ruleMine(self.fTree.tree, size(X)[2], [])
     [rule[end] -= 1 for rule in self.rules]
-    self.splits = [self.fTree.cPoints]
+    self.splits = self.fTree.cPoints
 end
 
 function get_splits(self::RCSInitializer)
@@ -81,4 +81,41 @@ end
 
 function createRCSInitializer(discretizer::FuzzyDiscretization=createFuzzyDiscretizer("uniform", 5), tree::FMDT=createFMDT())
     return __init__(RCSInitializer(), discretizer, tree)
+end
+
+mutable struct RCSProblem
+    Amin::Int64
+    M::Int64
+    Mmax::Int64
+    train_x::Matrix{Float64}
+    train_y::Array{Int64}
+end
+
+RCSProblem() = RCSProblem(0, 0, 0, Array{Float64, 2}(undef, 1, 1), [])
+
+function __init__(self::RCSProblem, Amin::Int64, M::Int64, J::Array{Array{Int64}})
+    """
+    @param Amin: minimum number of antecedents per rule
+    @param M: maximum number of rules per individual
+    @param J: matrix representing the initial rulebase
+    @param splits: fuzzy partitions for input features
+    @param objectives: array of objectives (2 or more). The first one is typically expresses the performance
+                    for predictions. Indeed, the solutions will be sorted according to this objective (best-to-worst)
+    @param TFmax: maximum number of fuzzy sets per feature (i.e. maximum granularity)
+    """
+    self.Amin = Amin
+    self.M = M
+    self.Mmax = size(J)[1]
+
+    return self
+end
+
+function set_training_set(self::RCSProblem, train_x::Matrix{Float64}, train_y::Array{Int64})
+    self.train_x = train_x
+    self.train_y = train_y
+end
+
+function CreateRCSProblem(Amin::Int64, M::Int64, J::Array{Array{Int64}}, splits::Array{Array{Float64}},
+                    objectives::Array{String}, TFmax::Int64=7)
+    return __init__(RCSProblem(), Amin, M, J)
 end
