@@ -141,6 +141,6 @@ end
 
 mutable struct FuzzyRuleBasedClassifier
     """
-        Fuzzy Rule-Based Classifier.
+    Fuzzy Rule-Based Classifier.
     """
 end

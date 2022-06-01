@@ -12,7 +12,7 @@ milestones = [500, 1000, 2000, 5000, 10000, 20000, 30000, 40000, 50000, 75000, 1
 
 mutable struct MOEAGenerator
     """
-        Generates the initial population of a Multi-Objective GA.
+    Generates the initial population of a Multi-Objective GA.
     """
     counter::Int64
     generator::PyObject
@@ -38,7 +38,7 @@ end
 
 mutable struct RandomSelector
     """
-        Randomly selects an individual from the population
+    Randomly selects an individual from the population
     """
     selector::PyObject
 end
@@ -59,7 +59,7 @@ end
 
 mutable struct MPAES2_2
     """
-        M-PEAS(2+2) algorithm implementation.
+    M-PEAS(2+2) algorithm implementation.
     """
     algorithm::PyObject
     variator::RCSVariator
@@ -101,7 +101,7 @@ end
 
 mutable struct NSGAIIS
     """
-        Extended version of NSGA2 algorithm with added support for snapshots.
+    Extended version of NSGA2 algorithm with added support for snapshots.
     """
     snapshots::Array{Any}
     algorithm::PyObject
@@ -134,7 +134,7 @@ end
 
 mutable struct NSGAIIIS
     """
-        Extended version of NSGA3 algorithm with added support for snapshots.
+    Extended version of NSGA3 algorithm with added support for snapshots.
     """
     snapshots::Array{Any}
     algorithm::PyObject
@@ -167,7 +167,7 @@ end
 
 mutable struct GDE3S
     """
-        Extended version of GDE3 algorithm with added support for snapshots.
+    Extended version of GDE3 algorithm with added support for snapshots.
     """
     snapshots::Array{Any}
     algorithm::PyObject
@@ -200,7 +200,7 @@ end
 
 mutable struct IBEAS
     """
-        Extended version of IBEA algorithm with added support for snapshots.
+    Extended version of IBEA algorithm with added support for snapshots.
     """
     snapshots::Array{Any}
     algorithm::PyObject
@@ -233,7 +233,7 @@ end
 
 mutable struct MOEADS
     """
-        Extended version of MOEAD algorithm with added support for snapshots.
+    Extended version of MOEAD algorithm with added support for snapshots.
     """
     snapshots::Array{Any}
     algorithm::PyObject
@@ -266,7 +266,7 @@ end
 
 mutable struct SPEA2S
     """
-        Extended version of SPEA2 algorithm with added support for snapshots.
+    Extended version of SPEA2 algorithm with added support for snapshots.
     """
     snapshots::Array{Any}
     algorithm::PyObject
@@ -299,7 +299,7 @@ end
 
 mutable struct EpsMOEAS
     """
-        Extended version of Epsilon-MOEA algorithm with added support for snapshots.
+    Extended version of Epsilon-MOEA algorithm with added support for snapshots.
     """
     snapshots::Array{Any}
     algorithm::PyObject

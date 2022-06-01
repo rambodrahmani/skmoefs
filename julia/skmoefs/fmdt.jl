@@ -76,8 +76,8 @@ function __init__(self::DecisionNode, feature::Int64, fSet::Any, isLeaf::Bool,
             results::Array{Float64}, weight::Float64, child::Any=nothing)
     """
     # Arguments:
-     - `feature`: feature corresponding to the set on the node
-            it is not the feature used for splitting the child
+     - `feature`: feature corresponding to the set on the node it is not the
+                  feature used for splitting the child
     """
     self.feature = feature
     self.fSet = fSet
