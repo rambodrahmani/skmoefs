@@ -58,3 +58,7 @@ end
 function createSingletonFuzzySets(points::Array{Float64}, isStrongPartition::Bool=false)
     return [createSingletonFuzzySet(point[2], point[1]) for point in enumerate(points)]
 end
+
+function plotSingletonFuzzySet(self::SingletonFuzzySet)
+    plot([self.value, self.value], [0, 1], label="Singleton Fuzzy Set", lw=3, xlims=(self.value-2, self.value+2))
+end

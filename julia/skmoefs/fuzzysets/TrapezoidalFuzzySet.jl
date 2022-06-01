@@ -122,6 +122,10 @@ function __createTrapezoidalFuzzySetsFromNoStrongPartition(points::Array{Float64
     return fuzzySets
 end
 
+function __plotTrapezoidalFuzzySet(self::__TrapezoidalFuzzySet)
+    plot([self.a, self.b, self.c, self.d], [0, 1, 1, 0], label="Trapezoidal Fuzzy Set", lw=3)
+end
+
 mutable struct TrapezoidalFuzzySet
     a::Float64
     b::Float64
@@ -157,7 +161,7 @@ function __init__(self::TrapezoidalFuzzySet, a::Float64, b::Float64, c::Float64,
 end
 
 show(io::IO, self::TrapezoidalFuzzySet) = print(io,
-    "a=$(self.a), b=$(self.b), c=$(self.c)"
+    "a=$(self.a), b=$(self.b), c=$(self.c), trpzPrm=$(self.trpzPrm)"
 )
 
 function membershipDegree(self::TrapezoidalFuzzySet, x::Float64)

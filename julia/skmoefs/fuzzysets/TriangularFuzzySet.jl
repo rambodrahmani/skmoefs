@@ -4,6 +4,7 @@
 
 include("../porting.jl")
 import Base.show
+using Plots
 
 mutable struct TriangularFuzzySet
     a::Float64
@@ -70,7 +71,7 @@ function createTriangularFuzzySet(params::Array{Float64})
                             "have been provided."
     sortedParameters = sort(params)
     return __init__(TriangularFuzzySet(), sortedParameters[1], sortedParameters[2],
-                    sortedParameters[3])
+                    sortedParameters[3], 0)
 end
 
 function createTriangularFuzzySets(params::Array{Float64}, isStrongPartition::Bool=false)
@@ -117,4 +118,8 @@ function createTriangularFuzzySetsFromNoStrongPartition(points::Array{Float64})
     push!(fuzzySets, __init__(TriangularFuzzySet(), points[end - 1], points[end], Inf, 0))
 
     return fuzzySets
+end
+
+function plotTriangularFuzzySet(self::TriangularFuzzySet)
+    plot([self.a, self.b, self.c], [0, 1, 0], label="Triangular Fuzzy Set", lw=3)
 end

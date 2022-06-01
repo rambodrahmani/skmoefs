@@ -69,8 +69,10 @@ fuzzy_universe = createUniverseFuzzySet()
 println(fuzzy_universe)
 
 # Fuzzy Singleton
-fuzzy_singleton = createSingletonFuzzySet(43.2, 3)
+fuzzy_singleton = createSingletonFuzzySet(7.0, 3)
 println(fuzzy_singleton)
+plotSingletonFuzzySet(fuzzy_singleton)
+savefig("./plots/singleton_fuzzy_set.pdf")
 
 fuzzy_singletons = createSingletonFuzzySets([17.5, 24.3, 11.4, 23.1])
 for fuzzy_singleton in fuzzy_singletons
@@ -78,6 +80,11 @@ for fuzzy_singleton in fuzzy_singletons
 end
 
 # Fuzzy Triangular Set
+fuzzy_triangular = createTriangularFuzzySet([17.5, 24.3, 11.4])
+println(fuzzy_triangular)
+plotTriangularFuzzySet(fuzzy_triangular)
+savefig("./plots/triangular_fuzzy_set.pdf")
+
 triangular_fuzzy_params = [0.02777778, 0.27083333, 0.51388889, 0.75694444, 1.]
 fuzzy_triangulars = createTriangularFuzzySets(triangular_fuzzy_params, true)
 for fuzzy_triangular in fuzzy_triangulars
@@ -89,6 +96,8 @@ trapezoidal_fuzzy_params = [0.02777778, 0.27083333, 0.51388889, 0.982374]
 trpzPrm = 0.56
 fuzzy_trapezoidal = __createTrapezoidalFuzzySet(trapezoidal_fuzzy_params)
 println(fuzzy_trapezoidal)
+__plotTrapezoidalFuzzySet(fuzzy_trapezoidal)
+savefig("./plots/trapezoidal_fuzzy_set.pdf")
 
 trapezoidal_fuzzy_params = [0.02777778, 0.27083333, 0.51388889, 0.12345678]
 trpzPrm = 0.56
