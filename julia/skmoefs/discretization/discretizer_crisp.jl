@@ -12,7 +12,11 @@
     - `minGain::Float64`: minimum entropy gain per spit.
 """
 
+using Logging
 using BisectPy
+
+# set logging level
+global_logger(ConsoleLogger(stdout, Logging.Debug))
 
 mutable struct CrispMDLFilter
     numClasses::Int64
@@ -76,7 +80,7 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
     Finds best splits among the data
     """
 
-    @info "Building histograms."
+    @debug "Building histograms."
 
     # Define histogram vectors
     for k in range(1, self.M)
@@ -187,10 +191,10 @@ function __calculateCutPoints(self::CrispMDLFilter, fIndex::Int64, first::Int64,
 
     gain = priorEntropy - bestEntropy
     if (gain < self.minGain || !__mdlStopCondition(self, gain, priorEntropy, bestCounts, entropy))
-        @info "Feature $(fIndex) index $(bestIndex), gain $(gain) REJECTED"
+        @debug "Feature $(fIndex) index $(bestIndex), gain $(gain) REJECTED"
         return []
     end
-    @info "Feature $(fIndex) index $(bestIndex), gain $(gain) ACCEPTED"
+    @debug "Feature $(fIndex) index $(bestIndex), gain $(gain) ACCEPTED"
 
     left = __calculateCutPoints(self, fIndex, first, bestIndex)
     right = __calculateCutPoints(self, fIndex, bestIndex, lastPlusOne)

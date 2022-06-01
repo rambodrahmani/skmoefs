@@ -17,4 +17,4 @@ isscalar(::Type{T}) where T = BroadcastStyle(T) isa Broadcast.DefaultArrayStyle{
 """
 Replaces NaN with zero and infinity with largest finite numbers.
 """
-nan_to_num(v::Vector{Float64}) = map(x -> isnan(x) ? zero(x) : isinf(x) ? prevfloat(typemax(Float64)) : x, v)
+nan_to_num(v) = map(x -> isnan(x) ? zero(x) : isinf(x) ? prevfloat(typemax(Float64)) : x, v)

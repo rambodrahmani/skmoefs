@@ -13,6 +13,11 @@
     - `numBins::Int64`: number of bins for the discretization step, default=500.
 """
 
+using Logging
+
+# set logging level
+global_logger(ConsoleLogger(stdout, Logging.Debug))
+
 mutable struct FuzzyMDLFilter
     numClasses::Int64
     data::Matrix{Float64}
@@ -68,11 +73,11 @@ function run(self::FuzzyMDLFilter)
     """
 
     if self.ftype == "triangular"
-        @info "Running Discretization with fuzzyset " * self.ftype * "."
+        @debug "Running Discretization with fuzzyset " * self.ftype * "."
     end
 
     if self.ftype == "trapezoidal"
-        @info "Running Discretization with fuzzyset " * self.ftype * " and trpzPrm = " * self.trpzPrm * "."
+        @debug "Running Discretization with fuzzyset " * self.ftype * " and trpzPrm = " * self.trpzPrm * "."
     end
 
     self.candidateSplits = findCandidateSplits(self, self.data)
@@ -114,7 +119,7 @@ function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
     Find best splits among the data.
     """
 
-    @info "Building histograms."
+    @debug "Building histograms."
 
     # Define histogram vectors
     for k in range(1, self.M)
@@ -256,10 +261,10 @@ function calculateCutPoints(self::FuzzyMDLFilter, fIndex::Int64, first::Int64,
     gain = wPriorFuzzyEntropy - bestEntropy
 
     if (gain < self.minGain || !mdlStopCondition(self, gain, wPriorFuzzyEntropy, bestS0S1S2, entropy, nothing))
-        @info "Feature $(fIndex) index $(bestIndex), gain $(gain) REJECTED"
+        @debug "Feature $(fIndex) index $(bestIndex), gain $(gain) REJECTED"
         return []
     end
-    @info "Feature $(fIndex) index $(bestIndex), gain $(gain) ACCEPTED"
+    @debug "Feature $(fIndex) index $(bestIndex), gain $(gain) ACCEPTED"
 
     left = calculateCutPoints(self, fIndex, first, bestIndex, depth+1)
     right = calculateCutPoints(self, fIndex, bestIndex, lastPlusOne, depth+1)
@@ -410,16 +415,16 @@ function calculateCutPointsIndex(self::FuzzyMDLFilter, fIndex::Int64, first::Int
 
     if depth < 5 && self.ignore
         if gain < self.minGain
-            @info "Feature $(fIndex) index $(bestIndex), gain $(gain) REJECTED"
+            @debug "Feature $(fIndex) index $(bestIndex), gain $(gain) REJECTED"
             return []
         end
-        @info "Feature $(fIndex) index $(bestIndex), gain $(gain) ACCEPTED"
+        @debug "Feature $(fIndex) index $(bestIndex), gain $(gain) ACCEPTED"
     else
         if (gain < self.minGain || !mdlStopCondition(self, gain, wPriorFuzzyEntropy, bestS0S1S2, entropy, nothing))
-            @info "Feature $(fIndex) index $(bestIndex), gain $(gain) REJECTED"
+            @debug "Feature $(fIndex) index $(bestIndex), gain $(gain) REJECTED"
             return []
         end
-        @info "Feature $(fIndex) index $(bestIndex), gain $(gain) ACCEPTED"
+        @debug "Feature $(fIndex) index $(bestIndex), gain $(gain) ACCEPTED"
     end
     
     left = self.calculateCutPointsIndex(self, fIndex, first, bestIndex, depth+1, baseIndex + ".l")
