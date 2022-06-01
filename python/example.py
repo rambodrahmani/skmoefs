@@ -81,10 +81,10 @@ def test3(dataset, alg, seed, nEvals=50000, store=False):
                                   objectives=['accuracy', 'trl'])
         mpaes_rcs_fdt.fit(Xtr, ytr, max_evals=nEvals)
 
-    #mpaes_rcs_fdt.show_pareto()
-    #mpaes_rcs_fdt.show_pareto(Xte, yte)
-    #mpaes_rcs_fdt.show_pareto_archives()
-    #mpaes_rcs_fdt.show_pareto_archives(Xte, yte)
+    mpaes_rcs_fdt.show_pareto()
+    mpaes_rcs_fdt.show_pareto(Xte, yte)
+    mpaes_rcs_fdt.show_pareto_archives()
+    mpaes_rcs_fdt.show_pareto_archives(Xte, yte)
     mpaes_rcs_fdt.show_model('median', inputs, outputs)
 
 

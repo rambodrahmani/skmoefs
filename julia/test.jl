@@ -80,7 +80,7 @@ for fuzzy_singleton in fuzzy_singletons
 end
 
 # Fuzzy Triangular Set
-fuzzy_triangular = createTriangularFuzzySet([17.5, 24.3, 11.4])
+fuzzy_triangular = createTriangularFuzzySet([5.5, 6.3, 8.4])
 println(fuzzy_triangular)
 plotTriangularFuzzySet(fuzzy_triangular)
 savefig("./plots/triangular_fuzzy_set.pdf")
@@ -92,9 +92,7 @@ for fuzzy_triangular in fuzzy_triangulars
 end
 
 # Fuzzy Trapezoidal Set
-trapezoidal_fuzzy_params = [0.02777778, 0.27083333, 0.51388889, 0.982374]
-trpzPrm = 0.56
-fuzzy_trapezoidal = __createTrapezoidalFuzzySet(trapezoidal_fuzzy_params)
+fuzzy_trapezoidal = __createTrapezoidalFuzzySet([1.7, 2.8, 3.1, 4.9])
 println(fuzzy_trapezoidal)
 __plotTrapezoidalFuzzySet(fuzzy_trapezoidal)
 savefig("./plots/trapezoidal_fuzzy_set.pdf")

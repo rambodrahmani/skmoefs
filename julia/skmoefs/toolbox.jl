@@ -27,7 +27,7 @@ end
 
 function store_object(filename::String, name::String, object::Any)
     """
-    Save object as Julia Data format (JLD)
+    Save object as Julia Data format (JLD).
     """
     save(filename * ".jld", name, object)
 end
