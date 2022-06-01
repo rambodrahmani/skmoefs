@@ -132,7 +132,7 @@ function compute_weights_fast(train_x, train_y, ant_matrix, cons_vect, part_matr
         if total == 0
             weights[i] = total
         else
-            matching / total
+            weights[i] = matching/total
         end
     end
 
@@ -143,4 +143,41 @@ mutable struct FuzzyRuleBasedClassifier
     """
     Fuzzy Rule-Based Classifier.
     """
+    rules::Array{ClassificationRule}
+    partitions
+    weights
+end
+
+function __init__(self::FuzzyRuleBasedClassifier, rules::Array{ClassificationRule}, partitions)
+    """
+    :param rules: a list of ClassificationRule objects
+    :param partitions: fuzzyset partitions for each fuzzy input
+    """
+
+    # RB info
+    self.rules = rules
+
+    # DB info
+    self.partitions = partitions
+end
+
+function addrule(self::FuzzyRuleBasedClassifier, new_rule::ClassificationRule)
+    append!(self.rules, new_rule)
+end
+
+function num_rules(self::FuzzyRuleBasedClassifier)
+    return length(self.rules)
+end
+
+function predict(self::FuzzyRuleBasedClassifier, x)
+    return predict_fast(x, self.ant_matrix, self.cons_vect, self.weights, self.part_matrix)
+end
+
+function compute_weights(self::FuzzyRuleBasedClassifier, train_x, train_y)
+    self.weights = compute_weights_fast(train_x, train_y, self.ant_matrix, self.cons_vect, self.part_matrix)
+end
+
+function trl(self::FuzzyRuleBasedClassifier)
+    n_antecedents = [length(rule.antecedent) for rule in self.rules]
+    return sum(n_antecedents)
 end
