@@ -7,8 +7,8 @@ using PyCall
 using Random
 using ScikitLearn.CrossValidation: train_test_split
 
-# add path for importing local module
-pushfirst!(PyVector(pyimport("sys")["path"]), "/home/rr/DevOps/skmoefs/python/")
+# add path for importing local skmoefs package
+pushfirst!(PyVector(pyimport("sys")["path"]), "python/")
 
 # import python modules
 skmoefs_py_toolbox = pyimport("skmoefs.toolbox")
