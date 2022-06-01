@@ -30,6 +30,14 @@ show(io::IO, self::SingletonFuzzySet) = print(io,
     "value = $(self.value)"
 )
 
+function membershipDegree(self::SingletonFuzzySet, x::Float64)
+    if isInSupport(self, x)
+        return 1.0
+    else
+        return 0.0
+    end
+end
+
 function isInSupport(self::SingletonFuzzySet, x::Float64)
     return x == self.value
 end
@@ -40,14 +48,6 @@ end
 
 function isLastOfPartition(self::SingletonFuzzySet)
     return self.value == Inf
-end
-
-function membershipDegree(self::SingletonFuzzySet, x::Float64)
-    if isInSupport(self, x)
-        return 1.0
-    else
-        return 0.0
-    end
 end
 
 function createSingletonFuzzySet(value::Float64, index::Int64=nothing)

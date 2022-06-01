@@ -1,7 +1,6 @@
 import abc
 
 class FuzzySet(object):
-
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod

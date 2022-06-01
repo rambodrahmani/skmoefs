@@ -160,18 +160,6 @@ show(io::IO, self::TrapezoidalFuzzySet) = print(io,
     "a=$(self.a), b=$(self.b), c=$(self.c)"
 )
 
-function isInSupport(self::TrapezoidalFuzzySet, x::Float64)
-    if self.a == -Inf
-        return x < self.c - self.__rightPlateau
-    end
-
-    if self.c == Inf
-        return x > self.a + self.__leftPlateau
-    end
-    
-    return (x > self.a + self.__leftPlateau && x < self.c - self.__rightPlateau)
-end
-
 function membershipDegree(self::TrapezoidalFuzzySet, x::Float64)
     if isInSupport(self, x)
         if (x <= self.b && self.a == -Inf) || (x >= self.b && self.c == Inf)
@@ -190,6 +178,18 @@ function membershipDegree(self::TrapezoidalFuzzySet, x::Float64)
     else
         return 0.0
     end
+end
+
+function isInSupport(self::TrapezoidalFuzzySet, x::Float64)
+    if self.a == -Inf
+        return x < self.c - self.__rightPlateau
+    end
+
+    if self.c == Inf
+        return x > self.a + self.__leftPlateau
+    end
+    
+    return (x > self.a + self.__leftPlateau && x < self.c - self.__rightPlateau)
 end
 
 function isFirstofPartition(self::TrapezoidalFuzzySet)

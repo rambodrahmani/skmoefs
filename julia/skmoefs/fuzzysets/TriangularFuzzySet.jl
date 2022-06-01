@@ -37,10 +37,6 @@ show(io::IO, self::TriangularFuzzySet) = print(io,
     "a=$(self.a), b=$(self.b), c=$(self.c)"
 )
 
-function isInSupport(self::TriangularFuzzySet, x::Float64)
-    return x > self.a && x < self.c    
-end
-
 function membershipDegree(self::TriangularFuzzySet, x::Float64)
     if isInSupport(self, x)
         if (x <= self.b && self.a == -Inf) || (x >= self.b && self.c == Inf)
@@ -54,6 +50,10 @@ function membershipDegree(self::TriangularFuzzySet, x::Float64)
     else
         return 0.0
     end
+end
+
+function isInSupport(self::TriangularFuzzySet, x::Float64)
+    return x > self.a && x < self.c    
 end
 
 function isFirstOfPartition(self::TriangularFuzzySet)
