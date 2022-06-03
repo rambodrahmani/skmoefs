@@ -5,6 +5,7 @@
 
 include("../porting.jl")
 import Base.show
+using Plots
 
 mutable struct SingletonFuzzySet
     value::Float64

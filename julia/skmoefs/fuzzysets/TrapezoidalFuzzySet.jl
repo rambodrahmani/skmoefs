@@ -3,6 +3,7 @@
 """
 
 import Base.show
+using Plots
 
 mutable struct __TrapezoidalFuzzySet
     a::Float64
