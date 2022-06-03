@@ -50,8 +50,8 @@ function load_dataset(name::String)
     - `X`: matrix NxM (N: number of samples; M: number of features) representing input data
     - `y`: vector Nx1 representing the output data
     - `attributes`: range of values in the format [min, max] for each feature
-    - `input`: names of the features
-    - `output`: name of the outputs
+    - `input`: names of the input features
+    - `output`: names of the output features
     """
 
     attributes = []
@@ -88,7 +88,7 @@ function load_dataset(name::String)
         end
         attributes = convert(Array{Array{Float64}, 1}, attributes)
         inputs = convert(Array{String, 1}, inputs)
-        outputs = convert(Array{String,1}, outputs)
+        outputs = convert(Array{String, 1}, outputs)
         X = copy(hcat(X...)')
         y = convert(Array{Int64, 1}, y)
     end
