@@ -123,3 +123,13 @@ end
 function plotTriangularFuzzySet(self::TriangularFuzzySet)
     plot([self.a, self.b, self.c], [0, 1, 0], label="Triangular Fuzzy Set", lw=3)
 end
+
+function plotTriangularFuzzySets(self::TriangularFuzzySet)
+    if isFirstOfPartition(self)
+        plot!([self.b, self.b, self.b, self.c], [0, 1, 1, 0], label="Triangular Fuzzy Set", lw=3)
+    elseif isLastOfPartition(self)
+        plot!([self.a, self.b, self.b, self.b], [0, 1, 1, 0], label="Triangular Fuzzy Set", lw=3)
+    else
+        plot!([self.a, self.b, self.c], [0, 1, 0], label="Triangular Fuzzy Set", lw=3)
+    end
+end

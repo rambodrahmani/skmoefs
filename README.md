@@ -39,7 +39,7 @@ The Julia port requires the following packages to be installed:
 
 In order to use the library, it is necessary to have the above dependencies installed:
 ```console
-julia> import Pkg; Pkg.add("ScikitLearn"); Pkg.add("BisectPy"); Pkg.add("JLD"); Pkg.add("PyCall");
+julia> import Pkg; Pkg.add("ScikitLearn"); Pkg.add("BisectPy"); Pkg.add("JLD"); Pkg.add("PyCall"); Pkg.add("Plots");
 ```
 
 ### Source code

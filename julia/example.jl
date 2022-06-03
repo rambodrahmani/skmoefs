@@ -54,6 +54,6 @@ function test3(dataset::String, algorithm::String, seed::Int64, nEvals::Int64=50
     divisions = 8
 end
 
-test1(2)
-test2(2)
-#test3("iris", "mpaes22", 2, 2000, true)
+#test1(2)
+#test2(2)
+test3("iris", "mpaes22", 2, 2000, true)
