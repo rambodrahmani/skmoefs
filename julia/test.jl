@@ -149,6 +149,10 @@ fuzzy_discretizer = createFuzzyDiscretizer("uniform", 5)
 fuzzy_splits = runFuzzyDiscretizer(fuzzy_discretizer, X_n, [true, true, true, true])
 println(fuzzy_splits)
 
+fuzzy_discretizer = createFuzzyDiscretizer("equifreq", 5)
+fuzzy_splits = runFuzzyDiscretizer(fuzzy_discretizer, X_n, [true, true, true, true])
+println(fuzzy_splits)
+
 crisp_mdlf_discretizer = createCrispMDLFDiscretizer(3, X_n, y, [true, true, true, true])
 crisp_mdlf_splits = runCrispMDLFDiscretizer(crisp_mdlf_discretizer)
 println(crisp_mdlf_splits)
@@ -156,7 +160,6 @@ println(crisp_mdlf_splits)
 fuzzy_mdlf_discretizer = createFuzzyMDLDiscretizer(3, X_n, y, [true, true, true, true])
 fuzzy_mdlf_splits = runFuzzyMDLDiscretizer(fuzzy_mdlf_discretizer)
 println(fuzzy_mdlf_splits)
-
 
 #####
 # RCS

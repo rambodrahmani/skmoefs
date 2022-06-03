@@ -228,6 +228,10 @@ if __name__ == "__main__":
     fuzzy_splits = fuzzy_discretizer.run(X_n, [True, True, True, True])
     print(fuzzy_splits)
 
+    fuzzy_discretizer = fuzzyDiscretization(numSet=5, method='equifreq')
+    fuzzy_splits = fuzzy_discretizer.run(X_n, [True, True, True, True])
+    print(fuzzy_splits)
+
     crisp_mdlf_discretizer = CrispMDLFilter(3, X_n, y_n, [True, True, True, True])
     crisp_mdlf_splits = crisp_mdlf_discretizer.run()
     print(crisp_mdlf_splits)
