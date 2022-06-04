@@ -224,21 +224,21 @@ if __name__ == "__main__":
     ##############
     # DISCRETIZERS
     ##############
-    fuzzy_discretizer = fuzzyDiscretization(numSet=5, method='uniform')
-    fuzzy_splits = fuzzy_discretizer.run(X_n, [True, True, True, True])
-    print(fuzzy_splits)
+    fuzzy_discretizer_uniform = fuzzyDiscretization(numSet=5, method='uniform')
+    fuzzy_splits_uniform = fuzzy_discretizer_uniform.run(X_n, [True, True, True, True])
+    print("Fuzzy Discretizer - equifreq:\n" + str(fuzzy_splits_uniform))
 
-    fuzzy_discretizer = fuzzyDiscretization(numSet=5, method='equifreq')
-    fuzzy_splits = fuzzy_discretizer.run(X_n, [True, True, True, True])
-    print(fuzzy_splits)
+    fuzzy_discretizer_equifreq = fuzzyDiscretization(numSet=5, method='equifreq')
+    fuzzy_splits_equifreq = fuzzy_discretizer_equifreq.run(X_n, [True, True, True, True])
+    print("Fuzzy Discretizer - equifreq:\n" + str(fuzzy_splits_equifreq))
 
     crisp_mdlf_discretizer = CrispMDLFilter(3, X_n, y_n, [True, True, True, True])
     crisp_mdlf_splits = crisp_mdlf_discretizer.run()
-    print(crisp_mdlf_splits)
+    print("Crisp MDLF Discretizer:\n" + str(crisp_mdlf_splits))
 
-    fuzzy_mdlf_discretizer = FuzzyMDLFilter(3, X_n, y, [True, True, True, True])
+    fuzzy_mdlf_discretizer = FuzzyMDLFilter(3, X, y, [True, True, True, True])
     fuzzy_mdlf_splits = fuzzy_mdlf_discretizer.run()
-    print(fuzzy_mdlf_splits)
+    print("Fuzzy MDLF Discretizer:\n" + str(fuzzy_mdlf_splits))
 
     #####
     # RCS

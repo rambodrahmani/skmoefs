@@ -145,13 +145,13 @@ println(typeof(y_n))
 ##############
 # DISCRETIZERS
 ##############
-fuzzy_discretizer = createFuzzyDiscretizer("uniform", 5)
-fuzzy_splits = runFuzzyDiscretizer(fuzzy_discretizer, X_n, [true, true, true, true])
-println("Fuzzy Discretizer - uniform:\n" * string(fuzzy_splits))
+fuzzy_discretizer_uniform = createFuzzyDiscretizer("uniform", 5)
+fuzzy_splits_uniform = runFuzzyDiscretizer(fuzzy_discretizer_uniform, X_n, [true, true, true, true])
+println("Fuzzy Discretizer - uniform:\n" * string(fuzzy_splits_uniform))
 
-fuzzy_discretizer = createFuzzyDiscretizer("equifreq", 5)
-fuzzy_splits = runFuzzyDiscretizer(fuzzy_discretizer, X_n, [true, true, true, true])
-println("Fuzzy Discretizer - equifreq:\n" * string(fuzzy_splits))
+fuzzy_discretizer_equifreq = createFuzzyDiscretizer("equifreq", 5)
+fuzzy_splits_equifreq = runFuzzyDiscretizer(fuzzy_discretizer_equifreq, X_n, [true, true, true, true])
+println("Fuzzy Discretizer - equifreq:\n" * string(fuzzy_splits_equifreq))
 
 crisp_mdlf_discretizer = createCrispMDLFDiscretizer(3, X_n, y, [true, true, true, true])
 crisp_mdlf_splits = runCrispMDLFDiscretizer(crisp_mdlf_discretizer)
