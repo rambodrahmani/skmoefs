@@ -48,7 +48,7 @@ function test_fit(dataset::String, algorithm::String, seed::Int64, nEvals::Int64
         if !is_object_present(base)
             mpaes_rcs_fdt = CREATE_MPAES_RCS(M, Amin, capacity, divisions, variator,
                                       initializer, ["accuracy", "trl"], algorithm)
-            fit(mpaes_rcs_fdt, Xtr, ytr, nEvals)
+            fitMPAES_RCS(mpaes_rcs_fdt, Xtr, ytr, nEvals)
             store_object(base, "MPAES_RCS", mpaes_rcs_fdt)
         else
             mpaes_rcs_fdt = load_object(base)["MPAES_RCS"]
@@ -56,7 +56,7 @@ function test_fit(dataset::String, algorithm::String, seed::Int64, nEvals::Int64
     else
         mpaes_rcs_fdt = CREATE_MPAES_RCS(M, Amin, capacity, divisions, variator,
                                       initializer, ["accuracy", "trl"], algorithm)
-        fit(mpaes_rcs_fdt, Xtr, ytr, nEvals)
+        fitMPAES_RCS(mpaes_rcs_fdt, Xtr, ytr, nEvals)
     end
 end
 

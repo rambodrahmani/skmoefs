@@ -219,3 +219,7 @@ function CREATE_MPAES_RCS(M::Int64=100, Amin::Int64=1, capacity::Int64=64, divis
     return __init__(MPAES_RCS(), M, Amin, capacity, divisions, variator, initializer,
             objectives, moea_type)
 end
+
+function fitMPAES_RCS(self::MPAES_RCS, X::Matrix{Float64}, y::Array{Int64}, max_evals::Int64=10000)
+    fit(self, X, y, max_evals)
+end

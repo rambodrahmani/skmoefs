@@ -89,7 +89,6 @@ function __findBestSplits(self::CrispMDLFilter, data::Matrix{Float64})
 
     # Iterate among features
     for k in range(1, self.M)
-        # Iterate among features
         if self.continuous[k]
             for ind in range(1, self.N)
                 x = __simpleHist(self, data[ind, k], k)

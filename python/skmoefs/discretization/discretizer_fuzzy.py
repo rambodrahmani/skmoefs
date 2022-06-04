@@ -98,7 +98,7 @@ class FuzzyMDLFilter(object):
         for k in range(self.M):
             uniques = np.unique(np.sort(data[:,k]))
             if len(uniques)>num_bins:
-                vector.append(uniques[np.linspace(0,len(uniques)-1,num_bins, dtype=int)])
+                vector.append(uniques[np.linspace(0,len(uniques)-1, num_bins, dtype=int)])
             else:
                 vector.append(uniques)
         return vector

@@ -61,5 +61,9 @@ function createSingletonFuzzySets(points::Array{Float64}, isStrongPartition::Boo
 end
 
 function plotSingletonFuzzySet(self::SingletonFuzzySet)
+    # instantiate new plot
+    plot()
+
+    # plot
     plot([self.value, self.value], [0, 1], label="Singleton Fuzzy Set", lw=3, xlims=(self.value-2, self.value+2))
 end

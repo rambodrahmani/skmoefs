@@ -121,15 +121,30 @@ function createTriangularFuzzySetsFromNoStrongPartition(points::Array{Float64})
 end
 
 function plotTriangularFuzzySet(self::TriangularFuzzySet)
+    # instantiate new plot
+    plot()
+
+    # plot
     plot([self.a, self.b, self.c], [0, 1, 0], label="Triangular Fuzzy Set", lw=3)
 end
 
-function plotTriangularFuzzySets(self::TriangularFuzzySet)
-    if isFirstOfPartition(self)
-        plot!([self.b, self.b, self.b, self.c], [0, 1, 1, 0], label="Triangular Fuzzy Set", lw=3)
-    elseif isLastOfPartition(self)
-        plot!([self.a, self.b, self.b, self.b], [0, 1, 1, 0], label="Triangular Fuzzy Set", lw=3)
-    else
-        plot!([self.a, self.b, self.c], [0, 1, 0], label="Triangular Fuzzy Set", lw=3)
-    end
+function plotTriangularFuzzySets(fsets::Vector{Any})
+    # instantiate new plot
+    plot()
+
+    # plot
+    i = 0
+    for selfs in fsets
+        for self in selfs
+            if isFirstOfPartition(self)
+                plot!([self.b, self.b, self.b, self.c], [0, 1, 1, 0], label="Triangular Fuzzy Set", lw=3)
+            elseif isLastOfPartition(self)
+                plot!([self.a, self.b, self.b, self.b], [0, 1, 1, 0], label="Triangular Fuzzy Set", lw=3)
+            else
+                plot!([self.a, self.b, self.c], [0, 1, 0], label="Triangular Fuzzy Set", lw=3)
+            end
+        end
+        i = i + 1
+        savefig("./plots/strong_triangular_partition_" * string(i) * ".pdf")
+    end    
 end

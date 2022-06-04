@@ -124,6 +124,10 @@ function __createTrapezoidalFuzzySetsFromNoStrongPartition(points::Array{Float64
 end
 
 function __plotTrapezoidalFuzzySet(self::__TrapezoidalFuzzySet)
+    # instantiate new plot
+    plot()
+
+    # plot
     plot([self.a, self.b, self.c, self.d], [0, 1, 1, 0], label="Trapezoidal Fuzzy Set", lw=3)
 end
 

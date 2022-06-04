@@ -10,7 +10,7 @@
             categorical feature, shape (numFeatures);
     - `minNumExamples::Int64`: minimum number of examples per node;
     - `minGain::Float64`: minimum entropy gain per spit;
-    - `numBins::Int64`: number of bins for the discretization step, default=500.
+    - `num_bins::Int64`: number of bins for the discretization step, default=500.
 """
 
 using Logging
@@ -26,7 +26,7 @@ mutable struct FuzzyMDLFilter
     minNumExamples::Int64
     minGain::Float64
     threshold::Int64
-    numBins::Int64
+    num_bins::Int64
     ignore::Bool
     ftype::String
     trpzPrm::Float64
@@ -46,7 +46,7 @@ FuzzyMDLFilter() = FuzzyMDLFilter(0, Array{Float64, 2}(undef, 1, 1),
 
 function __init__(self::FuzzyMDLFilter, numClasses::Int64, data::Matrix{Float64},
     labels::Array{Int64}, continuous::Array{Bool}, minImpurity::Float64=0.02,
-    minGain::Float64=0.000001, threshold::Int64=0, numBins::Int64=500,
+    minGain::Float64=0.000001, threshold::Int64=0, num_bins::Int64=500,
     ignore::Bool=true, ftype::String="triangular", trpzPrm::Float64=0.1)
     
     self.numClasses = numClasses
@@ -56,7 +56,7 @@ function __init__(self::FuzzyMDLFilter, numClasses::Int64, data::Matrix{Float64}
     self.minNumExamples = floor(Int64, minImpurity*size(data)[1])
     self.minGain = minGain
     self.threshold = threshold
-    self.numBins = numBins
+    self.num_bins = num_bins
     self.ignore = ignore
     self.trpzPrm = trpzPrm
     self.ftype = ftype
@@ -99,12 +99,12 @@ function findCandidateSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
     """
 
     self.N, self.M = size(data)
-    numBins = self.numBins
+    num_bins = self.num_bins
 
     vector = []
     for k in range(1, self.M)
         uniques = unique(sort(data[:,k]))
-        if length(uniques) > numBins
+        if length(uniques) > num_bins
             append!(vector, uniques[LinRange(0, length(uniques)-1, num_bins)])
         else
             append!(vector, [uniques])
@@ -128,7 +128,6 @@ function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
 
     # Iterate among features
     for k in range(1, self.M)
-        # Iterate among features
         if self.continuous[k]
             for ind in range(1, self.N)
                 x = simpleHist(self, data[ind, k], k)
@@ -157,7 +156,7 @@ function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
             if length(indexCutPoints) != 0
                 cutPoints = zeros(length(indexCutPoints) + 2)
                 cutPoints[1] = self.candidateSplits[k][1]
-                
+
                 for i in range(1, length(indexCutPoints))
                     cSplitIdx = indexCutPoints[i]/self.numClasses
                     if (cSplitIdx > 0 && cSplitIdx < length(self.candidateSplits[k]))
@@ -166,7 +165,7 @@ function findBestSplits(self::FuzzyMDLFilter, data::Matrix{Float64})
                 end
 
                 cutPoints[end] = self.candidateSplits[k][end]
-            
+
                 append!(splits, [cutPoints])
             else
                 append!(splits, [[]])
@@ -618,7 +617,7 @@ end
 
 function createFuzzyMDLDiscretizer(numClasses::Int64, data::Matrix{Float64},
         labels::Array{Int64}, continuous::Array{Bool}, minImpurity::Float64=0.02,
-        minGain::Float64=0.000001, threshold::Int64=0, num_bins::Int64=500,
+        minGain::Float64=0.000001, threshold::Int64=0, num_bins::Int64=50,
         ignore::Bool=true, ftype::String="triangular", trpzPrm::Float64=0.1)
     return __init__(FuzzyMDLFilter(), numClasses, data, labels, continuous, minImpurity,
             minGain, threshold, num_bins, ignore, ftype, trpzPrm)
