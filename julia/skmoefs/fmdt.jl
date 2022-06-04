@@ -210,7 +210,7 @@ end
 
 mutable struct FMDT
     """
-    Fuzzy Decision Tree.
+    Fuzzy Multi-way Decision Tree.
     """
     max_depth::Int64
     discr_minImpurity::Float64

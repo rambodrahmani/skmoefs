@@ -277,7 +277,6 @@ class FMDT(object):
         if self.priorDiscretization:
             if not cPoints is None:
                 self.cPoints = cPoints
-
             # Executing discretization
             else:
                 discr = df.FuzzyMDLFilter(self.K, X, y, self.cont,

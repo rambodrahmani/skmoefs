@@ -617,7 +617,7 @@ end
 
 function createFuzzyMDLDiscretizer(numClasses::Int64, data::Matrix{Float64},
         labels::Array{Int64}, continuous::Array{Bool}, minImpurity::Float64=0.02,
-        minGain::Float64=0.000001, threshold::Int64=0, num_bins::Int64=50,
+        minGain::Float64=0.000001, threshold::Int64=0, num_bins::Int64=500,
         ignore::Bool=true, ftype::String="triangular", trpzPrm::Float64=0.1)
     return __init__(FuzzyMDLFilter(), numClasses, data, labels, continuous, minImpurity,
             minGain, threshold, num_bins, ignore, ftype, trpzPrm)

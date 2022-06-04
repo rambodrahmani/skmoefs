@@ -41,7 +41,7 @@ function test_fit(dataset::String, algorithm::String, seed::Int64, nEvals::Int64
     capacity = 32
     divisions = 8
     variator = createRCSVariator()
-    discretizer = createFuzzyDiscretizer("uniform", 3)
+    discretizer = createFuzzyDiscretizer("uniform", 5)
     initializer = createRCSInitializer(discretizer)
     if store
         base = path * "moefs_" * string(seed)
