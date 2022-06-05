@@ -3,6 +3,7 @@
 """
 
 include("skmoefs/toolbox.jl")
+include("skmoefs/discretization/discretizer_base.jl")
 using PyCall
 using Random
 using ScikitLearn.CrossValidation: train_test_split
@@ -11,6 +12,7 @@ using ScikitLearn.CrossValidation: train_test_split
 pushfirst!(PyVector(pyimport("sys")["path"]), "python/")
 
 # import python modules
+skmoefs_py_discretization = pyimport("skmoefs.discretization.discretizer_base")
 skmoefs_py_toolbox = pyimport("skmoefs.toolbox")
 skmoefs_py_rcs = pyimport("skmoefs.rcs")
 
@@ -52,8 +54,38 @@ function test3(dataset::String, algorithm::String, seed::Int64, nEvals::Int64=50
     M = 50
     capacity = 32
     divisions = 8
+    variator = skmoefs_py_rcs.RCSVariator()
+    discretizer = skmoefs_py_discretization.fuzzyDiscretization(numSet=5)
+    initializer = skmoefs_py_rcs.RCSInitializer(discretizer=discretizer)
+    if store
+        base = path * "moefs_" * string(seed)
+        if !is_object_present(base)
+            mpaes_rcs_fdt = skmoefs_py_toolbox.MPAES_RCS(M=M, Amin=Amin, capacity=capacity,
+                                      divisions=divisions, variator=variator,
+                                      initializer=initializer, moea_type=algorithm,
+                                      objectives=["accuracy", "trl"])
+            mpaes_rcs_fdt.fit(Xtr, ytr, max_evals=nEvals)
+            skmoefs_py_toolbox.store_object(mpaes_rcs_fdt, base)
+        else
+            mpaes_rcs_fdt = skmoefs_py_toolbox.load_object(base)
+        end
+    else
+        mpaes_rcs_fdt = skmoefs_py_toolbox.MPAES_RCS(M=M, Amin=Amin, capacity=capacity,
+                                  divisions=divisions, variator=variator,
+                                  initializer=initializer, moea_type=algorithm,
+                                  objectives=["accuracy", "trl"])
+        mpaes_rcs_fdt.fit(Xtr, ytr, max_evals=nEvals)
+    end
+
+    mpaes_rcs_fdt.show_pareto()
+    mpaes_rcs_fdt.show_pareto(Xte, yte)
+    mpaes_rcs_fdt.show_pareto_archives()
+    mpaes_rcs_fdt.show_pareto_archives(Xte, yte)
+    mpaes_rcs_fdt.show_model("first", inputs, outputs)
+    mpaes_rcs_fdt.show_model("median", inputs, outputs)
+    mpaes_rcs_fdt.show_model("last", inputs, outputs)
 end
 
 #test1(2)
 #test2(2)
-test3("iris", "mpaes22", 2, 2000, true)
+test3("iris", "mpaes22", 2, 2000, false)
