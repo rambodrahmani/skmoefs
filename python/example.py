@@ -85,7 +85,9 @@ def test3(dataset, alg, seed, nEvals=50000, store=False):
     mpaes_rcs_fdt.show_pareto(Xte, yte)
     mpaes_rcs_fdt.show_pareto_archives()
     mpaes_rcs_fdt.show_pareto_archives(Xte, yte)
+    mpaes_rcs_fdt.show_model('first', inputs, outputs)
     mpaes_rcs_fdt.show_model('median', inputs, outputs)
+    mpaes_rcs_fdt.show_model('last', inputs, outputs)
 
 
 if __name__=="__main__":

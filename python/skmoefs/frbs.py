@@ -204,7 +204,7 @@ class FuzzyRuleBasedClassifier():
                 size = len(self.partitions[key])
                 labels = self._get_labels(size)
                 if count > 0:
-                    if_part += startBold + ' AND ' + endBold
+                    if_part += startBold + 'AND ' + endBold
                 count += 1
                 if inputs is None:
                     feature = 'X_' + str(key + 1)
@@ -229,17 +229,17 @@ class FuzzyRuleBasedClassifier():
                 fuzzyset partitions
         """
 
-        plt.rc('font', size=10)  # controls default text sizes
-        plt.rc('axes', titlesize=14)  # fontsize of the axes title
-        plt.rc('axes', labelsize=16)  # fontsize of the x and y labels
-        plt.rc('xtick', labelsize=14)  # fontsize of the tick labels
-        plt.rc('ytick', labelsize=14)  # fontsize of the tick labels
-        plt.rc('legend', fontsize=14)  # legend fontsize
-        plt.rc('figure', titlesize=14)  # fontsize of the figure title
+        plt.rc('font', size=10)             # controls default text sizes
+        plt.rc('axes', titlesize=14)        # fontsize of the axes title
+        plt.rc('axes', labelsize=16)        # fontsize of the x and y labels
+        plt.rc('xtick', labelsize=14)       # fontsize of the tick labels
+        plt.rc('ytick', labelsize=14)       # fontsize of the tick labels
+        plt.rc('legend', fontsize=14)       # legend fontsize
+        plt.rc('figure', titlesize=14)      # fontsize of the figure title
         for k, partition in enumerate(self.partitions):
             plt.figure()
             anchors = np.concatenate(([partition[0]], partition, [partition[-1]]))
-            fuzzyset_size= len(anchors) - 2
+            fuzzyset_size = len(anchors) - 2
             triangle = np.array([0.0, 1.0, 0.0])
             for i in range(fuzzyset_size):
                 plt.plot(anchors[i:i+3], triangle, linestyle='solid', linewidth=2, color='k')
