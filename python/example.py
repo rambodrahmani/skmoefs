@@ -48,7 +48,7 @@ def test2():
 
 
 def test3(dataset, alg, seed, nEvals=50000, store=False):
-    path = 'results/' + dataset + '/' + alg + '/'
+    path = 'python/results/' + dataset + '/' + alg + '/'
     make_directory(path)
     set_rng(seed)
     X, y, attributes, inputs, outputs = load_dataset(dataset)

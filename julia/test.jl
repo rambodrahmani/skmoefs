@@ -60,6 +60,7 @@ function test_fit(dataset::String, algorithm::String, seed::Int64, nEvals::Int64
     end
 end
 
+
 ###########
 # FUZZYSETS
 ###########
