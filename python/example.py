@@ -25,7 +25,14 @@ def make_directory(path):
         os.makedirs(path)
 
 
-def test1(seed):
+def example1():
+    X, y, attributes, inputs, outputs = load_dataset('newthyroid')
+    X_n, y_n = normalize(X, y, attributes)
+    my_moefs = MPAES_RCS(variator=RCSVariator(), initializer=RCSInitializer())
+    my_moefs.cross_val_score(X_n, y_n, nEvals=1000, num_fold=5)
+
+
+def example2(seed):
     set_rng(seed)
 
     X, y, attributes, inputs, outputs = load_dataset('newthyroid')
@@ -33,21 +40,14 @@ def test1(seed):
     Xtr, Xte, ytr, yte = train_test_split(X_n, y_n, test_size=0.3)
 
     my_moefs = MPAES_RCS(capacity=32, variator=RCSVariator(), initializer=RCSInitializer())
-    my_moefs.fit(Xtr, ytr, max_evals=10000)
+    my_moefs.fit(Xtr, ytr, max_evals=1000)
 
     my_moefs.show_pareto()
     my_moefs.show_pareto(Xte, yte)
     my_moefs.show_model('median', inputs=inputs, outputs=outputs)
 
 
-def test2():
-    X, y, attributes, inputs, outputs = load_dataset('newthyroid')
-    X_n, y_n = normalize(X, y, attributes)
-    my_moefs = MPAES_RCS(variator=RCSVariator(), initializer=RCSInitializer())
-    my_moefs.cross_val_score(X_n, y_n, num_fold=5)
-
-
-def test3(dataset, alg, seed, nEvals=50000, store=False):
+def example3(dataset, alg, seed, nEvals=50000, store=False):
     path = 'python/results/' + dataset + '/' + alg + '/'
     make_directory(path)
     set_rng(seed)
@@ -91,6 +91,6 @@ def test3(dataset, alg, seed, nEvals=50000, store=False):
 
 
 if __name__=="__main__":
-    #test1(2)
-    #test2()
-    test3('iris', 'mpaes22', 2, nEvals=2000, store=False)
+    example1()
+    example2(2)
+    example3('iris', 'mpaes22', 2, nEvals=2000, store=False)

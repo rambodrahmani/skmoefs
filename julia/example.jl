@@ -16,7 +16,16 @@ skmoefs_py_discretization = pyimport("skmoefs.discretization.discretizer_base")
 skmoefs_py_toolbox = pyimport("skmoefs.toolbox")
 skmoefs_py_rcs = pyimport("skmoefs.rcs")
 
-function test1(seed::Int64)
+
+function example1()
+    X, y, attributes, inputs, outputs = load_dataset("newthyroid")
+    X_n, y_n = normalize(X, y, attributes)
+    my_moefs = skmoefs_py_toolbox.MPAES_RCS(variator=skmoefs_py_rcs.RCSVariator(), initializer=skmoefs_py_rcs.RCSInitializer())
+    my_moefs.cross_val_score(X_n, y_n, nEvals=1000, num_fold=5)
+end
+
+
+function example2(seed::Int64)
     set_rng_seed(seed)
 
     X, y, attributes, inputs, outputs = load_dataset("newthyroid")
@@ -31,16 +40,8 @@ function test1(seed::Int64)
     my_moefs.show_model("median", inputs=inputs, outputs=outputs)
 end
 
-function test2(seed::Int64)
-    set_rng_seed(seed)
 
-    X, y, attributes, inputs, outputs = load_dataset("newthyroid")
-    X_n, y_n = normalize(X, y, attributes)
-    my_moefs = skmoefs_py_toolbox.MPAES_RCS(variator=skmoefs_py_rcs.RCSVariator(), initializer=skmoefs_py_rcs.RCSInitializer())
-    my_moefs.cross_val_score(X_n, y_n, nEvals=1000, num_fold=5)
-end
-
-function test3(dataset::String, algorithm::String, seed::Int64, nEvals::Int64=50000, store::Bool=false)
+function example3(dataset::String, algorithm::String, seed::Int64, nEvals::Int64=50000, store::Bool=false)
     path = "julia/results/" * dataset * '/' * algorithm * '/'
     make_path(path)
     set_rng_seed(seed)
@@ -86,6 +87,6 @@ function test3(dataset::String, algorithm::String, seed::Int64, nEvals::Int64=50
     mpaes_rcs_fdt.show_model("last", inputs, outputs)
 end
 
-#test1(2)
-#test2(2)
-test3("iris", "mpaes22", 2, 2000, false)
+example1()
+example2(2)
+example3("iris", "mpaes22", 2, 1000, false)
