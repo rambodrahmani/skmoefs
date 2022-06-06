@@ -1,3 +1,7 @@
+using ScikitLearn
+@sk_import metrics: roc_auc_score
+@sk_import preprocessing: LabelBinarizer
+
 mutable struct ClassificationRule
     antecedent::Dict
     fuzzyset::Dict
@@ -180,4 +184,77 @@ end
 function trl(self::FuzzyRuleBasedClassifier)
     n_antecedents = [length(rule.antecedent) for rule in self.rules]
     return sum(n_antecedents)
+end
+
+function accuracy(self::FuzzyRuleBasedClassifier, x, y)
+    return sum(predict(self, x) == y) / length(y)
+end
+
+function auc(self::FuzzyRuleBasedClassifier, x, y)
+    y_pred = predict(self, x)
+
+    # Binarize labels (One-vs-All)
+    lb = LabelBinarizer()
+    lb.fit(y)
+
+    # Transform labels
+    y_bin = lb.transform(y)
+    y_pred_bin = lb.transform(y_pred)
+    return roc_auc_score(y_bin, y_pred_bin, average="macro")
+end
+
+function _get_labels(self::FuzzyRuleBasedClassifier, size::Int64)
+    if size == 3
+        return ["L", "M", "H"]
+    elseif size == 5
+        return ["VL", "L", "M", "H", "VH"]
+    elseif size == 7
+        return ["VL", "L", "ML", "M", "MH", "H", "VH"]
+    end
+end
+
+function show_RB(self::FuzzyRuleBasedClassifier, inputs, outputs, f::Any=nothing)
+    if !isnothing(f)
+        write(f, "RULE BASE\n")
+        startBold = ""
+        endBold = ""
+    else
+        print("RULE BASE")
+        startBold = "\033[1m"
+        endBold = "\033[0m"
+    end
+    if_keyword = startBold * "IF" * endBold
+    then_keyword = startBold * "THEN" * endBold
+    is_keyword = startBold * "is" * endBold
+
+    for (i,rule) in enumerate(self.rules)
+        if_part = if_keyword * " "
+        count = 0
+        for key in rule.antecedent
+            size = length(self.partitions[key])
+            labels = _get_labels(self, size)
+            if count > 0
+                if_part += startBold * "AND " * endBold
+            end
+            count += 1
+            if isnothing(inputs)
+                feature = "X_" * string(key + 1)
+            else
+                feature = inputs[key]
+            end
+            if_part *= feature
+            if_part *= " " * is_keyword * " " * labels[rule.fuzzyset[key] - 1] * " "
+        end
+        if isnothing(outputs)
+            output = "Class"
+        else
+            output = outputs[0]
+        end
+        then_part = then_keyword * " " * output * " is " * string(rule.consequent)
+        if !isnothing(f)
+            f.write(string(i+1) * ":\t" * if_part * then_part * "\n")
+        else
+            print(string(i+1) * ":\t" * if_part * then_part)
+        end
+    end
 end
