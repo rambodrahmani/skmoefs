@@ -80,12 +80,6 @@ function score(self::MOEL_FRBC, X::Matrix{Float64}, y::Array{Int64}, sample_weig
     end
 end
 
-function accuracy(self::MOEL_FRBC, classifier)
-end
-
-function trl(self::MOEL_FRBC, classifier)
-end
-
 mutable struct MOEL_FRBR
     """
     MOEL scheme for Fuzzy Rule-based Regressors (FRBRs).
