@@ -27,7 +27,7 @@ RCSVariator() = RCSVariator(platypus.Variator, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 function __init__(self::RCSVariator, p_crb::Float64=0.2, p_cdb::Float64=0.5, alpha::Float64=0.5,
                 p_mrb::Float64=0.1, p_mrb_add::Float64=0.5, p_mrb_del::Float64=0.2,
                 p_mrb_flip::Float64=0.7, p_mdb::Float64=0.2, p_cond::Float64=0.5)
-    self.problem = platypus.Variator(2)
+    self.variator = platypus.Variator(2)
     self.p_crb = p_crb
     self.p_cdb = p_cdb
     self.alpha = alpha
