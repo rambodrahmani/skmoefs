@@ -1,14 +1,24 @@
 """
-    Multi-objective Evolutionary Learning Scheme.
+    Multi-objective Evolutionary Learning Schemes implementation.
 """ 
 
 mutable struct MOELScheme
+    """
+    Multi-objective Evolutionary Learning Scheme.
+    """
 end
 
 function fit(self::MOELScheme, X::Matrix{Float64}, y::Array{Int64})
+    """
+    Estimates the model parameters, namely the RB and the fuzzy partitions,
+    exploiting the provided training set.
+    """
 end
 
 function cross_val_score(self::MOELScheme, X::Matrix{Float64}, y::Array{Int64}, num_fold::Int64)
+    """
+    Measures the performance of the model using K-Fold cross validation.
+    """
 end
 
 function show_pareto(self::MOELScheme)
@@ -28,7 +38,10 @@ function show_model(self::MOELScheme, position)
     """
 end
 
-function __getitem__(self::MOELScheme, item)
+function __getitem__(self::MOELScheme, position)
+    """
+    Returns the model for which the position in the Pareto front is given.
+    """
 end
 
 mutable struct MOEL_FRBC

@@ -18,6 +18,9 @@ class MOELScheme(ABC, BaseEstimator):
 
     @abstractmethod
     def cross_val_score(self, X, y, num_fold):
+        """
+        Measures the performance of the model using K-Fold cross validation.
+        """
         pass
 
     @abstractmethod
@@ -40,7 +43,10 @@ class MOELScheme(ABC, BaseEstimator):
         pass
 
     @abstractmethod
-    def __getitem__(self, item):
+    def __getitem__(self, position):
+        """
+        Returns the model for which the position in the Pareto front is given.
+        """
         pass
 
 
