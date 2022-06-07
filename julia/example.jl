@@ -32,12 +32,14 @@ function example2(seed::Int64)
     X_n, y_n = normalize(X, y, attributes)
     Xtr, Xte, ytr, yte = train_test_split(X_n, y_n, test_size=0.3)
 
-    my_moefs = skmoefs_py_toolbox.MPAES_RCS(capacity=32, variator=skmoefs_py_rcs.RCSVariator(), initializer=skmoefs_py_rcs.RCSInitializer())
-    my_moefs.fit(Xtr, ytr, max_evals=1000)
+    mpaes_rcs = skmoefs_py_toolbox.MPAES_RCS(capacity=32, variator=skmoefs_py_rcs.RCSVariator(), initializer=skmoefs_py_rcs.RCSInitializer())
+    mpaes_rcs.fit(Xtr, ytr, max_evals=30000)
 
-    my_moefs.show_pareto()
-    my_moefs.show_pareto(Xte, yte)
-    my_moefs.show_model("median", inputs=inputs, outputs=outputs)
+    mpaes_rcs.show_pareto()
+    mpaes_rcs.show_pareto(Xte, yte)
+    mpaes_rcs.show_pareto_archives()
+    mpaes_rcs.show_pareto_archives(Xte, yte)
+    mpaes_rcs.show_model("median", inputs=inputs, outputs=outputs)
 end
 
 
@@ -88,5 +90,5 @@ function example3(dataset::String, algorithm::String, seed::Int64, nEvals::Int64
 end
 
 #example1()
-#example2(2)
-example3("iris", "mpaes22", 2, 20000, false)
+example2(2)
+#example3("iris", "mpaes22", 2, 20000, false)
