@@ -10,6 +10,7 @@ using PyCall
 platypus = pyimport("platypus")
 
 mutable struct RCSVariator
+    variator::PyObject
     p_crb::Float64
     p_cdb::Float64
     alpha::Float64
@@ -21,11 +22,12 @@ mutable struct RCSVariator
     p_cond::Float64
 end
 
-RCSVariator() = RCSVariator(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+RCSVariator() = RCSVariator(platypus.Variator, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
 function __init__(self::RCSVariator, p_crb::Float64=0.2, p_cdb::Float64=0.5, alpha::Float64=0.5,
                 p_mrb::Float64=0.1, p_mrb_add::Float64=0.5, p_mrb_del::Float64=0.2,
                 p_mrb_flip::Float64=0.7, p_mdb::Float64=0.2, p_cond::Float64=0.5)
+    self.problem = platypus.Variator(2)
     self.p_crb = p_crb
     self.p_cdb = p_cdb
     self.alpha = alpha
@@ -37,6 +39,24 @@ function __init__(self::RCSVariator, p_crb::Float64=0.2, p_cdb::Float64=0.5, alp
     self.p_cond = p_cond
 
     return self
+end
+
+function _remove_duplicates(self::RCSVariator, solution)
+    """
+    Remove duplicates from a solution.
+    """
+    problem = solution.problem
+    rules = set(solution.variables[:problem.crb_l:2])
+    for i in range(1, problem.M - 1)
+        if !(solution.variables[2 * i] in rules)
+            solution.variables[2 * i] = 0
+            solution.variables[2 * i + 1][:] = [false for _ in range(problem.F)]
+        else
+            rules.remove(solution.variables[2 * i])
+        end
+    end
+
+    return solution
 end
 
 function createRCSVariator(p_crb::Float64=0.2, p_cdb::Float64=0.5, alpha::Float64=0.5,
