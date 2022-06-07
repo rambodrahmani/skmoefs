@@ -87,6 +87,6 @@ function example3(dataset::String, algorithm::String, seed::Int64, nEvals::Int64
     mpaes_rcs_fdt.show_model("last", inputs, outputs)
 end
 
-example1()
-example2(2)
-example3("iris", "mpaes22", 2, 1000, false)
+#example1()
+#example2(2)
+example3("iris", "mpaes22", 2, 20000, false)

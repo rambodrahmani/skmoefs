@@ -136,9 +136,3 @@ function score(self::MOEL_FRBR, X::Matrix{Float64}, y::Array{Int64}, sample_weig
         end
     end
 end
-
-function accuracy(self::MOEL_FRBR, regressor)
-end
-
-function trl(self::MOEL_FRBR, regressor)
-end
