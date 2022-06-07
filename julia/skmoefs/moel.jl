@@ -113,8 +113,8 @@ end
 
 function predict(self::MOEL_FRBR, X::Matrix{Float64}, position::String="first")
     """
-    In charge of predicting the class labels associated with a new set of
-    input patterns.
+    In charge of predicting the values associated with a new set of input
+    patterns.
     """
     n_regressors = length(self.regressors)
     if n_regressors == 0
