@@ -90,5 +90,5 @@ function example3(dataset::String, algorithm::String, seed::Int64, nEvals::Int64
 end
 
 #example1()
-example2(2)
-#example3("iris", "mpaes22", 2, 20000, false)
+#example2(2)
+example3("iris", "mpaes22", 2, 1000, false)

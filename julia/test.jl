@@ -86,8 +86,10 @@ println(fuzzy_triangular)
 plotTriangularFuzzySet(fuzzy_triangular)
 savefig("./plots/triangular_fuzzy_set.pdf")
 
-triangular_fuzzy_params = [0.02777778, 0.27083333, 0.51388889, 0.75694444, 1.]
+triangular_fuzzy_params = [0.02777778, 0.51388889, 1.]
 fuzzy_triangulars = createTriangularFuzzySets(triangular_fuzzy_params, true)
+plotTriangularFuzzySets(fuzzy_triangulars)
+savefig("./plots/strong_triangular_partition.pdf")
 for fuzzy_triangular in fuzzy_triangulars
     println(fuzzy_triangular)
 end

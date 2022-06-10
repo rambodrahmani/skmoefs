@@ -133,18 +133,13 @@ function plotTriangularFuzzySets(fsets::Vector{Any})
     plot()
 
     # plot
-    i = 0
-    for selfs in fsets
-        for self in selfs
-            if isFirstOfPartition(self)
-                plot!([self.b, self.b, self.b, self.c], [0, 1, 1, 0], label="Triangular Fuzzy Set", lw=3)
-            elseif isLastOfPartition(self)
-                plot!([self.a, self.b, self.b, self.b], [0, 1, 1, 0], label="Triangular Fuzzy Set", lw=3)
-            else
-                plot!([self.a, self.b, self.c], [0, 1, 0], label="Triangular Fuzzy Set", lw=3)
-            end
+    for self in fsets
+        if isFirstOfPartition(self)
+            plot!([self.b, self.b, self.b, self.c], [0, 1, 1, 0], label="Partition 1", lw=3)
+        elseif isLastOfPartition(self)
+            plot!([self.a, self.b, self.b, self.b], [0, 1, 1, 0], label="Partition 2", lw=3)
+        else
+            plot!([self.a, self.b, self.c], [0, 1, 0], label="Partition 3", lw=3)
         end
-        i = i + 1
-        savefig("./plots/strong_triangular_partition_" * string(i) * ".pdf")
     end    
 end

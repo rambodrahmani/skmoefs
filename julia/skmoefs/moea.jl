@@ -59,7 +59,7 @@ end
 
 mutable struct MPAES2_2
     """
-    M-PEAS(2+2) algorithm implementation.
+    (2+2)M-PEAS algorithm implementation.
     """
     algorithm::PyObject
     variator::RCSVariator
